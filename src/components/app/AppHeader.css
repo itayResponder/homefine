@@ -105,6 +105,69 @@
     color: #0F172A;
 }
 
+/* ── Settings gear button & dropdown ── */
+.ap-settings-wrap {
+    position: relative;
+}
+
+.ap-settings-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: #fff;
+    color: #64748B;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+
+.ap-settings-btn:hover {
+    border-color: var(--ac, #6C63FF);
+    color: var(--ac, #6C63FF);
+    background: var(--acl, #EEEDFF);
+}
+
+.ap-settings-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    min-width: 140px;
+    overflow: hidden;
+    z-index: 200;
+}
+
+.ap-settings-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    text-align: start;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #0F172A;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s;
+}
+
+.ap-settings-dropdown button:hover {
+    background: var(--acl, #EEEDFF);
+    color: var(--ac, #6C63FF);
+}
+
+.ap-settings-dropdown button + button {
+    border-top: 1px solid #F1F5F9;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
     .ap-header {

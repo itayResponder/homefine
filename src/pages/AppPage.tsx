@@ -56,6 +56,7 @@ export default function AppPage() {
     const [view, setView] = useState('summary')
     const [month, setMonth] = useState(currentMonth)
     const [editingTx, setEditingTx] = useState<Transaction | null>(null)
+    const [modal, setModal] = useState<'settings' | 'logs' | null>(null)
 
     // ── Auto-apply recurring charges ──────────────────────────────────────────
     const txRef = useRef(transactions)
@@ -180,7 +181,12 @@ export default function AppPage() {
 
     return (
         <div className="ap-root" style={buildColorVars(primaryColor) as React.CSSProperties}>
-            <AppHeader user={user} onLogout={handleLogout} />
+            <AppHeader
+                user={user}
+                onLogout={handleLogout}
+                onOpenSettings={() => setModal('settings')}
+                onOpenLogs={() => setModal('logs')}
+            />
             <SyncBar status={syncStatus} />
             <OnlineBar online={online} />
 
@@ -247,21 +253,33 @@ export default function AppPage() {
                     />
                 )}
 
-                {view === 'logs' && <LogsSection logs={logs} />}
-
-                {view === 'settings' && (
-                    <SettingsView
-                        transactions={transactions}
-                        recurringCharges={recurringCharges}
-                        members={members}
-                        logs={logs}
-                        onAddMember={handleAddMember}
-                        onRemoveMember={handleRemoveMember}
-                        primaryColor={primaryColor}
-                        onColorChange={updateColor}
-                    />
-                )}
             </div>
+
+            {modal && (
+                <div className="ap-modal-overlay" onClick={() => setModal(null)}>
+                    <div className="ap-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="ap-modal-header">
+                            <span className="ap-modal-title">
+                                {modal === 'settings' ? t.tabSettings : t.navLogs}
+                            </span>
+                            <button className="ap-modal-close" onClick={() => setModal(null)}>✕</button>
+                        </div>
+                        {modal === 'settings' && (
+                            <SettingsView
+                                transactions={transactions}
+                                recurringCharges={recurringCharges}
+                                members={members}
+                                logs={logs}
+                                onAddMember={handleAddMember}
+                                onRemoveMember={handleRemoveMember}
+                                primaryColor={primaryColor}
+                                onColorChange={updateColor}
+                            />
+                        )}
+                        {modal === 'logs' && <LogsSection logs={logs} />}
+                    </div>
+                </div>
+            )}
 
             {editingTx && (
                 <EditTransactionModal

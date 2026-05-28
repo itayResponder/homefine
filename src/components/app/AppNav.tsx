@@ -24,8 +24,6 @@ export function AppNav({ view, members, onChange, onRemoveMember }: Props) {
 
     const tail = [
         { value: 'recurring', label: t.navRecurring },
-        { value: 'logs',      label: t.navLogs },
-        { value: 'settings',  label: t.tabSettings },
     ]
 
     return (
