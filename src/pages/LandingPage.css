@@ -571,10 +571,6 @@
         padding: 4rem 1.5rem 2rem;
     }
 
-    .lp-hero-right {
-        display: none;
-    }
-
     .lp-stats {
         grid-template-columns: 1fr;
     }
