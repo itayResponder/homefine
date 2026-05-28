@@ -788,6 +788,8 @@
 
 .cs-trig:hover { border-color: #A09AEE; }
 
+.cs-trig.cs-placeholder span:first-child { color: #94A3B8; }
+
 .cs-trig.open {
     border-color: var(--ac);
     background: #fff;

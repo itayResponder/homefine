@@ -10,9 +10,10 @@ interface Props {
     options: SelectOption[]
     value: string
     onChange: (v: string) => void
+    placeholder?: string
 }
 
-export function CustomSelect({ options, value, onChange }: Props) {
+export function CustomSelect({ options, value, onChange, placeholder }: Props) {
     const [open, setOpen] = useState(false)
     const wrapRef = useRef<HTMLDivElement>(null)
 
@@ -31,10 +32,10 @@ export function CustomSelect({ options, value, onChange }: Props) {
     return (
         <div className="cs-wrap" ref={wrapRef}>
             <div
-                className={`cs-trig${open ? ' open' : ''}`}
+                className={`cs-trig${open ? ' open' : ''}${!selected && placeholder ? ' cs-placeholder' : ''}`}
                 onClick={() => setOpen((v) => !v)}
             >
-                <span>{selected?.label ?? value}</span>
+                <span>{selected?.label ?? placeholder ?? value}</span>
                 <span className="arr">{open ? '▲' : '▼'}</span>
             </div>
             {open && (

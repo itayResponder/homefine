@@ -2,8 +2,11 @@
 import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
+import { todayISO } from '../../utils/date'
+import { computeStartYearMonth } from '../../utils/recurring'
 import { CATEGORY_ICONS } from '../../constants/categories'
 import { CustomSelect } from '../ui/CustomSelect'
+import { CustomDatePicker } from '../ui/CustomDatePicker'
 import type { Member, RecurringCharge, TransactionCategory, TransactionType } from '../../types'
 import './RecurringSection.css'
 
@@ -21,7 +24,8 @@ interface FormState {
     amount: string
     category: TransactionCategory
     memberId: string
-    dayOfMonth: string
+    startDate: string
+    monthCount: string
 }
 
 export function RecurringSection({ recurringCharges, members, currentUserId, onAdd, onDelete }: Props) {
@@ -36,26 +40,33 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
         amount: '',
         category: 'bills',
         memberId: defaultMemberId(),
-        dayOfMonth: '',
+        startDate: todayISO(),
+        monthCount: '1',
     })
 
     const [form, setForm] = useState<FormState>(emptyForm)
 
-    const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+    const setField = <K extends keyof FormState>(key: K, value: FormState[K]) =>
         setForm((f) => ({ ...f, [key]: value }))
 
     const handleSubmit = (e: { preventDefault(): void }) => {
         e.preventDefault()
         const amount = parseFloat(form.amount)
-        const day = parseInt(form.dayOfMonth)
-        if (!amount || !form.description.trim() || !day || day < 1 || day > 31) return
+        const monthCount = parseInt(form.monthCount)
+        if (!amount || !form.description.trim() || !monthCount || monthCount < 1) return
+
+        const dayOfMonth = new Date(form.startDate).getDate()
+        const startYearMonth = computeStartYearMonth(form.startDate)
+
         onAdd({
             type: form.type,
             description: form.description.trim(),
             amount,
             category: form.category,
             memberId: form.memberId,
-            dayOfMonth: day,
+            dayOfMonth,
+            startYearMonth,
+            monthCount,
             active: true,
         })
         setForm(emptyForm())
@@ -68,6 +79,9 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
     ]
 
+    const monthCountLabel = t.dir === 'rtl' ? 'חודשים קדימה' : 'Months forward'
+    const monthCountPlaceholder = t.dir === 'rtl' ? 'מס׳ חודשים' : 'Count'
+
     return (
         <div className="rec-section">
             {/* ── Add form ── */}
@@ -79,14 +93,14 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                     <button
                         type="button"
                         className={`rec-type-btn${form.type === 'expense' ? ' active' : ''}`}
-                        onClick={() => set('type', 'expense')}
+                        onClick={() => setField('type', 'expense')}
                     >
                         {t.recurringExpense}
                     </button>
                     <button
                         type="button"
                         className={`rec-type-btn${form.type === 'income' ? ' active' : ''}`}
-                        onClick={() => set('type', 'income')}
+                        onClick={() => setField('type', 'income')}
                     >
                         {t.recurringIncome}
                     </button>
@@ -98,7 +112,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                         <input
                             className="ap-input"
                             value={form.description}
-                            onChange={(e) => set('description', e.target.value)}
+                            onChange={(e) => setField('description', e.target.value)}
                             placeholder={t.descriptionPlaceholder}
                             required
                         />
@@ -111,7 +125,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                             step="0.01"
                             className="ap-input"
                             value={form.amount}
-                            onChange={(e) => set('amount', e.target.value)}
+                            onChange={(e) => setField('amount', e.target.value)}
                             placeholder="0"
                             required
                         />
@@ -121,7 +135,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                         <CustomSelect
                             options={categoryOpts}
                             value={form.category}
-                            onChange={(v) => set('category', v as TransactionCategory)}
+                            onChange={(v) => setField('category', v as TransactionCategory)}
                         />
                     </div>
                     <div className="rec-field">
@@ -129,19 +143,23 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                         <CustomSelect
                             options={memberOpts}
                             value={form.memberId}
-                            onChange={(v) => set('memberId', v)}
+                            onChange={(v) => setField('memberId', v)}
                         />
                     </div>
                     <div className="rec-field">
-                        <label>{t.dayLabel}</label>
+                        <label>{t.dateLabel}</label>
+                        <CustomDatePicker value={form.startDate} onChange={(v) => setField('startDate', v)} />
+                    </div>
+                    <div className="rec-field">
+                        <label>{monthCountLabel}</label>
                         <input
                             type="number"
                             min="1"
-                            max="31"
+                            max="60"
                             className="ap-input"
-                            value={form.dayOfMonth}
-                            onChange={(e) => set('dayOfMonth', e.target.value)}
-                            placeholder={t.dayPlaceholder}
+                            value={form.monthCount}
+                            onChange={(e) => setField('monthCount', e.target.value)}
+                            placeholder={monthCountPlaceholder}
                             required
                         />
                     </div>
@@ -186,6 +204,11 @@ interface ItemProps {
     onDelete: (r: RecurringCharge) => void
 }
 
+function formatYearMonth(ym: string, monthNames: string[]): string {
+    const [y, m] = ym.split('-').map(Number)
+    return `${monthNames[m - 1]} ${y}`
+}
+
 function RecurringItem({ r, members, onDelete }: ItemProps) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
@@ -195,6 +218,20 @@ function RecurringItem({ r, members, onDelete }: ItemProps) {
         r.memberId === 'shared'
             ? t.sharedLabel
             : (found ? getMemberName(found) : r.memberId)
+
+    const rangeLabel = (() => {
+        if (!r.startYearMonth || !r.monthCount) {
+            return t.dir === 'rtl' ? `יום ${r.dayOfMonth}` : `Day ${r.dayOfMonth}`
+        }
+        const [sy, sm] = r.startYearMonth.split('-').map(Number)
+        const total = sy * 12 + (sm - 1) + r.monthCount - 1
+        const ey = Math.floor(total / 12)
+        const em = (total % 12) + 1
+        const endYearMonth = `${ey}-${String(em).padStart(2, '0')}`
+        return r.startYearMonth === endYearMonth
+            ? formatYearMonth(r.startYearMonth, t.monthNamesShort)
+            : `${formatYearMonth(r.startYearMonth, t.monthNamesShort)} → ${formatYearMonth(endYearMonth, t.monthNamesShort)}`
+    })()
 
     return (
         <div className="rec-item">
@@ -210,9 +247,7 @@ function RecurringItem({ r, members, onDelete }: ItemProps) {
                     <span className="rec-item-who">{memberName}</span>
                     <span>·</span>
                     <span>{t.categoryNames[r.category]}</span>
-                    <span className="rec-day-badge">
-                        {t.dayLabel} {r.dayOfMonth}
-                    </span>
+                    <span className="rec-day-badge">{rangeLabel}</span>
                 </div>
             </div>
             <span className={`rec-item-amt ${isIncome ? 'pos' : 'neg'}`}>

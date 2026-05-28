@@ -12,19 +12,23 @@ interface Props {
     transactions: Transaction[]
     members: Member[]
     month: string
+    currentUserId?: string
     onAdd: (tx: Omit<Transaction, 'id'>) => Promise<void>
     onDelete: (tx: Transaction) => void
     onEdit: (tx: Transaction) => void
 }
 
-export function IncomeView({ transactions, members, month, onAdd, onDelete, onEdit }: Props) {
+export function IncomeView({ transactions, members, month, currentUserId, onAdd, onDelete, onEdit }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [desc, setDesc] = useState('')
     const [amount, setAmount] = useState('')
-    const [category, setCategory] = useState<TransactionCategory>('salary')
-    const [memberId, setMemberId] = useState('shared')
+    const [category, setCategory] = useState<TransactionCategory | ''>('')
+    const [memberId, setMemberId] = useState<string | null>(null)
     const [date, setDate] = useState(todayISO)
+
+    const defaultMemberId = members.find((m) => m.userId === currentUserId)?.id ?? 'shared'
+    const effectiveMemberId = memberId ?? defaultMemberId
 
     const monthIncome = useMemo(
         () =>
@@ -44,13 +48,15 @@ export function IncomeView({ transactions, members, month, onAdd, onDelete, onEd
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         const amt = parseFloat(amount)
-        if (!amt || !desc.trim()) return
+        if (!amt || !desc.trim() || !category) return
         await onAdd({
             type: 'income', amount: amt, description: desc.trim(),
-            category, memberId, date, createdAt: Date.now(),
+            category: category as TransactionCategory, memberId: effectiveMemberId, date, createdAt: Date.now(),
         })
         setDesc('')
         setAmount('')
+        setCategory('')
+        setMemberId(null)
         setDate(todayISO())
     }
 
@@ -72,11 +78,11 @@ export function IncomeView({ transactions, members, month, onAdd, onDelete, onEd
                     <div className="fg fg3">
                         <div className="fl">
                             <label>{t.categoryLabel}</label>
-                            <CustomSelect options={categoryOpts} value={category} onChange={(v) => setCategory(v as TransactionCategory)} />
+                            <CustomSelect options={categoryOpts} value={category} onChange={(v) => setCategory(v as TransactionCategory)} placeholder={t.categoryLabel} />
                         </div>
                         <div className="fl">
                             <label>{t.whoLabel}</label>
-                            <CustomSelect options={memberOpts} value={memberId} onChange={setMemberId} />
+                            <CustomSelect options={memberOpts} value={effectiveMemberId} onChange={setMemberId} />
                         </div>
                         <div className="fl">
                             <label>{t.dateLabel}</label>

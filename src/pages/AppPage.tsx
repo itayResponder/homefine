@@ -215,6 +215,7 @@ export default function AppPage() {
                         transactions={transactions}
                         members={members}
                         month={month}
+                        currentUserId={user?.uid}
                         onAdd={handleAddTransaction}
                         onEdit={setEditingTx}
                         onDelete={handleDeleteTx}
@@ -226,6 +227,7 @@ export default function AppPage() {
                         transactions={transactions}
                         members={members}
                         month={month}
+                        currentUserId={user?.uid}
                         onAdd={handleAddTransaction}
                         onEdit={setEditingTx}
                         onDelete={handleDeleteTx}

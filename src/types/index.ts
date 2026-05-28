@@ -31,9 +31,11 @@ export interface RecurringCharge {
     id: string
     description: string
     amount: number
-    type: TransactionType          // expense | income
+    type: TransactionType
     category: TransactionCategory
-    dayOfMonth: number             // 1–31
+    dayOfMonth: number             // 1–31, extracted from startDate
+    startYearMonth: string         // YYYY-MM, first month to apply
+    monthCount: number             // total months to apply
     memberId: string | 'shared'
     active: boolean
 }
