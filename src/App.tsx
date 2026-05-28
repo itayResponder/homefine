@@ -18,7 +18,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter basename="/homefine">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
