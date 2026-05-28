@@ -241,6 +241,7 @@ export default function AppPage() {
                     <RecurringSection
                         recurringCharges={recurringCharges}
                         members={members}
+                        currentUserId={user?.uid}
                         onAdd={handleAddRecurring}
                         onDelete={handleDeleteRecurring}
                     />

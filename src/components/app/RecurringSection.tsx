@@ -10,6 +10,7 @@ import './RecurringSection.css'
 interface Props {
     recurringCharges: RecurringCharge[]
     members: Member[]
+    currentUserId?: string
     onAdd: (charge: Omit<RecurringCharge, 'id'>) => void
     onDelete: (r: RecurringCharge) => void
 }
@@ -23,18 +24,22 @@ interface FormState {
     dayOfMonth: string
 }
 
-const EMPTY_FORM: FormState = {
-    type: 'expense',
-    description: '',
-    amount: '',
-    category: 'bills',
-    memberId: 'shared',
-    dayOfMonth: '',
-}
-
-export function RecurringSection({ recurringCharges, members, onAdd, onDelete }: Props) {
+export function RecurringSection({ recurringCharges, members, currentUserId, onAdd, onDelete }: Props) {
     const { t } = useI18n()
-    const [form, setForm] = useState<FormState>(EMPTY_FORM)
+
+    const defaultMemberId = () =>
+        members.find((m) => m.userId === currentUserId)?.id ?? 'shared'
+
+    const emptyForm = (): FormState => ({
+        type: 'expense',
+        description: '',
+        amount: '',
+        category: 'bills',
+        memberId: defaultMemberId(),
+        dayOfMonth: '',
+    })
+
+    const [form, setForm] = useState<FormState>(emptyForm)
 
     const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
         setForm((f) => ({ ...f, [key]: value }))
@@ -53,7 +58,7 @@ export function RecurringSection({ recurringCharges, members, onAdd, onDelete }:
             dayOfMonth: day,
             active: true,
         })
-        setForm(EMPTY_FORM)
+        setForm(emptyForm())
     }
 
     const getMemberName = useMemberName()
