@@ -1,0 +1,155 @@
+/* src/components/app/LogsSection.css */
+
+.logs-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.logs-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logs-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #0F172A;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.logs-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #EFF6FF;
+    color: #2563EB;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ── Empty ── */
+.logs-empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    border: 1px dashed #E2E8F0;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.logs-empty-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.logs-empty p {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ── List ── */
+.logs-list {
+    background: #fff;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.log-item {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.log-item:last-child { border-bottom: none; }
+
+.log-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.log-action {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.log-action--add    { background: #ECFDF5; color: #065F46; }
+.log-action--edit   { background: #EFF6FF; color: #1D4ED8; }
+.log-action--delete { background: #FEF2F2; color: #991B1B; }
+
+.log-who {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.log-desc {
+    font-size: 0.78rem;
+    color: #0F172A;
+    font-weight: 500;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.log-time {
+    font-size: 0.68rem;
+    color: #CBD5E1;
+    margin-inline-start: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Edit diffs ── */
+.log-diffs {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-inline-start: 4px;
+    border-inline-start: 2px solid #E2E8F0;
+    margin-inline-start: 2px;
+}
+
+.log-diff-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.log-diff-field {
+    color: #CBD5E1;
+    min-width: 60px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.log-diff-before {
+    color: #EF4444;
+    text-decoration: line-through;
+}
+
+.log-diff-arrow {
+    color: #CBD5E1;
+}
+
+.log-diff-after {
+    color: #22C55E;
+    font-weight: 600;
+}

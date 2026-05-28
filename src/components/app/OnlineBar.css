@@ -1,0 +1,65 @@
+/* src/components/app/OnlineBar.css */
+
+.online-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 2rem;
+    background: #F8FAFF;
+    border-bottom: 1px solid #F1F5F9;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.online-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #94A3B8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.online-chips {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.online-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px 2px 5px;
+    border-radius: 999px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #2563EB;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.online-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22C55E;
+    flex-shrink: 0;
+    animation: online-pulse 2s ease-in-out infinite;
+}
+
+@keyframes online-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+.online-nobody {
+    font-size: 0.7rem;
+    color: #CBD5E1;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+@media (max-width: 640px) {
+    .online-bar { padding: 5px 1rem; }
+}

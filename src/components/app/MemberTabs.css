@@ -1,0 +1,106 @@
+/* src/components/app/MemberTabs.css */
+
+.ap-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.ap-tab {
+    padding: 0.4rem 0.95rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #64748B;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.ap-tab:hover {
+    border-color: #94A3B8;
+    color: #0F172A;
+}
+
+.ap-tab--active {
+    background: #EFF6FF;
+    border-color: #BFDBFE;
+    color: #2563EB;
+    font-weight: 600;
+}
+
+.ap-tab--ghost {
+    border-style: dashed;
+    color: #94A3B8;
+}
+
+.ap-tab--ghost:hover {
+    border-color: #2563EB;
+    color: #2563EB;
+    background: #EFF6FF;
+}
+
+/* ── Add member inline ── */
+.ap-add-member-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ap-add-member-input {
+    padding: 0.38rem 0.8rem;
+    border: 1px solid #BFDBFE;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none;
+    background: #fff;
+    width: 110px;
+    color: #0F172A;
+}
+
+.ap-add-member-input:focus {
+    border-color: #2563EB;
+}
+
+.ap-add-member-confirm {
+    padding: 0.38rem 0.8rem;
+    border: none;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    background: #2563EB;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background 0.15s;
+}
+
+.ap-add-member-confirm:hover {
+    background: #1D4ED8;
+}
+
+.ap-add-member-cancel {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #E2E8F0;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    color: #94A3B8;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.ap-add-member-cancel:hover {
+    background: #FEF2F2;
+    border-color: #FECACA;
+    color: #EF4444;
+}

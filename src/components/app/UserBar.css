@@ -1,0 +1,75 @@
+/* src/components/app/UserBar.css */
+
+.user-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border-bottom: 1px solid #E8E6FF;
+    padding: 10px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #D4D0FF;
+    flex-shrink: 0;
+}
+
+.user-avatar-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 2px solid #D4D0FF;
+    font-family: inherit;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-role {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-family: inherit;
+}
+
+.signout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #C4C0F0;
+    font-size: 18px;
+    padding: 4px 6px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    line-height: 1;
+    transition: color .15s;
+}
+
+.signout-btn:hover { color: #EF4444; }
+
+@media (max-width: 480px) {
+    .user-name { display: none; }
+}

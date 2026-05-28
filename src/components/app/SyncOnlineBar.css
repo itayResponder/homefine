@@ -1,0 +1,86 @@
+/* src/components/app/SyncOnlineBar.css */
+
+/* ── Sync bar ── */
+.sync-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    padding: 5px 12px;
+    background: #F8F7FF;
+    border-bottom: 1px solid #F0EFFF;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.sync-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sync-connected { color: #065F46; }
+.sync-connected .sync-dot { background: #10B981; }
+
+.sync-connecting { color: #1E40AF; }
+.sync-connecting .sync-dot {
+    background: #3B82F6;
+    animation: syncPulse 1s infinite;
+}
+
+@keyframes syncPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+/* ── Online bar ── */
+.online-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: #F0EFFF;
+    border-bottom: 1px solid #E8E6FF;
+    font-size: 11px;
+    color: #9490CC;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.online-lbl {
+    font-weight: 600;
+    margin-inline-end: 4px;
+    flex-shrink: 0;
+}
+
+.online-avatars {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.online-av {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px 3px 5px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #EEEDFF;
+    color: #6C63FF;
+}
+
+.online-av-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10B981;
+    flex-shrink: 0;
+    animation: onlinePulse 2s infinite;
+}
+
+@keyframes onlinePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.7; transform: scale(0.85); }
+}

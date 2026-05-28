@@ -1,0 +1,53 @@
+/* src/components/app/SummaryCards.css */
+
+.ap-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.ap-card {
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.ap-card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94A3B8;
+    margin-bottom: 0.5rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.ap-card-amt {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.ap-card--income .ap-card-amt { color: #22C55E; }
+.ap-card--expense .ap-card-amt { color: #EF4444; }
+.ap-card--balance.pos .ap-card-amt { color: #2563EB; }
+.ap-card--balance.neg .ap-card-amt { color: #EF4444; }
+
+@media (max-width: 600px) {
+    .ap-summary {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .ap-card {
+        padding: 1rem 1.25rem;
+    }
+
+    .ap-card-amt {
+        font-size: 1.25rem;
+    }
+}
