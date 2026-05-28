@@ -1,5 +1,5 @@
 // src/pages/AppPage.tsx
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useMembers } from '../hooks/useMembers'
@@ -26,6 +26,8 @@ import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
+import { useUserColor } from '../hooks/useUserColor'
+import { buildColorVars } from '../utils/color'
 import type { LogDiff, RecurringCharge, Transaction } from '../types'
 import './AppPage.css'
 
@@ -48,6 +50,7 @@ export default function AppPage() {
     const { t } = useI18n()
     const { showToast } = useToast()
     const { showConfirm } = useConfirm()
+    const { color: primaryColor, updateColor } = useUserColor(user?.uid)
 
     // ── UI state ──────────────────────────────────────────────────────────────
     const [view, setView] = useState('summary')
@@ -176,7 +179,7 @@ export default function AppPage() {
     }
 
     return (
-        <div className="ap-root">
+        <div className="ap-root" style={buildColorVars(primaryColor) as React.CSSProperties}>
             <AppHeader user={user} onLogout={handleLogout} />
             <SyncBar status={syncStatus} />
             <OnlineBar online={online} />
@@ -253,6 +256,8 @@ export default function AppPage() {
                         logs={logs}
                         onAddMember={handleAddMember}
                         onRemoveMember={handleRemoveMember}
+                        primaryColor={primaryColor}
+                        onColorChange={updateColor}
                     />
                 )}
             </div>

@@ -11,9 +11,13 @@ interface Props {
     logs: LogEntry[]
     onAddMember: (name: string, nameEn?: string) => void
     onRemoveMember: (id: string) => void
+    primaryColor: string
+    onColorChange: (color: string) => void
 }
 
-export function SettingsView({ transactions, recurringCharges, members, logs, onAddMember, onRemoveMember }: Props) {
+const DEFAULT_COLOR = '#6C63FF'
+
+export function SettingsView({ transactions, recurringCharges, members, logs, onAddMember, onRemoveMember, primaryColor, onColorChange }: Props) {
     const { t } = useI18n()
     const [newName, setNewName] = useState('')
     const [newNameEn, setNewNameEn] = useState('')
@@ -91,6 +95,65 @@ export function SettingsView({ transactions, recurringCharges, members, logs, on
                             {t.categoryNames[k as TransactionCategory]}
                         </div>
                     ))}
+                </div>
+            </div>
+
+            {/* Color theme */}
+            <div className="fcard">
+                <div className="fttl">🎨 {t.dir === 'rtl' ? 'צבע ראשי' : 'Primary Color'}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
+                    <div style={{ position: 'relative', width: 44, height: 44 }}>
+                        <input
+                            type="color"
+                            value={primaryColor}
+                            onChange={(e) => onColorChange(e.target.value)}
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                width: '100%',
+                                height: '100%',
+                                opacity: 0,
+                                cursor: 'pointer',
+                                border: 'none',
+                                padding: 0,
+                            }}
+                        />
+                        <div style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 12,
+                            background: primaryColor,
+                            border: '2px solid rgba(0,0,0,0.1)',
+                            pointerEvents: 'none',
+                        }} />
+                    </div>
+                    <div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ac)', marginBottom: 2 }}>
+                            {primaryColor.toUpperCase()}
+                        </div>
+                        <div style={{ fontSize: 11, color: '#94A3B8' }}>
+                            {t.dir === 'rtl' ? 'לחץ לשינוי הצבע' : 'Click to change color'}
+                        </div>
+                    </div>
+                    {primaryColor !== DEFAULT_COLOR && (
+                        <button
+                            onClick={() => onColorChange(DEFAULT_COLOR)}
+                            style={{
+                                marginRight: 'auto',
+                                padding: '6px 12px',
+                                fontSize: 11,
+                                fontWeight: 600,
+                                borderRadius: 'var(--rs)',
+                                border: '1.5px solid var(--ib)',
+                                background: 'var(--ibg)',
+                                color: 'var(--ac)',
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                            }}
+                        >
+                            {t.dir === 'rtl' ? 'איפוס' : 'Reset'}
+                        </button>
+                    )}
                 </div>
             </div>
 

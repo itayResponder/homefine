@@ -100,6 +100,16 @@ export const subscribePresence = (
     return () => off(r)
 }
 
+// ─── User Preferences ────────────────────────────────────────────────────────
+export const setUserColor = (uid: string, color: string) =>
+    set(ref(db, `userPrefs/${uid}/primaryColor`), color)
+
+export const subscribeUserColor = (uid: string, cb: (color: string | null) => void) => {
+    const r = ref(db, `userPrefs/${uid}/primaryColor`)
+    onValue(r, (snap) => cb(snap.val()))
+    return () => off(r)
+}
+
 // ─── Connection state ─────────────────────────────────────────────────────────
 export const subscribeConnectionState = (cb: (connected: boolean) => void) => {
     const r = ref(db, '.info/connected')

@@ -16,9 +16,10 @@
     --rs: 10px;
     --ib: #D4D0FF;
     --ibg: #F8F7FF;
+    --bg: #F4F3FF;
 
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #F4F3FF;
+    background: var(--bg);
     color: #1a1a2e;
     min-height: 100vh;
 }
