@@ -87,22 +87,7 @@
 }
 
 .ap-logout-btn {
-    padding: 0.4rem 0.85rem;
-    border: 1px solid #E2E8F0;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: #64748B;
-    background: #fff;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    white-space: nowrap;
-}
-
-.ap-logout-btn:hover {
-    border-color: #94A3B8;
-    color: #0F172A;
+    display: none;
 }
 
 /* ── Settings gear button & dropdown ── */
@@ -170,13 +155,6 @@
 
 .ap-settings-dropdown-logout {
     color: #EF4444 !important;
-    display: none;
-}
-
-@media (max-width: 640px) {
-    .ap-settings-dropdown-logout {
-        display: block;
-    }
 }
 
 /* ── Responsive ── */
