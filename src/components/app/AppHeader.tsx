@@ -59,6 +59,7 @@ export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs }: Props)
                         <div className="ap-settings-dropdown">
                             <button onClick={() => pick(onOpenSettings)}>{t.tabSettings}</button>
                             <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
+                            <button className="ap-settings-dropdown-logout" onClick={() => pick(onLogout)}>{t.signOut}</button>
                         </div>
                     )}
                 </div>

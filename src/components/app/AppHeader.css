@@ -168,6 +168,17 @@
     border-top: 1px solid #F1F5F9;
 }
 
+.ap-settings-dropdown-logout {
+    color: #EF4444 !important;
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .ap-settings-dropdown-logout {
+        display: block;
+    }
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
     .ap-header {
