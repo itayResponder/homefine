@@ -202,9 +202,10 @@
 .mp-trig:hover { background: rgba(255, 255, 255, 0.28); }
 
 .mp-pop {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #fff;
     border: 1.5px solid var(--ib);
     border-radius: var(--r);
@@ -212,6 +213,17 @@
     width: 280px;
     box-shadow: 0 12px 40px rgba(108, 99, 255, .22);
     z-index: 9999;
+}
+
+@media (min-width: 641px) {
+    .mp-pop {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: auto;
+        right: auto;
+        inset-inline-end: 0;
+        transform: none;
+    }
 }
 
 .mp-year-row {
