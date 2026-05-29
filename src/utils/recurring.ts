@@ -2,6 +2,9 @@
 import { addTransaction } from '../firebase/db'
 import type { RecurringCharge, Transaction } from '../types'
 
+// Tracks in-flight transaction creations to prevent race-condition duplicates
+const inProgress = new Set<string>()
+
 export async function applyRecurring(
     recurringCharges: RecurringCharge[],
     transactions: Transaction[],
@@ -26,11 +29,13 @@ export async function applyRecurring(
         const lastDay = new Date(year, month + 1, 0).getDate()
         const actualDay = Math.min(r.dayOfMonth, lastDay)
 
+        const key = `${r.id}_${monthKey}`
         const alreadyApplied = transactions.some(
             (tx) => tx.recurringId === r.id && tx.date.startsWith(monthKey),
         )
-        if (alreadyApplied) continue
+        if (alreadyApplied || inProgress.has(key)) continue
 
+        inProgress.add(key)
         const dateStr = `${monthKey}-${String(actualDay).padStart(2, '0')}`
         await addTransaction({
             type: r.type,
@@ -51,33 +56,9 @@ export async function applyRecurring(
  * - If the chosen date is in a future month → that month
  * - If the chosen date is in the past month → next month from today
  */
+// The chosen date's month IS the start month — always.
+// The day extracted from the date determines which day in each month the charge appears.
 export function computeStartYearMonth(chosenDate: string): string {
     const d = new Date(chosenDate)
-    const today = new Date()
-
-    const chosenYear = d.getFullYear()
-    const chosenMonth = d.getMonth() // 0-indexed
-
-    const todayYear = today.getFullYear()
-    const todayMonth = today.getMonth()
-
-    const isCurrentOrPast =
-        chosenYear < todayYear ||
-        (chosenYear === todayYear && chosenMonth <= todayMonth)
-
-    let startYear: number
-    let startMonth: number // 0-indexed
-
-    if (isCurrentOrPast) {
-        // Start from next month
-        startYear = todayYear
-        startMonth = todayMonth + 1
-        if (startMonth > 11) { startMonth = 0; startYear += 1 }
-    } else {
-        // Future month: use as-is
-        startYear = chosenYear
-        startMonth = chosenMonth
-    }
-
-    return `${startYear}-${String(startMonth + 1).padStart(2, '0')}`
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }

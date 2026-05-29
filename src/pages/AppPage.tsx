@@ -63,9 +63,16 @@ export default function AppPage() {
     const txRef = useRef(transactions)
     useEffect(() => { txRef.current = transactions }, [transactions])
 
+    const applyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     useEffect(() => {
-        const [year, m] = month.split('-').map(Number)
-        applyRecurring(recurringCharges, txRef.current, year, m - 1)
+        if (applyTimerRef.current) clearTimeout(applyTimerRef.current)
+        applyTimerRef.current = setTimeout(() => {
+            const [year, m] = month.split('-').map(Number)
+            applyRecurring(recurringCharges, txRef.current, year, m - 1)
+        }, 600)
+        return () => {
+            if (applyTimerRef.current) clearTimeout(applyTimerRef.current)
+        }
     }, [month, recurringCharges])
 
     const who = user?.displayName ?? '?'
