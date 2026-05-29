@@ -10,9 +10,13 @@ import type { Transaction } from '../types';
 
 export const useTransactions = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        const unsub = subscribeTransactions(setTransactions);
+        const unsub = subscribeTransactions((data) => {
+            setTransactions(data);
+            setReady(true);
+        });
         return unsub;
     }, []);
 
@@ -20,5 +24,5 @@ export const useTransactions = () => {
     const remove = (id: string) => removeTransaction(id);
     const update = (id: string, data: Partial<Transaction>) => updateTransaction(id, data);
 
-    return { transactions, add, remove, update };
+    return { transactions, ready, add, remove, update };
 };

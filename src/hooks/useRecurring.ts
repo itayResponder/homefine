@@ -10,9 +10,13 @@ import type { RecurringCharge } from '../types'
 
 export const useRecurring = () => {
     const [recurringCharges, setRecurringCharges] = useState<RecurringCharge[]>([])
+    const [ready, setReady] = useState(false)
 
     useEffect(() => {
-        const unsub = subscribeRecurringCharges(setRecurringCharges)
+        const unsub = subscribeRecurringCharges((data) => {
+            setRecurringCharges(data)
+            setReady(true)
+        })
         return unsub
     }, [])
 
@@ -20,5 +24,5 @@ export const useRecurring = () => {
     const remove = (id: string) => removeRecurringCharge(id)
     const update = (id: string, data: Partial<RecurringCharge>) => updateRecurringCharge(id, data)
 
-    return { recurringCharges, add, remove, update }
+    return { recurringCharges, ready, add, remove, update }
 }

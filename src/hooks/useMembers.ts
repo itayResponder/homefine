@@ -11,9 +11,13 @@ const CARD_COLORS = [
 
 export const useMembers = () => {
     const [members, setMembers] = useState<Member[]>([]);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        const unsub = subscribeMembers(setMembers);
+        const unsub = subscribeMembers((data) => {
+            setMembers(data);
+            setReady(true);
+        });
         return unsub;
     }, []);
 
@@ -30,5 +34,5 @@ export const useMembers = () => {
 
     const remove = (id: string) => removeMember(id);
 
-    return { members, add, remove };
+    return { members, ready, add, remove };
 };

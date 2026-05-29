@@ -42,9 +42,9 @@ function computeDiffs(before: Transaction, after: Partial<Transaction>): LogDiff
 export default function AppPage() {
     const navigate = useNavigate()
     const { user, logout } = useAuth()
-    const { members, add: addMember, remove: removeMember } = useMembers()
-    const { transactions, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions()
-    const { recurringCharges, add: addRecurring, remove: removeRecurring } = useRecurring()
+    const { members, ready: membersReady, add: addMember, remove: removeMember } = useMembers()
+    const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions()
+    const { recurringCharges, ready: recurringReady, add: addRecurring, remove: removeRecurring } = useRecurring()
     const { logs, add: addLog, remove: removeLog, clear: clearLogs } = useLogs()
     const online = usePresence(user)
     const syncStatus = useSyncStatus()
@@ -187,7 +187,9 @@ export default function AppPage() {
         navigate('/')
     }
 
-    if (colorLoading) {
+    const appReady = !colorLoading && membersReady && txReady && recurringReady
+
+    if (!appReady) {
         return (
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFF', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                 <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2563EB', letterSpacing: '-0.02em', opacity: 0.6 }}>
