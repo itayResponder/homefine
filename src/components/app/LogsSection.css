@@ -59,20 +59,19 @@
     overflow: hidden;
 }
 
-.log-item {
-    padding: 0.875rem 1rem;
-    border-bottom: 1px solid #F1F5F9;
-}
-
-.log-item:last-child { border-bottom: none; }
-
-.log-item-header {
+.log-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #F1F5F9;
+    cursor: pointer;
+    transition: background 0.12s;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
+
+.log-row:last-child { border-bottom: none; }
+.log-row:hover { background: #F8FAFF; }
 
 .log-action {
     font-size: 0.65rem;
@@ -89,12 +88,13 @@
 .log-action--delete { background: #FEF2F2; color: #991B1B; }
 
 .log-who {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: #475569;
+    flex-shrink: 0;
 }
 
-.log-desc {
+.log-row-desc {
     font-size: 0.78rem;
     color: #0F172A;
     font-weight: 500;
@@ -105,12 +105,167 @@
     white-space: nowrap;
 }
 
-.log-time {
-    font-size: 0.68rem;
-    color: #CBD5E1;
-    margin-inline-start: auto;
+.log-row-amt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+.log-time {
+    font-size: 0.65rem;
+    color: #CBD5E1;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.log-delete-btn {
+    margin-inline-start: auto;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: none;
+    color: #CBD5E1;
+    cursor: pointer;
+    font-size: 0.7rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.log-delete-btn:hover {
+    background: #FEF2F2;
+    color: #EF4444;
+}
+
+.logs-clear-btn {
+    margin-inline-start: auto;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid #E2E8F0;
+    background: #fff;
+    color: #EF4444;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.15s;
+}
+
+.logs-clear-btn:hover {
+    background: #FEF2F2;
+    border-color: #EF4444;
+}
+
+/* ── Log detail modal ── */
+.log-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(2px);
+}
+
+.log-modal {
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 420px;
+    padding: 1.25rem;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
+}
+
+.log-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.log-modal-close {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F8FAFC;
+    color: #64748B;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.log-modal-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.log-modal-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.log-modal-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+.log-modal-val {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0F172A;
+}
+
+.log-modal-diffs {
+    border-top: 1px solid #F1F5F9;
+    padding-top: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.log-modal-diffs-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+}
+
+.log-modal-delete {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1.5px solid #FECACA;
+    border-radius: 10px;
+    background: #FEF2F2;
+    color: #EF4444;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.15s;
+}
+
+.log-modal-delete:hover {
+    background: #FEE2E2;
+    border-color: #EF4444;
 }
 
 /* ── Edit diffs ── */

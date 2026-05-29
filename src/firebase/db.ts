@@ -70,6 +70,12 @@ export const subscribeRecurringCharges = (cb: (charges: RecurringCharge[]) => vo
 export const addLog = (log: Omit<LogEntry, 'id'>) =>
     push(ref(db, 'logs'), log)
 
+export const deleteLog = (id: string) =>
+    remove(ref(db, `logs/${id}`))
+
+export const clearAllLogs = () =>
+    remove(ref(db, 'logs'))
+
 export const subscribeLogs = (cb: (logs: LogEntry[]) => void) => {
     const r = ref(db, 'logs')
     onValue(r, (snap) => {

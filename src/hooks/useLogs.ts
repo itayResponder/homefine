@@ -1,6 +1,6 @@
 // src/hooks/useLogs.ts
 import { useEffect, useState } from 'react'
-import { subscribeLogs, addLog } from '../firebase/db'
+import { subscribeLogs, addLog, deleteLog, clearAllLogs } from '../firebase/db'
 import type { LogEntry } from '../types'
 
 export const useLogs = () => {
@@ -12,6 +12,8 @@ export const useLogs = () => {
     }, [])
 
     const add = (entry: Omit<LogEntry, 'id'>) => addLog(entry)
+    const remove = (id: string) => deleteLog(id)
+    const clear = () => clearAllLogs()
 
-    return { logs, add }
+    return { logs, add, remove, clear }
 }

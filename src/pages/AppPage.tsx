@@ -45,7 +45,7 @@ export default function AppPage() {
     const { members, add: addMember, remove: removeMember } = useMembers()
     const { transactions, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions()
     const { recurringCharges, add: addRecurring, remove: removeRecurring } = useRecurring()
-    const { logs, add: addLog } = useLogs()
+    const { logs, add: addLog, remove: removeLog, clear: clearLogs } = useLogs()
     const online = usePresence(user)
     const syncStatus = useSyncStatus()
     const { t } = useI18n()
@@ -296,7 +296,7 @@ export default function AppPage() {
                                 onColorChange={updateColor}
                             />
                         )}
-                        {modal === 'logs' && <LogsSection logs={logs} />}
+                        {modal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
                     </div>
                 </div>
             )}
