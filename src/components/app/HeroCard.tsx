@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
-import { fmt } from '../../utils/format'
+import { Money } from '../ui/Money'
 import type { Member, Transaction } from '../../types'
 
 interface Props {
@@ -105,20 +105,22 @@ export function HeroCard({ members, transactions, month, onMonthChange }: Props)
             </div>
 
             <div className="hbal-lbl">{t.monthlyBalance}</div>
-            <div className="hbal">{fmt(totalBalance)}</div>
+            <div className="hbal">
+                <Money amount={Math.abs(totalBalance)} sign={totalBalance < 0 ? '−' : ''} />
+            </div>
 
             {memberStats.length > 0 && (
                 <div className="hboxes">
                     {memberStats.map(({ member, expenses, income, balance }) => (
                         <div key={member.id} className="hbox">
                             <div className="hbox-name">{getMemberName(member)}</div>
-                            <div className="hbox-exp">{t.shortExp} {fmt(expenses)}</div>
-                            <div className="hbox-inc">{t.shortInc} {fmt(income)}</div>
+                            <div className="hbox-exp">{t.shortExp} <Money amount={expenses} /></div>
+                            <div className="hbox-inc">{t.shortInc} <Money amount={income} /></div>
                             <div
                                 className="hbox-bal"
                                 style={{ color: balance >= 0 ? '#86efac' : '#fca5a5' }}
                             >
-                                {fmt(balance)}
+                                <Money amount={Math.abs(balance)} sign={balance < 0 ? '−' : ''} />
                             </div>
                         </div>
                     ))}

@@ -2,6 +2,7 @@
 import { useMemo } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
+import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
 import type { Member, Transaction } from '../../types'
 
@@ -51,16 +52,16 @@ export function MemberView({ memberId, transactions, members, month, onEdit, onD
             <div className="pstats">
                 <div className="pstat">
                     <div className="pstat-lbl">{t.income}</div>
-                    <div className="pstat-val pos">₪{totalInc.toLocaleString()}</div>
+                    <div className="pstat-val pos"><Money amount={totalInc} /></div>
                 </div>
                 <div className="pstat">
                     <div className="pstat-lbl">{t.expenses}</div>
-                    <div className="pstat-val neg">₪{totalExp.toLocaleString()}</div>
+                    <div className="pstat-val neg"><Money amount={totalExp} /></div>
                 </div>
                 <div className="pstat">
                     <div className="pstat-lbl">{t.balance}</div>
                     <div className={`pstat-val ${balance >= 0 ? 'pos' : 'neg'}`}>
-                        ₪{Math.abs(balance).toLocaleString()}
+                        <Money amount={Math.abs(balance)} sign={balance < 0 ? '−' : ''} />
                     </div>
                 </div>
             </div>

@@ -1,7 +1,14 @@
 // src/utils/format.ts
 
-export function fmt(n: number): string {
-    return '₪' + Math.round(n).toLocaleString()
+/**
+ * Returns a formatted currency string.
+ * RTL (Hebrew): sign + number + ' ₪'   e.g. "−1,000 ₪"
+ * LTR (English): sign + '₪' + number   e.g. "−₪1,000"
+ * Always wrap in <span dir="ltr"> when used in JSX to prevent bidi reordering.
+ */
+export function formatCurrency(amount: number, _dir?: string, sign = ''): string {
+    const n = Math.round(Math.abs(amount)).toLocaleString()
+    return `${sign}${n} ₪`
 }
 
 export function fmtDate(d: string): string {

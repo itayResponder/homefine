@@ -7,6 +7,7 @@ import { computeStartYearMonth } from '../../utils/recurring'
 import { CATEGORY_ICONS } from '../../constants/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
+import { Money } from '../ui/Money'
 import type { Member, RecurringCharge, TransactionCategory, TransactionType } from '../../types'
 import './RecurringSection.css'
 
@@ -251,7 +252,7 @@ function RecurringItem({ r, members, onDelete }: ItemProps) {
                 </div>
             </div>
             <span className={`rec-item-amt ${isIncome ? 'pos' : 'neg'}`}>
-                {isIncome ? '+' : '−'}₪{r.amount.toLocaleString()}
+                <Money amount={r.amount} sign={isIncome ? '+' : '−'} />
             </span>
             <button
                 className="rec-item-delete"

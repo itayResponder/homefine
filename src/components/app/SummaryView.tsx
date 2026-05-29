@@ -2,6 +2,7 @@
 import { useMemo } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
+import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
 import type { Member, Transaction } from '../../types'
 
@@ -57,13 +58,13 @@ export function SummaryView({ transactions, members, month, onEdit, onDelete }: 
                             <div>
                                 <div className="summary-stat-lbl">{t.expenses}</div>
                                 <div className="summary-stat-val" style={{ color: 'var(--red)' }}>
-                                    ₪{expenses.toLocaleString()}
+                                    <Money amount={expenses} />
                                 </div>
                             </div>
                             <div>
                                 <div className="summary-stat-lbl">{t.income}</div>
                                 <div className="summary-stat-val" style={{ color: 'var(--green)' }}>
-                                    ₪{income.toLocaleString()}
+                                    <Money amount={income} />
                                 </div>
                             </div>
                             <div>
@@ -72,7 +73,7 @@ export function SummaryView({ transactions, members, month, onEdit, onDelete }: 
                                     className="summary-stat-val"
                                     style={{ color: balance >= 0 ? 'var(--green)' : 'var(--red)' }}
                                 >
-                                    ₪{Math.abs(balance).toLocaleString()}
+                                    <Money amount={Math.abs(balance)} sign={balance < 0 ? '−' : ''} />
                                 </div>
                             </div>
                         </div>

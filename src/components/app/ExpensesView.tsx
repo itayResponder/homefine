@@ -5,6 +5,7 @@ import { useMemberName } from '../../hooks/useMemberName'
 import { todayISO } from '../../utils/date'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
+import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
 import type { Member, Transaction, TransactionCategory } from '../../types'
 
@@ -95,7 +96,7 @@ export function ExpensesView({ transactions, members, month, currentUserId, onAd
 
             <div className="sec-hd">
                 <span className="sec-ttl">{t.expensesThisMonth}</span>
-                {total > 0 && <span className="badge neg">−₪{total.toLocaleString()}</span>}
+                {total > 0 && <span className="badge neg"><Money amount={total} sign="−" /></span>}
             </div>
             <div className="card">
                 {monthExpenses.length === 0 ? (

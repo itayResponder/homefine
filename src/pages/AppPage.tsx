@@ -28,6 +28,7 @@ import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
 import { useUserColor } from '../hooks/useUserColor'
 import { buildColorVars } from '../utils/color'
+import { formatCurrency } from '../utils/format'
 import type { LogDiff, RecurringCharge, Transaction } from '../types'
 import './AppPage.css'
 
@@ -50,7 +51,7 @@ export default function AppPage() {
     const { t } = useI18n()
     const { showToast } = useToast()
     const { showConfirm } = useConfirm()
-    const { color: primaryColor, updateColor } = useUserColor(user?.uid)
+    const { color: primaryColor, loading: colorLoading, updateColor } = useUserColor(user?.uid)
 
     // ── UI state ──────────────────────────────────────────────────────────────
     const [view, setView] = useState('summary')
@@ -83,7 +84,7 @@ export default function AppPage() {
     const handleDeleteTx = async (tx: Transaction) => {
         const confirmed = await showConfirm({
             title: t.confirmDeleteTxTitle,
-            sub: t.confirmDeleteTxSub(tx.description, `₪${tx.amount.toLocaleString()}`),
+            sub: t.confirmDeleteTxSub(tx.description, formatCurrency(tx.amount, t.dir)),
             danger: true,
         })
         if (!confirmed) return
@@ -177,6 +178,16 @@ export default function AppPage() {
     const handleLogout = async () => {
         await logout()
         navigate('/')
+    }
+
+    if (colorLoading) {
+        return (
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFF', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2563EB', letterSpacing: '-0.02em', opacity: 0.6 }}>
+                    Home<span style={{ color: '#0F172A' }}>Fine</span>
+                </span>
+            </div>
+        )
     }
 
     return (

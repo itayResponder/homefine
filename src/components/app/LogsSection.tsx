@@ -1,5 +1,6 @@
 // src/components/app/LogsSection.tsx
 import { useI18n } from '../../i18n/context'
+import { formatCurrency } from '../../utils/format'
 import type { LogEntry } from '../../types'
 import './LogsSection.css'
 
@@ -53,7 +54,6 @@ function LogItem({ log }: { log: LogEntry }) {
     const ts = new Date(log.ts)
     const timeStr = `${String(ts.getDate()).padStart(2, '0')}/${String(ts.getMonth() + 1).padStart(2, '0')}/${ts.getFullYear()} ${String(ts.getHours()).padStart(2, '0')}:${String(ts.getMinutes()).padStart(2, '0')}`
 
-    const amtStr = `₪${log.amount.toLocaleString()}`
     const sign = log.txType === 'income' ? '+' : '−'
 
     return (
@@ -62,7 +62,7 @@ function LogItem({ log }: { log: LogEntry }) {
                 <span className={`log-action ${actionClass}`}>{actionLabel}</span>
                 <span className="log-who">{log.who}</span>
                 <span className="log-desc">
-                    {log.description} · {sign}{amtStr}
+                    {log.description} · <span dir="ltr" style={{ unicodeBidi: 'embed' }}>{formatCurrency(log.amount, t.dir, sign)}</span>
                 </span>
                 <span className="log-time">{timeStr}</span>
             </div>

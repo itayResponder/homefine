@@ -3,6 +3,7 @@ import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { CATEGORY_ICONS } from '../../constants/categories'
 import { fmtDate } from '../../utils/format'
+import { Money } from '../ui/Money'
 import type { Member, Transaction } from '../../types'
 
 interface Props {
@@ -43,7 +44,7 @@ export function TxEntry({ tx, members, onEdit, onDelete }: Props) {
                 </div>
             </div>
             <span className={`eamt ${isExpense ? 'out' : 'in'}`}>
-                {isExpense ? '−' : '+'}₪{tx.amount.toLocaleString()}
+                <Money amount={tx.amount} sign={isExpense ? '−' : '+'} />
             </span>
             {isRecurring ? (
                 <div style={{ width: 24 }} />

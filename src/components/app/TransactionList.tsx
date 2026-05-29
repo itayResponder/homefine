@@ -1,6 +1,7 @@
 // src/components/app/TransactionList.tsx
 import { useI18n } from '../../i18n/context'
 import { CATEGORY_ICONS } from '../../constants/categories'
+import { Money } from '../ui/Money'
 import type { Transaction } from '../../types'
 import './TransactionList.css'
 
@@ -105,7 +106,7 @@ function TransactionItem({ tx, onDelete, onEdit }: ItemProps) {
 
             <div className="ap-tx-right">
                 <div className={`ap-tx-amt ${isExpense ? 'neg' : 'pos'}`}>
-                    {isExpense ? '−' : '+'}₪{tx.amount.toLocaleString()}
+                    <Money amount={tx.amount} sign={isExpense ? '−' : '+'} />
                 </div>
 
                 {isRecurring ? (
