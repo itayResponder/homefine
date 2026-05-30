@@ -10,9 +10,10 @@ interface Props {
     onLogout: () => void
     onOpenSettings: () => void
     onOpenLogs: () => void
+    onDashboard: () => void
 }
 
-export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs }: Props) {
+export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs, onDashboard }: Props) {
     const { t } = useI18n()
     const [menuOpen, setMenuOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
@@ -57,6 +58,7 @@ export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs }: Props)
                     </button>
                     {menuOpen && (
                         <div className="ap-settings-dropdown">
+                            <button onClick={() => pick(onDashboard)}>{t.myHouseholds}</button>
                             <button onClick={() => pick(onOpenSettings)}>{t.tabSettings}</button>
                             <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
                             <button className="ap-settings-dropdown-logout" onClick={() => pick(onLogout)}>{t.signOut}</button>

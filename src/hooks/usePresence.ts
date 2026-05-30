@@ -5,22 +5,21 @@ import type { AppUser } from '../types'
 
 export type PresenceMap = Record<string, { name: string; ts: number }>
 
-export const usePresence = (user: AppUser | null): PresenceMap => {
+export const usePresence = (householdId: string, user: AppUser | null): PresenceMap => {
     const [online, setOnline] = useState<PresenceMap>({})
 
-    // Register / deregister this user's presence
     useEffect(() => {
-        if (!user) return
+        if (!user || !householdId) return
         const { uid, displayName } = user
-        setPresence(uid, { name: displayName, ts: Date.now() })
-        setupDisconnectCleanup(uid)
-        return () => { setPresence(uid, null) }
-    }, [user])
+        setPresence(householdId, uid, { name: displayName, ts: Date.now() })
+        setupDisconnectCleanup(householdId, uid)
+        return () => { setPresence(householdId, uid, null) }
+    }, [user, householdId])
 
-    // Subscribe to all online users
     useEffect(() => {
-        return subscribePresence(setOnline)
-    }, [])
+        if (!householdId) return
+        return subscribePresence(householdId, setOnline)
+    }, [householdId])
 
     return online
 }

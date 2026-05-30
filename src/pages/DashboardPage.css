@@ -1,0 +1,269 @@
+/* src/pages/DashboardPage.css */
+
+.db-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8FAFF;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.db-root {
+    min-height: 100vh;
+    background: var(--bg, #F4F3FF);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Header ── */
+.db-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border-bottom: 1px solid #E8E8F0;
+    gap: 0.75rem;
+}
+
+.db-logo {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #2563EB;
+    letter-spacing: -0.02em;
+}
+
+.db-logo span {
+    color: #0F172A;
+}
+
+.db-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.db-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.db-logout {
+    background: none;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748B;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.db-logout:hover {
+    background: #F1F5F9;
+}
+
+/* ── Main ── */
+.db-main {
+    flex: 1;
+    padding: 1.5rem 1.25rem 3rem;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.db-greeting {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 0.25rem;
+}
+
+.db-subtitle {
+    font-size: 0.9rem;
+    color: #64748B;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Grid ── */
+.db-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.875rem;
+}
+
+.db-card {
+    background: #fff;
+    border: 1.5px solid #E8E8F0;
+    border-radius: 16px;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    text-align: center;
+    font-family: inherit;
+    min-height: 110px;
+    justify-content: center;
+}
+
+.db-card:hover {
+    border-color: var(--ac, #6C63FF);
+    box-shadow: 0 4px 16px rgba(108, 99, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+.db-card--add {
+    border-style: dashed;
+    color: #64748B;
+    background: #FAFAFA;
+}
+
+.db-card-wrap {
+    position: relative;
+}
+
+.db-share-btn {
+    position: absolute;
+    top: 0.5rem;
+    inset-inline-end: 0.5rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid #E8E8F0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748B;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: background 0.15s, color 0.15s;
+    z-index: 1;
+}
+
+.db-share-btn:hover {
+    background: #F1F5F9;
+    color: #0F172A;
+}
+
+.db-card-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+.db-card-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0F172A;
+    word-break: break-word;
+}
+
+.db-card--add .db-card-name,
+.db-card--join .db-card-name {
+    color: #64748B;
+}
+
+.db-card-owner {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ac, #6C63FF);
+    background: var(--ibg, #EDE9FF);
+    padding: 0.15rem 0.5rem;
+    border-radius: 99px;
+}
+
+/* ── Forms ── */
+.db-form-card {
+    margin-top: 1.25rem;
+    background: #fff;
+    border: 1.5px solid #E8E8F0;
+    border-radius: 16px;
+    padding: 1.25rem;
+}
+
+.db-form-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.875rem;
+}
+
+.db-input {
+    width: 100%;
+    padding: 0.6rem 0.875rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #0F172A;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+}
+
+.db-input:focus {
+    border-color: var(--ac, #6C63FF);
+}
+
+.db-input--code {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.db-error {
+    font-size: 0.8rem;
+    color: #EF4444;
+    margin-top: 0.4rem;
+}
+
+.db-form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.875rem;
+}
+
+.db-btn-primary {
+    background: var(--ac, #6C63FF);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.55rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s;
+}
+
+.db-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.db-btn-ghost {
+    background: none;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748B;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.db-btn-ghost:hover {
+    background: #F1F5F9;
+}

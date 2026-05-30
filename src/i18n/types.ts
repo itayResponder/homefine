@@ -39,6 +39,7 @@ export interface T {
 
     // ── Core app UI ──────────────────────────────────────
     signOut: string
+    myHouseholds: string
     shared: string          // with emoji — for tab/select
     sharedLabel: string     // plain — for titles & who-tags
     addMember: string

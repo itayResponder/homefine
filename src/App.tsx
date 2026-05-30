@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import LandingPage from './pages/LandingPage.tsx';
 import AppPage from './pages/AppPage.tsx';
+import DashboardPage from './pages/DashboardPage.tsx';
+import JoinPage from './pages/JoinPage.tsx';
 
 function App() {
   const { user, loading } = useAuth();
@@ -21,10 +23,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/app"
-          element={user ? <AppPage /> : <Navigate to="/" replace />}
-        />
+        <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/" replace />} />
+        <Route path="/join/:householdId" element={<JoinPage />} />
+        <Route path="/app/:householdId" element={user ? <AppPage /> : <Navigate to="/" replace />} />
+        <Route path="/app" element={<Navigate to={user ? '/dashboard' : '/'} replace />} />
       </Routes>
     </BrowserRouter>
   );

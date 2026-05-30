@@ -6,6 +6,7 @@ import type { RecurringCharge, Transaction } from '../types'
 const inProgress = new Set<string>()
 
 export async function applyRecurring(
+    householdId: string,
     recurringCharges: RecurringCharge[],
     transactions: Transaction[],
     year: number,
@@ -37,7 +38,7 @@ export async function applyRecurring(
 
         inProgress.add(key)
         const dateStr = `${monthKey}-${String(actualDay).padStart(2, '0')}`
-        await addTransaction({
+        await addTransaction(householdId, {
             type: r.type,
             amount: r.amount,
             description: r.description,

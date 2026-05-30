@@ -1,6 +1,6 @@
 // src/pages/AppPage.tsx
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useMembers } from '../hooks/useMembers'
 import { useTransactions } from '../hooks/useTransactions'
@@ -41,12 +41,13 @@ function computeDiffs(before: Transaction, after: Partial<Transaction>): LogDiff
 
 export default function AppPage() {
     const navigate = useNavigate()
+    const { householdId = '' } = useParams<{ householdId: string }>()
     const { user, logout } = useAuth()
-    const { members, ready: membersReady, add: addMember, remove: removeMember } = useMembers()
-    const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions()
-    const { recurringCharges, ready: recurringReady, add: addRecurring, remove: removeRecurring } = useRecurring()
-    const { logs, add: addLog, remove: removeLog, clear: clearLogs } = useLogs()
-    const online = usePresence(user)
+    const { members, ready: membersReady, add: addMember, remove: removeMember } = useMembers(householdId)
+    const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions(householdId)
+    const { recurringCharges, ready: recurringReady, add: addRecurring, remove: removeRecurring } = useRecurring(householdId)
+    const { logs, add: addLog, remove: removeLog, clear: clearLogs } = useLogs(householdId)
+    const online = usePresence(householdId, user)
     const syncStatus = useSyncStatus()
     const { t } = useI18n()
     const { showToast } = useToast()
@@ -68,7 +69,7 @@ export default function AppPage() {
         if (applyTimerRef.current) clearTimeout(applyTimerRef.current)
         applyTimerRef.current = setTimeout(() => {
             const [year, m] = month.split('-').map(Number)
-            applyRecurring(recurringCharges, txRef.current, year, m - 1)
+            applyRecurring(householdId, recurringCharges, txRef.current, year, m - 1)
         }, 600)
         return () => {
             if (applyTimerRef.current) clearTimeout(applyTimerRef.current)
@@ -206,6 +207,7 @@ export default function AppPage() {
                 onLogout={handleLogout}
                 onOpenSettings={() => setModal('settings')}
                 onOpenLogs={() => setModal('logs')}
+                onDashboard={() => navigate('/dashboard')}
             />
             <SyncBar status={syncStatus} />
             <OnlineBar online={online} />

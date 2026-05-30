@@ -65,3 +65,14 @@ export interface AppUser {
     displayName: string
     photoURL?: string
 }
+
+export interface HouseholdMeta {
+    name: string
+    ownerId: string
+    createdAt: number
+}
+
+export interface Household {
+    id: string
+    meta: HouseholdMeta
+}

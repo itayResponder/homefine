@@ -25,6 +25,7 @@ export const he: T = {
     navLogs: 'לוגים',
 
     signOut: 'התנתק',
+    myHouseholds: 'הבתים שלי',
     shared: '🏠 משותף',
     sharedLabel: 'משותף',
     addMember: '+ חבר',

@@ -25,6 +25,7 @@ export const en: T = {
     navLogs: 'Logs',
 
     signOut: 'Sign out',
+    myHouseholds: 'My households',
     shared: '🏠 Shared',
     sharedLabel: 'Shared',
     addMember: '+ Member',
