@@ -18,10 +18,9 @@ export default function JoinPage() {
 
     useEffect(() => {
         if (!householdId) return
-        getHouseholdMeta(householdId).then((m) => {
-            setMeta(m)
-            setMetaLoading(false)
-        })
+        getHouseholdMeta(householdId)
+            .then((m) => { setMeta(m); setMetaLoading(false) })
+            .catch(() => setMetaLoading(false))
     }, [householdId])
 
     // Already a member → redirect straight in
