@@ -26,7 +26,7 @@ import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
-import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant } from '../firebase/db'
+import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant, subscribeUserMembership } from '../firebase/db'
 import type { Participant } from '../types'
 import { useUserColor } from '../hooks/useUserColor'
 import { useHouseholdMeta } from '../hooks/useHouseholdMeta'
@@ -62,6 +62,21 @@ export default function AppPage() {
     // Join requests — only subscribed when user is owner
     const ownedEntry = isOwner && meta ? [{ id: householdId, name: meta.name }] : []
     const joinRequests = useJoinRequests(ownedEntry)
+
+    // Kick user out if they lose household membership (removed by owner or direct URL access without permission)
+    const membershipInitRef = useRef(false)
+    useEffect(() => {
+        if (!user) return
+        membershipInitRef.current = false
+        return subscribeUserMembership(householdId, user.uid, (isMember) => {
+            if (!membershipInitRef.current) {
+                membershipInitRef.current = true
+                if (!isMember) navigate('/dashboard', { replace: true })
+            } else if (!isMember) {
+                navigate('/dashboard', { replace: true })
+            }
+        })
+    }, [user?.uid, householdId])
 
     // Participants — only subscribed and seeded when user is owner
     const [participants, setParticipants] = useState<Participant[]>([])

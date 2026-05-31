@@ -204,6 +204,16 @@ export const subscribeUserColor = (uid: string, cb: (color: string | null) => vo
 // ─── Participants ─────────────────────────────────────────────────────────────
 type ParticipantData = { name: string; email: string; photoURL?: string; joinedAt: number }
 
+export const subscribeUserMembership = (
+    householdId: string,
+    uid: string,
+    cb: (isMember: boolean) => void,
+) => {
+    const r = ref(db, `userHouseholds/${uid}/${householdId}`)
+    onValue(r, (snap) => cb(snap.val() === true))
+    return () => off(r)
+}
+
 export const seedParticipant = async (householdId: string, uid: string, data: ParticipantData): Promise<void> => {
     const r = ref(db, `households/${householdId}/participants/${uid}`)
     const snap = await get(r)
