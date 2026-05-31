@@ -11,9 +11,10 @@ interface Props {
     month: string   // YYYY-MM
     onMonthChange: (month: string) => void
     householdName?: string
+    currentUserId?: string
 }
 
-export function HeroCard({ members, transactions, month, onMonthChange, householdName }: Props) {
+export function HeroCard({ members, transactions, month, onMonthChange, householdName, currentUserId }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
 
@@ -21,7 +22,14 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
     const [open, setOpen] = useState(false)
     const [navYear, setNavYear] = useState(year)
 
-    const monthlyTxs = transactions.filter((tx) => tx.date.startsWith(month))
+    const isVisible = (tx: Transaction) => {
+        if (tx.type !== 'income') return true
+        const member = members.find(m => m.id === tx.memberId)
+        if (!member?.privateIncome) return true
+        return member.userId === currentUserId
+    }
+
+    const monthlyTxs = transactions.filter((tx) => tx.date.startsWith(month) && isVisible(tx))
 
     const totalIncome = monthlyTxs
         .filter((tx) => tx.type === 'income')

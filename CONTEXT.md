@@ -89,6 +89,7 @@ rent, electricity, water, gas, internet, mobile, property_tax, food, entertainme
 - ✅ Delete member → cascades to transactions + recurring
 - ✅ Participant management — owner sees "גישה לבית" in SettingsView with photo/name/email/join date; can revoke access (removes userHouseholds + participants entry, keeps data)
 - ✅ HeroCard shows actual household name (meta.name) instead of hardcoded string
+- ✅ privateIncome filtering applied consistently — HeroCard + MemberView now receive `currentUserId` and filter private income of other members (same logic as SummaryView)
 - ✅ Firebase Security Rules — whitelist removed from code; access controlled server-side via `database.rules.json` (deployed to homefine-a7613-default-rtdb)
 
 ## Firebase Security Rules (database.rules.json)

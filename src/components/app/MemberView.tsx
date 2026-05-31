@@ -11,18 +11,25 @@ interface Props {
     transactions: Transaction[]
     members: Member[]
     month: string
+    currentUserId?: string
     onEdit: (tx: Transaction) => void
     onDelete: (tx: Transaction) => void
 }
 
-export function MemberView({ memberId, transactions, members, month, onEdit, onDelete }: Props) {
+export function MemberView({ memberId, transactions, members, month, currentUserId, onEdit, onDelete }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const member = members.find((m) => m.id === memberId)
 
+    const isIncomeVisible = !member?.privateIncome || member.userId === currentUserId
+
     const memberTxs = useMemo(
-        () => transactions.filter((tx) => tx.memberId === memberId && tx.date.startsWith(month)),
-        [transactions, memberId, month],
+        () => transactions.filter((tx) =>
+            tx.memberId === memberId &&
+            tx.date.startsWith(month) &&
+            (tx.type !== 'income' || isIncomeVisible)
+        ),
+        [transactions, memberId, month, isIncomeVisible],
     )
 
     const expenses = useMemo(

@@ -265,6 +265,7 @@ export default function AppPage() {
                     month={month}
                     onMonthChange={setMonth}
                     householdName={meta?.name}
+                    currentUserId={user?.uid}
                 />
 
                 <AppNav
@@ -316,6 +317,7 @@ export default function AppPage() {
                         transactions={transactions}
                         members={members}
                         month={month}
+                        currentUserId={user?.uid}
                         onEdit={setEditingTx}
                         onDelete={handleDeleteTx}
                     />

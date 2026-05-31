@@ -8,7 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev        # start Vite dev server
 npm run build      # tsc type-check + Vite production build
 npm run lint       # ESLint
-firebase deploy --only hosting   # deploy to Firebase Hosting (after build)
+firebase deploy --only hosting          # deploy frontend (after build)
+firebase deploy --only database         # deploy Security Rules only
+firebase deploy --only hosting,database # deploy both
 npx tsc --noEmit   # TypeScript type-check only
 ```
 
@@ -30,26 +32,35 @@ All data is scoped to a `householdId` from `useParams`. Every hook (`useMembers`
 Firebase path structure:
 ```
 households/{householdId}/
-  meta/             ← HouseholdMeta (name, ownerId, settings)
+  meta/             ← HouseholdMeta (name, ownerId, settings) — publicly readable, owner-write
   members/          ← Member[]
   transactions/     ← Transaction[]
   recurringCharges/ ← RecurringCharge[]
   logs/             ← LogEntry[]
   presence/         ← online users
-  joinRequests/     ← {uid: {name, email, photoURL, ts}}
+  joinRequests/     ← {uid: {name, email, photoURL, ts}} — owner-read, self-write
+  participants/     ← {uid: {name, email, photoURL, joinedAt}} — owner only
 userHouseholds/{uid}/{householdId} ← true
 userPrefs/{uid}/primaryColor ← hex string
 ```
 
-### Authentication & Whitelist
-`useAuth.ts` uses `onAuthStateChanged` with a hardcoded email whitelist (3 emails). Blocks unauthorized accounts. `document.documentElement.dir` and `lang` are set reactively by `I18nProvider`.
+### Authentication & Security
+`useAuth.ts` uses `onAuthStateChanged` — **no whitelist**. Any Google account can log in. Access control is enforced server-side via Firebase Security Rules (`database.rules.json`):
+- `households/{id}/meta` — publicly readable (needed for JoinPage before login)
+- All other household data — readable/writable only by approved members (`userHouseholds/{uid}/{id} = true`)
+- `joinRequests` — owner-read; any authenticated user can write their own request
+- `participants` — owner only
+- `userHouseholds/{uid}/{id}` — owner can write (approve/remove); user can delete their own (leave)
+
+`document.documentElement.dir` and `lang` are set reactively by `I18nProvider`.
 
 ### Household Permissions
 - `HouseholdMeta.ownerId` → the owner/admin
 - `useHouseholdMeta(householdId, uid)` → returns `{ meta, isOwner, expensesOnly, updateSettings, renameMeta, toggleMemberIncome }`
-- Owner sees extra controls in SettingsView (rename, expenses-only toggle)
-- `Member.privateIncome?: boolean` → client-side filtered, not Firebase-enforced
+- Owner sees extra controls in SettingsView: rename, expenses-only toggle, **גישה לבית** (participant list with revoke access)
+- `Member.privateIncome?: boolean` → filtered client-side in SummaryView, HeroCard, MemberView — all receive `currentUserId` and exclude private income of other members
 - `Member.userId?: string` → links member card to a user account
+- Participants (`households/{id}/participants/{uid}`) — written on join approval and owner seed; removed via `removeParticipant` (also removes `userHouseholds` entry)
 
 ### Join Request Flow
 - Sharing: copy `/join/:householdId` URL
