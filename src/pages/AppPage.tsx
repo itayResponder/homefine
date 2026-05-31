@@ -26,7 +26,7 @@ import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
-import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant, subscribeUserMembership } from '../firebase/db'
+import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant, subscribeUserMembership, leaveHousehold } from '../firebase/db'
 import type { Participant } from '../types'
 import { useUserColor } from '../hooks/useUserColor'
 import { useHouseholdMeta } from '../hooks/useHouseholdMeta'
@@ -241,6 +241,18 @@ export default function AppPage() {
         await removeParticipant(householdId, uid)
     }
 
+    const handleLeaveHousehold = async () => {
+        if (!user) return
+        const confirmed = await showConfirm({
+            title: t.dir === 'rtl' ? 'עזיבת הבית' : 'Leave household',
+            sub: t.dir === 'rtl' ? 'בטוח שאתה רוצה לעזוב? תאבד את הגישה לבית.' : 'Are you sure you want to leave? You will lose access.',
+            danger: true,
+        })
+        if (!confirmed) return
+        await leaveHousehold(householdId, user.uid)
+        navigate('/dashboard')
+    }
+
     const handleLogout = async () => {
         await logout()
         navigate('/')
@@ -269,6 +281,7 @@ export default function AppPage() {
                 joinRequests={isOwner ? joinRequests : []}
                 onApproveJoin={isOwner ? handleApproveJoin : undefined}
                 onDenyJoin={isOwner ? denyJoinRequest : undefined}
+                onLeave={!isOwner ? handleLeaveHousehold : undefined}
             />
             <SyncBar status={syncStatus} />
             <OnlineBar online={online} />

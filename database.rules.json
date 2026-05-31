@@ -16,6 +16,7 @@
     },
     "households": {
       "$householdId": {
+        ".write": "auth != null && data.child('meta/ownerId').val() === auth.uid",
         "meta": {
           ".read": "true",
           ".write": "auth != null && (!data.exists() || data.child('ownerId').val() === auth.uid)"

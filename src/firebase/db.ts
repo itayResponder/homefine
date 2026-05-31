@@ -29,6 +29,14 @@ export const joinHousehold = async (householdId: string, uid: string): Promise<v
 
 export const leaveHousehold = async (householdId: string, uid: string): Promise<void> => {
     await remove(ref(db, `userHouseholds/${uid}/${householdId}`))
+    await remove(ref(db, `households/${householdId}/participants/${uid}`)).catch(() => {})
+}
+
+export const deleteHousehold = async (householdId: string): Promise<void> => {
+    const snap = await get(ref(db, `households/${householdId}/participants`))
+    const uids: string[] = snap.exists() ? Object.keys(snap.val()) : []
+    await Promise.all(uids.map(uid => remove(ref(db, `userHouseholds/${uid}/${householdId}`))))
+    await remove(ref(db, `households/${householdId}`))
 }
 
 export const getUserHouseholdIds = async (uid: string): Promise<string[]> => {

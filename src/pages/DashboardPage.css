@@ -213,6 +213,31 @@
     border-color: var(--ib, #D4D0FF);
 }
 
+.db-card-delete {
+    position: absolute;
+    top: 0.625rem;
+    inset-inline-start: 0.625rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid #E8E8F0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #94A3B8;
+    font-size: 0.7rem;
+    font-weight: 700;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    z-index: 1;
+}
+.db-card-delete:hover {
+    background: #FFF1F2;
+    color: #E11D48;
+    border-color: #FECDD3;
+}
+
 .db-card-icon { font-size: 2.25rem; line-height: 1; }
 
 .db-card-name {

@@ -6,7 +6,8 @@ import { useHouseholds } from '../hooks/useHouseholds'
 import { useJoinRequests } from '../hooks/useJoinRequests'
 import { useUserColor } from '../hooks/useUserColor'
 import { buildColorVars } from '../utils/color'
-import { approveJoinRequest, denyJoinRequest } from '../firebase/db'
+import { approveJoinRequest, denyJoinRequest, deleteHousehold } from '../firebase/db'
+import { useConfirm } from '../contexts/ui'
 import { BellSVG, NotificationPanel } from '../components/ui/NotificationPanel'
 import '../components/ui/NotificationPanel.css'
 import { LanguageToggle } from '../components/LanguageToggle'
@@ -20,6 +21,7 @@ export default function DashboardPage() {
     const isRtl = t.dir === 'rtl'
     const { color: primaryColor } = useUserColor(user?.uid)
     const { households, ready, create } = useHouseholds(user?.uid)
+    const { showConfirm } = useConfirm()
 
     const [showCreate, setShowCreate] = useState(false)
     const [newName, setNewName] = useState('')
@@ -69,6 +71,17 @@ export default function DashboardPage() {
 
     const handleDeny = async (householdId: string, uid: string) => {
         await denyJoinRequest(householdId, uid)
+    }
+
+    const handleDeleteHousehold = async (e: React.MouseEvent, householdId: string, name: string) => {
+        e.stopPropagation()
+        const confirmed = await showConfirm({
+            title: isRtl ? `מחיקת "${name}"` : `Delete "${name}"`,
+            sub: isRtl ? 'כל הנתונים יימחקו לצמיתות וכל החברים יאבדו גישה.' : 'All data will be deleted and all members will lose access.',
+            danger: true,
+        })
+        if (!confirmed) return
+        await deleteHousehold(householdId)
     }
 
     if (!ready) {
@@ -166,6 +179,15 @@ export default function DashboardPage() {
                                     </svg>
                                 )}
                             </button>
+                            {h.meta.ownerId === user?.uid && (
+                                <button
+                                    className="db-card-delete"
+                                    title={isRtl ? 'מחק בית' : 'Delete household'}
+                                    onClick={(e) => handleDeleteHousehold(e, h.id, h.meta.name)}
+                                >
+                                    ✕
+                                </button>
+                            )}
                             <div className="db-card-icon">🏠</div>
                             <div className="db-card-name">{h.meta.name}</div>
                             {h.meta.ownerId === user?.uid && (

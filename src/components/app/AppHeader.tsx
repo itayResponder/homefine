@@ -16,11 +16,12 @@ interface Props {
     joinRequests?: JoinRequest[]
     onApproveJoin?: (householdId: string, uid: string) => void
     onDenyJoin?: (householdId: string, uid: string) => void
+    onLeave?: () => void
 }
 
 export function AppHeader({
     user, onLogout, onOpenSettings, onOpenLogs, onDashboard,
-    joinRequests = [], onApproveJoin, onDenyJoin,
+    joinRequests = [], onApproveJoin, onDenyJoin, onLeave,
 }: Props) {
     const { t } = useI18n()
     const [menuOpen, setMenuOpen] = useState(false)
@@ -93,6 +94,11 @@ export function AppHeader({
                             <button onClick={() => pick(onDashboard)}>{t.myHouseholds}</button>
                             <button onClick={() => pick(onOpenSettings)}>{t.tabSettings}</button>
                             <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
+                            {onLeave && (
+                                <button className="ap-settings-dropdown-logout" onClick={() => pick(onLeave)}>
+                                    {t.dir === 'rtl' ? 'עזוב בית' : 'Leave household'}
+                                </button>
+                            )}
                             <button className="ap-settings-dropdown-logout" onClick={() => pick(onLogout)}>{t.signOut}</button>
                         </div>
                     )}
