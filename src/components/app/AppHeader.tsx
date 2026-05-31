@@ -2,7 +2,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { LanguageToggle } from '../LanguageToggle'
-import type { AppUser } from '../../types'
+import { BellSVG, NotificationPanel } from '../ui/NotificationPanel'
+import '../ui/NotificationPanel.css'
+import type { AppUser, JoinRequest } from '../../types'
 import './AppHeader.css'
 
 interface Props {
@@ -11,33 +13,36 @@ interface Props {
     onOpenSettings: () => void
     onOpenLogs: () => void
     onDashboard: () => void
+    joinRequests?: JoinRequest[]
+    onApproveJoin?: (householdId: string, uid: string) => void
+    onDenyJoin?: (householdId: string, uid: string) => void
 }
 
-export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs, onDashboard }: Props) {
+export function AppHeader({
+    user, onLogout, onOpenSettings, onOpenLogs, onDashboard,
+    joinRequests = [], onApproveJoin, onDenyJoin,
+}: Props) {
     const { t } = useI18n()
     const [menuOpen, setMenuOpen] = useState(false)
+    const [notifOpen, setNotifOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
+    const notifRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (!menuOpen) return
         const close = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node))
-                setMenuOpen(false)
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false)
+            if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false)
         }
         document.addEventListener('mousedown', close)
         return () => document.removeEventListener('mousedown', close)
-    }, [menuOpen])
+    }, [])
 
-    const pick = (action: () => void) => {
-        setMenuOpen(false)
-        action()
-    }
+    const pick = (action: () => void) => { setMenuOpen(false); action() }
+    const isOwner = onApproveJoin !== undefined
 
     return (
         <header className="ap-header">
-            <div className="ap-logo">
-                Home<span>Fine</span>
-            </div>
+            <div className="ap-logo">Home<span>Fine</span></div>
 
             <div className="ap-user">
                 <LanguageToggle />
@@ -45,10 +50,37 @@ export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs, onDashbo
                     <img src={user.photoURL} alt={user.displayName} className="ap-avatar" />
                 )}
 
+                {/* Notification bell — only shown for owners */}
+                {isOwner && (
+                    <div className="np-wrap" ref={notifRef}>
+                        <button
+                            className="ap-settings-btn"
+                            onClick={() => { setNotifOpen((v) => !v); setMenuOpen(false) }}
+                            aria-label="Notifications"
+                        >
+                            <BellSVG />
+                            {joinRequests.length > 0 && (
+                                <span className="ap-notif-badge">{joinRequests.length}</span>
+                            )}
+                        </button>
+                        {notifOpen && (
+                            <div className="np-dropdown">
+                                <NotificationPanel
+                                    requests={joinRequests}
+                                    onApprove={onApproveJoin!}
+                                    onDeny={onDenyJoin!}
+                                    isRtl={t.dir === 'rtl'}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Settings dropdown */}
                 <div className="ap-settings-wrap" ref={menuRef}>
                     <button
                         className="ap-settings-btn"
-                        onClick={() => setMenuOpen((v) => !v)}
+                        onClick={() => { setMenuOpen((v) => !v); setNotifOpen(false) }}
                         aria-label="Settings menu"
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -66,9 +98,7 @@ export function AppHeader({ user, onLogout, onOpenSettings, onOpenLogs, onDashbo
                     )}
                 </div>
 
-                <button onClick={onLogout} className="ap-logout-btn">
-                    {t.signOut}
-                </button>
+                <button onClick={onLogout} className="ap-logout-btn">{t.signOut}</button>
             </div>
         </header>
     )

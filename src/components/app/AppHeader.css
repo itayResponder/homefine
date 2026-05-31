@@ -157,6 +157,26 @@
     color: #EF4444 !important;
 }
 
+/* Bell badge — shared wrapper (.np-wrap, .np-dropdown) is in NotificationPanel.css */
+.ap-notif-badge {
+    position: absolute;
+    top: -5px;
+    inset-inline-end: -5px;
+    background: #EF4444;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    padding: 0 2px;
+    pointer-events: none;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
     .ap-header {

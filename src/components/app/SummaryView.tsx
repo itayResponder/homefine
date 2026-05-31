@@ -10,17 +10,26 @@ interface Props {
     transactions: Transaction[]
     members: Member[]
     month: string
+    currentUserId?: string
     onEdit: (tx: Transaction) => void
     onDelete: (tx: Transaction) => void
 }
 
-export function SummaryView({ transactions, members, month, onEdit, onDelete }: Props) {
+export function SummaryView({ transactions, members, month, currentUserId, onEdit, onDelete }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
 
+    // Filter out private income that belongs to other users
+    const isVisible = (tx: Transaction) => {
+        if (tx.type !== 'income') return true
+        const member = members.find(m => m.id === tx.memberId)
+        if (!member?.privateIncome) return true
+        return member.userId === currentUserId
+    }
+
     const monthTxs = useMemo(
-        () => transactions.filter((tx) => tx.date.startsWith(month)),
-        [transactions, month],
+        () => transactions.filter((tx) => tx.date.startsWith(month) && isVisible(tx)),
+        [transactions, month, members, currentUserId],
     )
 
     const memberStats = useMemo(

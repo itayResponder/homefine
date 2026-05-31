@@ -1,70 +1,98 @@
 # HomeFine — Project Context
 
 ## What is this?
-A household finance manager SPA built with React + TypeScript + Firebase.
-Part of a larger portfolio (itay-portfolio) with Option B to add more projects later.
+A multi-household finance manager SPA. Users create "households", invite others via link, and track shared expenses/income. Built with React + TypeScript + Firebase Realtime Database.
 
 ## Tech Stack
-- React 19 + TypeScript 6 (Vite 8)
-- React Router v7 (SPA)
-- Firebase: Auth (Google) + Realtime Database + Hosting
-- CSS (plain, per-component, no framework)
-- Font: Plus Jakarta Sans (loaded via index.html)
-
-## Project Structure
-```
-src/
-  constants/
-    categories.ts         ← CATEGORY_ICONS + CATEGORY_LABELS (shared across app)
-  utils/
-    date.ts               ← todayISO, currentMonth, formatMonth, shiftMonth
-  types/
-    index.ts              ← Member, Transaction, RecurringCharge, AppUser
-  firebase/
-    config.ts             ← Firebase init via .env
-    db.ts                 ← CRUD + real-time subscriptions
-  hooks/
-    useAuth.ts            ← Google login + whitelist
-    useMembers.ts         ← members CRUD + color assignment
-    useTransactions.ts    ← transactions CRUD
-  components/
-    app/
-      AppHeader.tsx + .css         ← logo, month nav, user avatar/logout
-      MemberTabs.tsx + .css        ← tabs + inline add-member flow
-      SummaryCards.tsx + .css      ← income / expenses / balance cards
-      TransactionList.tsx + .css   ← list + empty state + TransactionItem
-      AddTransactionModal.tsx + .css ← modal form for adding a transaction
-  pages/
-    LandingPage.tsx + .css  ← full landing (hero, stats, features, CTA)
-    AppPage.tsx             ← thin orchestrator (~85 lines, useMemo)
-    AppPage.css             ← ap-root + ap-main only
-  index.css               ← minimal global reset (box-sizing, body margin)
-  App.tsx                 ← BrowserRouter + auth-gated routes
-  main.tsx                ← entry point
-```
+- React 19 + TypeScript + Vite 8
+- React Router v7 (SPA, no basename)
+- Firebase: Auth (Google OAuth) + Realtime Database + Hosting
+- CSS: plain per-component files, no framework
+- Font: Plus Jakarta Sans
 
 ## Firebase Project
-- Project ID: homefine-a7613
-- Hosting URL: homefine-a7613.web.app
-- Realtime DB: europe-west1
+- Project ID: homefine-a7613 (check .env for current)
+- Hosting: homefine-a7613.web.app
+- Realtime DB: europe-west1 region
 
-## Whitelist (useAuth.ts)
-- itay.responder@gmail.com
+## Current Whitelist (useAuth.ts — hardcoded)
+- itay.responder@gmail.com (owner/admin)
 - aviv.rom01@gmail.com
 - sapir.rahamim21@gmail.com
 
-## What's done
-- LandingPage: full design (light blue, Plus Jakarta Sans)
-  Hero with mockup preview, Stats, Features grid, CTA section
-- AppPage: full app — member tabs, summary cards, transaction list,
-  add-transaction modal, month picker, empty state
-- All hooks and firebase files
-- Firebase connected and running locally
-- Component decomposition: AppPage split into 5 focused components
-- Shared utils (date) and constants (categories) extracted
-- Vite boilerplate CSS cleared; index.css is now a minimal reset
+## Pages
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/` | LandingPage | Marketing page |
+| `/dashboard` | DashboardPage | Household list, create/join |
+| `/join/:householdId` | JoinPage | Sends join request (owner must approve) |
+| `/app/:householdId` | AppPage | Main app, all views |
 
-## What's next
-- Google Login: test that it works end-to-end
-- Deploy to Firebase Hosting
-- itay-portfolio: separate repo, GitHub Pages
+## AppPage Views (pills nav)
+- **סיכום** — per-member summary cards + recent transactions
+- **הוצאות** — inline add form + all expenses for month
+- **הכנסות** — inline add form + all income for month (hidden if expensesOnly)
+- **[member name]** — per-member stats + expenses + income (X button to delete)
+- **חיובים קבועים** — recurring charges management
+- **לוגים** — change history (via settings gear → dropdown)
+- **הגדרות** — member management, income privacy, owner controls, color theme, export
+
+## Key Hooks
+| Hook | Args | Purpose |
+|------|------|---------|
+| `useAuth` | — | Google login + whitelist |
+| `useHouseholds` | uid | User's household list |
+| `useMembers` | householdId | Members CRUD |
+| `useTransactions` | householdId | Transactions CRUD |
+| `useRecurring` | householdId | Recurring charges CRUD |
+| `useLogs` | householdId | Audit log |
+| `usePresence` | householdId, user | Online users |
+| `useHouseholdMeta` | householdId, uid | Meta + isOwner + settings |
+| `useJoinRequests` | ownedHouseholds[] | Join requests for owned households |
+| `useMemberName` | — | Locale-aware member name display |
+| `useUserColor` | uid | Per-user primary color (localStorage + Firebase) |
+
+Participants are managed inline in AppPage (no dedicated hook) — subscribeParticipants + seedParticipant called directly.
+
+## Permission Model
+- **Owner** (`meta.ownerId === user.uid`): can rename household, toggle expenses-only mode, see join requests
+- **Member**: can toggle own income privacy (`member.privateIncome`)
+- **Join request flow**: JoinPage → creates request → owner approves/denies via notification bell
+
+## Data Types (key)
+```typescript
+Member: { id, name, nameEn?, color, createdAt, userId?, privateIncome? }
+Transaction: { id, type, amount, description, category, memberId, date, createdAt, recurringId? }
+RecurringCharge: { id, description, amount, type, category, dayOfMonth, startYearMonth, monthCount, memberId, active }
+HouseholdMeta: { name, ownerId, createdAt, settings?: { expensesOnly? } }
+JoinRequest: { uid, name, email, photoURL?, ts, householdId, householdName }
+```
+
+## TransactionCategory (19 values)
+rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, nela, other
+
+## What's Built
+- ✅ Full multi-household support with invite links
+- ✅ Real-time sync (Firebase onValue)
+- ✅ Hebrew (RTL) + English (LTR) i18n
+- ✅ Per-user color theming
+- ✅ Custom styled select + date picker components
+- ✅ 19 transaction categories with icons
+- ✅ Recurring charges (auto-apply monthly)
+- ✅ Audit logs with diff tracking
+- ✅ Online presence tracking
+- ✅ Owner controls (rename, expenses-only mode)
+- ✅ Income privacy per member (client-side)
+- ✅ Join request flow with approval/denial
+- ✅ Notification bell (AppHeader + Dashboard, shared component)
+- ✅ Member cards with bilingual names (he + en)
+- ✅ Delete member → cascades to transactions + recurring
+- ✅ Participant management — owner sees "גישה לבית" in SettingsView with photo/name/email/join date; can revoke access (removes userHouseholds + participants entry, keeps data)
+- ✅ HeroCard shows actual household name (meta.name) instead of hardcoded string
+
+## What's Planned / Not Yet Built
+- ❌ Super Admin panel (metadata only, for app owner)
+- ❌ Firebase Security Rules (currently open)
+- ❌ Dynamic whitelist (currently hardcoded)
+- ❌ Viewer role (read-only member)
+- ❌ True server-side income privacy (E2E encryption or Firestore rules)

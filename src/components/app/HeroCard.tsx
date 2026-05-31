@@ -10,9 +10,10 @@ interface Props {
     transactions: Transaction[]
     month: string   // YYYY-MM
     onMonthChange: (month: string) => void
+    householdName?: string
 }
 
-export function HeroCard({ members, transactions, month, onMonthChange }: Props) {
+export function HeroCard({ members, transactions, month, onMonthChange, householdName }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
 
@@ -60,7 +61,7 @@ export function HeroCard({ members, transactions, month, onMonthChange }: Props)
 
             <div className="htop">
                 <div>
-                    <div className="htitle">{t.appName}</div>
+                    <div className="htitle">{householdName ?? t.appName}</div>
                     <div className="hsub">{t.appSubtitle}</div>
                 </div>
 

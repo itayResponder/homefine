@@ -6,7 +6,8 @@ export interface Member {
     nameEn?: string    // English name (optional)
     color: string
     createdAt: number
-    userId?: string    // UID of the user who created this member card
+    userId?: string      // UID of the user who created this member card
+    privateIncome?: boolean  // if true, income is only visible to this member
 }
 
 export type TransactionType = 'expense' | 'income'
@@ -66,13 +67,36 @@ export interface AppUser {
     photoURL?: string
 }
 
+export interface HouseholdSettings {
+    expensesOnly?: boolean   // hides income tab for all members
+}
+
 export interface HouseholdMeta {
     name: string
     ownerId: string
     createdAt: number
+    settings?: HouseholdSettings
 }
 
 export interface Household {
     id: string
     meta: HouseholdMeta
+}
+
+export interface JoinRequest {
+    uid: string
+    name: string
+    email: string
+    photoURL?: string
+    ts: number
+    householdId: string      // populated by hook
+    householdName: string    // populated by hook
+}
+
+export interface Participant {
+    uid: string
+    name: string
+    email: string
+    photoURL?: string
+    joinedAt: number
 }

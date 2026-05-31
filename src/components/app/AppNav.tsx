@@ -8,18 +8,19 @@ export type AppView = string
 interface Props {
     view: AppView
     members: Member[]
+    expensesOnly?: boolean
     onChange: (v: AppView) => void
     onRemoveMember: (id: string) => void
 }
 
-export function AppNav({ view, members, onChange, onRemoveMember }: Props) {
+export function AppNav({ view, members, expensesOnly, onChange, onRemoveMember }: Props) {
     const { t } = useI18n()
     const memberName = useMemberName()
 
     const fixed = [
-        { value: 'summary',   label: t.tabSummary },
-        { value: 'expenses',  label: t.tabExpenses },
-        { value: 'income',    label: t.tabIncome },
+        { value: 'summary',  label: t.tabSummary },
+        { value: 'expenses', label: t.tabExpenses },
+        ...(!expensesOnly ? [{ value: 'income', label: t.tabIncome }] : []),
     ]
 
     const tail = [

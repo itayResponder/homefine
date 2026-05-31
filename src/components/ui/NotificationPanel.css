@@ -1,0 +1,116 @@
+/* src/components/ui/NotificationPanel.css — shared notification dropdown */
+
+.np-panel {
+    background: #fff;
+    border: 1.5px solid #E8E8F0;
+    border-radius: 14px;
+    width: 300px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+    overflow: hidden;
+}
+
+.np-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748B;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.875rem 1rem 0.5rem;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.np-empty {
+    padding: 1.25rem 1rem;
+    font-size: 0.875rem;
+    color: #94A3B8;
+    text-align: center;
+}
+
+.np-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #F8FAFF;
+    transition: background 0.1s;
+}
+.np-item:last-child { border-bottom: none; }
+.np-item:hover { background: #FAFAFF; }
+
+.np-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.np-avatar-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #EDE9FF;
+    color: #6C63FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.np-info { flex: 1; min-width: 0; }
+
+.np-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0F172A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.np-meta {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    margin-top: 1px;
+}
+
+.np-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.np-approve,
+.np-deny {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+.np-approve { background: #ECFDF5; color: #059669; }
+.np-approve:hover { background: #059669; color: #fff; }
+.np-deny { background: #FEF2F2; color: #EF4444; }
+.np-deny:hover { background: #EF4444; color: #fff; }
+
+/* Positioned wrapper — used by both AppHeader and DashboardPage */
+.np-wrap {
+    position: relative;
+}
+
+.np-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-end: 0;
+    z-index: 200;
+}
+
+@media (max-width: 480px) {
+    .np-panel { width: calc(100vw - 2rem); }
+    .np-dropdown { inset-inline-end: -1rem; }
+}

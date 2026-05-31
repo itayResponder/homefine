@@ -45,6 +45,9 @@ export const subscribeUserHouseholds = (
     return () => off(r)
 }
 
+export const updateHouseholdMeta = (householdId: string, data: Partial<HouseholdMeta>) =>
+    update(ref(db, `households/${householdId}/meta`), data)
+
 export const subscribeHouseholdMeta = (
     householdId: string,
     cb: (meta: HouseholdMeta | null) => void,
@@ -60,6 +63,9 @@ export const addMember = (householdId: string, member: Omit<Member, 'id'>) =>
 
 export const removeMember = (householdId: string, id: string) =>
     remove(hRef(householdId, `members/${id}`))
+
+export const updateMember = (householdId: string, id: string, data: Partial<Member>) =>
+    update(hRef(householdId, `members/${id}`), data)
 
 export const subscribeMembers = (householdId: string, cb: (members: Member[]) => void) => {
     const r = hRef(householdId, 'members')
@@ -156,6 +162,35 @@ export const subscribeConnectionState = (cb: (connected: boolean) => void) => {
     return () => off(r)
 }
 
+// ─── Join Requests ───────────────────────────────────────────────────────────
+type JoinRequestData = { name: string; email: string; photoURL?: string; ts: number }
+
+export const createJoinRequest = (householdId: string, uid: string, data: JoinRequestData) =>
+    set(ref(db, `households/${householdId}/joinRequests/${uid}`), data)
+
+export const approveJoinRequest = async (householdId: string, uid: string, participantData?: { name: string; email: string; photoURL?: string }): Promise<void> => {
+    await set(ref(db, `userHouseholds/${uid}/${householdId}`), true)
+    await remove(ref(db, `households/${householdId}/joinRequests/${uid}`))
+    if (participantData) {
+        await set(ref(db, `households/${householdId}/participants/${uid}`), { ...participantData, joinedAt: Date.now() })
+    }
+}
+
+export const denyJoinRequest = (householdId: string, uid: string) =>
+    remove(ref(db, `households/${householdId}/joinRequests/${uid}`))
+
+export const subscribeJoinRequests = (
+    householdId: string,
+    cb: (requests: Array<JoinRequestData & { uid: string }>) => void,
+) => {
+    const r = ref(db, `households/${householdId}/joinRequests`)
+    onValue(r, (snap) => {
+        const data = snap.val() ?? {}
+        cb(Object.entries(data).map(([uid, val]) => ({ uid, ...(val as JoinRequestData) })))
+    })
+    return () => off(r)
+}
+
 // ─── User Preferences ────────────────────────────────────────────────────────
 export const setUserColor = (uid: string, color: string) =>
     set(ref(db, `userPrefs/${uid}/primaryColor`), color)
@@ -164,4 +199,30 @@ export const subscribeUserColor = (uid: string, cb: (color: string | null) => vo
     const r = ref(db, `userPrefs/${uid}/primaryColor`)
     onValue(r, (snap) => cb(snap.val()))
     return () => off(r)
+}
+
+// ─── Participants ─────────────────────────────────────────────────────────────
+type ParticipantData = { name: string; email: string; photoURL?: string; joinedAt: number }
+
+export const seedParticipant = async (householdId: string, uid: string, data: ParticipantData): Promise<void> => {
+    const r = ref(db, `households/${householdId}/participants/${uid}`)
+    const snap = await get(r)
+    if (!snap.exists()) await set(r, data)
+}
+
+export const subscribeParticipants = (
+    householdId: string,
+    cb: (participants: Array<ParticipantData & { uid: string }>) => void,
+) => {
+    const r = ref(db, `households/${householdId}/participants`)
+    onValue(r, (snap) => {
+        const data = snap.val() ?? {}
+        cb(Object.entries(data).map(([uid, val]) => ({ uid, ...(val as ParticipantData) })))
+    })
+    return () => off(r)
+}
+
+export const removeParticipant = async (householdId: string, uid: string): Promise<void> => {
+    await remove(ref(db, `userHouseholds/${uid}/${householdId}`))
+    await remove(ref(db, `households/${householdId}/participants/${uid}`))
 }

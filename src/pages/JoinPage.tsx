@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { getHouseholdMeta, getUserHouseholdIds, joinHousehold } from '../firebase/db'
+import { getHouseholdMeta, getUserHouseholdIds, createJoinRequest } from '../firebase/db'
 import type { HouseholdMeta } from '../types'
 import './JoinPage.css'
 
@@ -13,7 +13,8 @@ export default function JoinPage() {
 
     const [meta, setMeta] = useState<HouseholdMeta | null>(null)
     const [metaLoading, setMetaLoading] = useState(true)
-    const [joining, setJoining] = useState(false)
+    const [sending, setSending] = useState(false)
+    const [sent, setSent] = useState(false)
 
     useEffect(() => {
         if (!householdId) return
@@ -23,7 +24,7 @@ export default function JoinPage() {
         })
     }, [householdId])
 
-    // If logged in, check if already a member → redirect
+    // Already a member → redirect straight in
     useEffect(() => {
         if (!user || !householdId) return
         getUserHouseholdIds(user.uid).then((ids) => {
@@ -31,11 +32,17 @@ export default function JoinPage() {
         })
     }, [user, householdId, navigate])
 
-    const handleJoin = async () => {
+    const handleRequest = async () => {
         if (!user || !householdId) return
-        setJoining(true)
-        await joinHousehold(householdId, user.uid)
-        navigate(`/app/${householdId}`, { replace: true })
+        setSending(true)
+        await createJoinRequest(householdId, user.uid, {
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            ts: Date.now(),
+        })
+        setSending(false)
+        setSent(true)
     }
 
     if (authLoading || metaLoading) {
@@ -66,7 +73,7 @@ export default function JoinPage() {
 
                 {!user ? (
                     <>
-                        <p className="jp-sub">התחבר עם Google כדי להצטרף</p>
+                        <p className="jp-sub">התחבר עם Google כדי לשלוח בקשה</p>
                         <button className="jp-btn jp-btn--google" onClick={login}>
                             <svg width="18" height="18" viewBox="0 0 48 48">
                                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -77,11 +84,19 @@ export default function JoinPage() {
                             המשך עם Google
                         </button>
                     </>
+                ) : sent ? (
+                    <>
+                        <div className="jp-sent-icon">✅</div>
+                        <p className="jp-sub jp-sub--success">הבקשה נשלחה! המתן לאישור הבעלים.</p>
+                        <button className="jp-btn jp-btn--ghost" onClick={() => navigate('/dashboard')}>
+                            לדשבורד
+                        </button>
+                    </>
                 ) : (
                     <>
-                        <p className="jp-sub">שלום, {user.displayName?.split(' ')[0]} 👋</p>
-                        <button className="jp-btn" onClick={handleJoin} disabled={joining}>
-                            {joining ? '...' : 'הצטרף לבית'}
+                        <p className="jp-sub">שלום, {user.displayName?.split(' ')[0]} 👋<br/>שלח בקשת הצטרפות לבעל הבית</p>
+                        <button className="jp-btn" onClick={handleRequest} disabled={sending}>
+                            {sending ? '...' : 'שלח בקשת הצטרפות'}
                         </button>
                     </>
                 )}

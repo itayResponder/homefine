@@ -26,7 +26,11 @@ import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
+import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant } from '../firebase/db'
+import type { Participant } from '../types'
 import { useUserColor } from '../hooks/useUserColor'
+import { useHouseholdMeta } from '../hooks/useHouseholdMeta'
+import { useJoinRequests } from '../hooks/useJoinRequests'
 import { buildColorVars } from '../utils/color'
 import { formatCurrency } from '../utils/format'
 import type { LogDiff, RecurringCharge, Transaction } from '../types'
@@ -53,6 +57,28 @@ export default function AppPage() {
     const { showToast } = useToast()
     const { showConfirm } = useConfirm()
     const { color: primaryColor, loading: colorLoading, updateColor } = useUserColor(user?.uid)
+    const { meta, isOwner, expensesOnly, updateSettings, renameMeta, toggleMemberIncome } = useHouseholdMeta(householdId, user?.uid)
+
+    // Join requests — only subscribed when user is owner
+    const ownedEntry = isOwner && meta ? [{ id: householdId, name: meta.name }] : []
+    const joinRequests = useJoinRequests(ownedEntry)
+
+    // Participants — only subscribed and seeded when user is owner
+    const [participants, setParticipants] = useState<Participant[]>([])
+    useEffect(() => {
+        if (!isOwner || !householdId) return
+        return subscribeParticipants(householdId, setParticipants)
+    }, [isOwner, householdId])
+
+    useEffect(() => {
+        if (!isOwner || !user || !meta) return
+        seedParticipant(householdId, user.uid, {
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            joinedAt: meta.createdAt,
+        })
+    }, [isOwner, !!meta, user?.uid])
 
     // ── UI state ──────────────────────────────────────────────────────────────
     const [view, setView] = useState('summary')
@@ -183,6 +209,23 @@ export default function AppPage() {
         if (view === `member:${id}`) setView('summary')
     }
 
+    const handleApproveJoin = async (hId: string, uid: string) => {
+        const request = joinRequests.find(r => r.householdId === hId && r.uid === uid)
+        await approveJoinRequest(hId, uid, request ? { name: request.name, email: request.email, photoURL: request.photoURL } : undefined)
+    }
+
+    const handleRemoveParticipant = async (uid: string) => {
+        const p = participants.find(p => p.uid === uid)
+        if (!p) return
+        const confirmed = await showConfirm({
+            title: `הסרת ${p.name}`,
+            sub: `להסיר את ${p.name} מהגישה לבית? הנתונים שלהם יישמרו.`,
+            danger: true,
+        })
+        if (!confirmed) return
+        await removeParticipant(householdId, uid)
+    }
+
     const handleLogout = async () => {
         await logout()
         navigate('/')
@@ -208,6 +251,9 @@ export default function AppPage() {
                 onOpenSettings={() => setModal('settings')}
                 onOpenLogs={() => setModal('logs')}
                 onDashboard={() => navigate('/dashboard')}
+                joinRequests={isOwner ? joinRequests : []}
+                onApproveJoin={isOwner ? handleApproveJoin : undefined}
+                onDenyJoin={isOwner ? denyJoinRequest : undefined}
             />
             <SyncBar status={syncStatus} />
             <OnlineBar online={online} />
@@ -218,15 +264,23 @@ export default function AppPage() {
                     transactions={transactions}
                     month={month}
                     onMonthChange={setMonth}
+                    householdName={meta?.name}
                 />
 
-                <AppNav view={view} members={members} onChange={setView} onRemoveMember={handleRemoveMember} />
+                <AppNav
+                    view={view}
+                    members={members}
+                    expensesOnly={expensesOnly}
+                    onChange={setView}
+                    onRemoveMember={handleRemoveMember}
+                />
 
                 {view === 'summary' && (
                     <SummaryView
                         transactions={transactions}
                         members={members}
                         month={month}
+                        currentUserId={user?.uid}
                         onEdit={setEditingTx}
                         onDelete={handleDeleteTx}
                     />
@@ -244,7 +298,7 @@ export default function AppPage() {
                     />
                 )}
 
-                {view === 'income' && (
+                {!expensesOnly && view === 'income' && (
                     <IncomeView
                         transactions={transactions}
                         members={members}
@@ -298,6 +352,14 @@ export default function AppPage() {
                                 onRemoveMember={handleRemoveMember}
                                 primaryColor={primaryColor}
                                 onColorChange={updateColor}
+                                isOwner={isOwner}
+                                meta={meta}
+                                onUpdateSettings={updateSettings}
+                                onRename={renameMeta}
+                                currentUserId={user?.uid}
+                                onToggleMemberIncome={toggleMemberIncome}
+                                participants={isOwner ? participants : undefined}
+                                onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
                             />
                         )}
                         {modal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}

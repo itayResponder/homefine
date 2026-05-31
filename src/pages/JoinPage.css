@@ -94,3 +94,13 @@
 }
 
 .jp-btn--google:hover { background: #F8FAFF; opacity: 1; }
+
+.jp-btn--ghost {
+    background: none;
+    border: 1.5px solid #E2E8F0;
+    color: #64748B;
+}
+.jp-btn--ghost:hover { background: #F8FAFF; opacity: 1; }
+
+.jp-sent-icon { font-size: 2rem; }
+.jp-sub--success { color: #10B981; font-weight: 600; }
