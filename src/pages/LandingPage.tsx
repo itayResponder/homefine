@@ -62,66 +62,13 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                {/* Mockup */}
+                {/* Screenshot */}
                 <div className="lp-hero-right">
-                    <div className="lp-mockup">
-                        <div className="lp-mockup-header">
-                            <div className="lp-mockup-logo">Home<span>Fine</span></div>
-                            <div className="lp-mockup-month">{lp.mockupMonth}</div>
-                        </div>
-                        <div className="lp-mockup-tabs">
-                            {lp.mockupTabs.map((tab, i) => (
-                                <div
-                                    key={tab}
-                                    className={`lp-mockup-tab${i === 0 ? ' active' : ''}`}
-                                >
-                                    {tab}
-                                </div>
-                            ))}
-                        </div>
-                        <div className="lp-mockup-cards">
-                            <div className="lp-mockup-card">
-                                <div className="lp-mockup-card-name">{lp.mockupTabs[1]}</div>
-                                <div className="lp-mockup-card-amt neg">−₪1,240</div>
-                            </div>
-                            <div className="lp-mockup-card">
-                                <div className="lp-mockup-card-name">{lp.mockupTabs[2]}</div>
-                                <div className="lp-mockup-card-amt pos">+₪320</div>
-                            </div>
-                            <div className="lp-mockup-card">
-                                <div className="lp-mockup-card-name">{lp.mockupTabs[0]}</div>
-                                <div className="lp-mockup-card-amt blue">₪4,800</div>
-                            </div>
-                        </div>
-                        <div className="lp-mockup-tx-title">{lp.mockupRecentTitle}</div>
-                        <div className="lp-mockup-tx-list">
-                            {lp.mockupTxs.map((tx) => (
-                                <div key={tx.desc} className="lp-mockup-tx">
-                                    <div className="lp-mockup-tx-left">
-                                        <div
-                                            className="lp-mockup-tx-icon"
-                                            style={{
-                                                background: tx.neg
-                                                    ? 'rgba(239,68,68,0.1)'
-                                                    : 'rgba(34,197,94,0.1)',
-                                            }}
-                                        >
-                                            {tx.icon}
-                                        </div>
-                                        <div>
-                                            <div className="lp-mockup-tx-desc">{tx.desc}</div>
-                                            <div className="lp-mockup-tx-sub">{tx.sub}</div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={`lp-mockup-tx-amt${tx.neg ? ' neg' : ' pos'}`}
-                                    >
-                                        {tx.amt}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <img
+                        src={t.dir === 'rtl' ? '/screenshot-he.png' : '/screenshot-en.png'}
+                        alt="HomeFine app screenshot"
+                        className="lp-screenshot"
+                    />
                 </div>
             </section>
 

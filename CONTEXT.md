@@ -15,10 +15,8 @@ A multi-household finance manager SPA. Users create "households", invite others 
 - Hosting: homefine-a7613.web.app
 - Realtime DB: europe-west1 region
 
-## Current Whitelist (useAuth.ts — hardcoded)
-- itay.responder@gmail.com (owner/admin)
-- aviv.rom01@gmail.com
-- sapir.rahamim21@gmail.com
+## Authentication
+Any Google account can sign in. Access control is enforced server-side via Firebase Security Rules (`database.rules.json`). Household data is accessible only to approved members (`userHouseholds/{uid}/{householdId} = true`). Joining a household requires an invite link + owner approval.
 
 ## Pages
 | Route | Component | Description |
