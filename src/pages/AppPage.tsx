@@ -71,14 +71,14 @@ export default function AppPage() {
     }, [isOwner, householdId])
 
     useEffect(() => {
-        if (!isOwner || !user || !meta) return
+        if (!user || !meta) return
         seedParticipant(householdId, user.uid, {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
             joinedAt: meta.createdAt,
-        })
-    }, [isOwner, !!meta, user?.uid])
+        }).catch(() => { /* member may load before meta propagates — safe to ignore */ })
+    }, [!!meta, user?.uid])
 
     // ── UI state ──────────────────────────────────────────────────────────────
     const [view, setView] = useState('summary')

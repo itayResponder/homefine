@@ -44,7 +44,9 @@
         },
         "participants": {
           ".read": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid",
-          ".write": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid"
+          "$participantUid": {
+            ".write": "auth != null && ((auth.uid === $participantUid && root.child('userHouseholds').child(auth.uid).child($householdId).exists()) || root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid)"
+          }
         },
         "joinRequests": {
           ".read": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid",

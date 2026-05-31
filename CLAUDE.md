@@ -60,7 +60,7 @@ userPrefs/{uid}/primaryColor ← hex string
 - Owner sees extra controls in SettingsView: rename, expenses-only toggle, **גישה לבית** (participant list with revoke access)
 - `Member.privateIncome?: boolean` → filtered client-side in SummaryView, HeroCard, MemberView — all receive `currentUserId` and exclude private income of other members
 - `Member.userId?: string` → links member card to a user account
-- Participants (`households/{id}/participants/{uid}`) — written on join approval and owner seed; removed via `removeParticipant` (also removes `userHouseholds` entry)
+- Participants (`households/{id}/participants/{uid}`) — each member seeds their own entry on AppPage load (`seedParticipant` idempotent); owner also seeds on load; removed via `removeParticipant` (also removes `userHouseholds` entry). Security Rules: member can write own entry if `userHouseholds/{uid}/{id}` exists; owner can write any entry.
 
 ### Join Request Flow
 - Sharing: copy `/join/:householdId` URL
