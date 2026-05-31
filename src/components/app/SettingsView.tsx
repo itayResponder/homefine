@@ -26,7 +26,7 @@ interface Props {
     onRemoveParticipant?: (uid: string) => void
 }
 
-const DEFAULT_COLOR = '#6C63FF'
+const DEFAULT_COLOR = '#2563EB'
 
 function fmtJoinDate(ts: number): string {
     const d = new Date(ts)

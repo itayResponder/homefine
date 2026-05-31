@@ -21,7 +21,7 @@ function darken(hex: string, amount: number) {
     return rgbToHex(r * (1 - amount), g * (1 - amount), b * (1 - amount))
 }
 
-export const DEFAULT_COLOR = '#6C63FF'
+export const DEFAULT_COLOR = '#2563EB'
 
 export function buildColorVars(hex: string): Record<string, string> {
     return {

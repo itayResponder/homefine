@@ -1,5 +1,9 @@
 /* src/index.css — global reset only */
 
+:root {
+    --brand: #2563EB;
+}
+
 *,
 *::before,
 *::after {

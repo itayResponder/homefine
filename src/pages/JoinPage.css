@@ -15,7 +15,7 @@
 .jp-logo {
     font-size: 1.25rem;
     font-weight: 800;
-    color: #2563EB;
+    color: var(--brand);
     letter-spacing: -0.02em;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .jp-btn {
-    background: #6C63FF;
+    background: var(--brand);
     color: #fff;
     border: none;
     border-radius: 12px;
