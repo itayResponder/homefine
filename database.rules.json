@@ -1,0 +1,58 @@
+{
+  "rules": {
+    "userHouseholds": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$householdId": {
+          ".write": "auth != null && (root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid || (auth.uid === $uid && !newData.exists()))"
+        }
+      }
+    },
+    "userPrefs": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "households": {
+      "$householdId": {
+        "meta": {
+          ".read": "auth != null",
+          ".write": "auth != null && (!data.exists() || data.child('ownerId').val() === auth.uid)"
+        },
+        "members": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
+        "transactions": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
+        "recurringCharges": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
+        "logs": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
+        "presence": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          "$presenceUid": {
+            ".write": "auth != null && auth.uid === $presenceUid"
+          }
+        },
+        "participants": {
+          ".read": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid",
+          ".write": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid"
+        },
+        "joinRequests": {
+          ".read": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid",
+          "$requestUid": {
+            ".write": "auth != null && (auth.uid === $requestUid || root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid)"
+          }
+        }
+      }
+    }
+  }
+}

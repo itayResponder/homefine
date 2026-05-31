@@ -89,10 +89,17 @@ rent, electricity, water, gas, internet, mobile, property_tax, food, entertainme
 - ✅ Delete member → cascades to transactions + recurring
 - ✅ Participant management — owner sees "גישה לבית" in SettingsView with photo/name/email/join date; can revoke access (removes userHouseholds + participants entry, keeps data)
 - ✅ HeroCard shows actual household name (meta.name) instead of hardcoded string
+- ✅ Firebase Security Rules — whitelist removed from code; access controlled server-side via `database.rules.json` (deployed to homefine-a7613-default-rtdb)
+
+## Firebase Security Rules (database.rules.json)
+- Any authenticated Google user can log in and read household `meta` (needed for JoinPage)
+- Household data (members/transactions/logs/etc.) readable/writable only by approved members (`userHouseholds/{uid}/{householdId} = true`)
+- Only the owner can manage `joinRequests` and `participants`
+- Users can create their own join request; owner approves/denies
+- Users can remove themselves from a household (delete their own `userHouseholds` entry)
+- Deploy: `firebase deploy --only database`
 
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel (metadata only, for app owner)
-- ❌ Firebase Security Rules (currently open)
-- ❌ Dynamic whitelist (currently hardcoded)
 - ❌ Viewer role (read-only member)
 - ❌ True server-side income privacy (E2E encryption or Firestore rules)
