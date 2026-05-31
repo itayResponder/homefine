@@ -23,13 +23,16 @@ export const useHouseholds = (uid: string | undefined) => {
             setHouseholds([...metaMap.entries()].map(([id, meta]) => ({ id, meta })))
 
         const unsubIds = subscribeUserHouseholds(uid, (ids) => {
+            let removed = false
             for (const [id, unsub] of metaUnsubs) {
                 if (!ids.includes(id)) {
                     unsub()
                     metaUnsubs.delete(id)
                     metaMap.delete(id)
+                    removed = true
                 }
             }
+            if (removed) rebuild()
 
             ids.forEach((id) => {
                 if (metaUnsubs.has(id)) return
