@@ -169,7 +169,7 @@ export const he: T = {
         doneDivider: 'סיימתי',
         noItems: 'הרשימה ריקה',
         addTaskError: 'שגיאה בהוספת משימה',
-        kanbanTodo: 'לבצע',
+        kanbanTodo: 'צריך לבצע',
         kanbanInProgress: 'בתהליך',
         kanbanDone: 'בוצע',
         dueDateLabel: 'תאריך יעד',

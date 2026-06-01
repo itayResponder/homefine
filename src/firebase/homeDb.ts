@@ -28,7 +28,6 @@ export const completeTask = async (householdId: string, task: Task): Promise<voi
         lastDoneBy: doneBy,
     }
 
-    // rotate: move the current assignee to the end
     if (task.assignedTo === 'rotation' && task.rotationOrder && task.rotationOrder.length > 1) {
         updates.rotationOrder = [
             ...task.rotationOrder.slice(1),
@@ -55,6 +54,17 @@ export const moveTaskStatus = async (householdId: string, task: Task, newStatus:
     }
 
     await updateTask(householdId, task.id, updates)
+}
+
+export const batchUpdateTaskOrders = (
+    householdId: string,
+    updates: { id: string; order: number }[],
+): Promise<void> => {
+    const payload: Record<string, number> = {}
+    for (const { id, order } of updates) {
+        payload[`households/${householdId}/tasks/${id}/order`] = order
+    }
+    return update(ref(db), payload)
 }
 
 export const subscribeTasks = (householdId: string, cb: (tasks: Task[]) => void) => {

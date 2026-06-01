@@ -22,6 +22,7 @@ export interface Task {
     dueDate?: string                  // YYYY-MM-DD
     estimatedDays?: number            // expected duration for progress bar
     startedAt?: number                // timestamp when moved to in-progress
+    order?: number                    // drag-and-drop order within group
 }
 
 export interface ShoppingItem {

@@ -1,5 +1,5 @@
 // src/components/home/tasks/KanbanCard.tsx
-import { useDraggable } from '@dnd-kit/core'
+import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useI18n } from '../../../i18n/context'
 import { getTaskUrgency } from '../../../utils/taskUrgency'
@@ -21,7 +21,10 @@ function getAssigneeInfo(task: Task, members: Member[]) {
     return { name: member?.name ?? '—', color: member?.color ?? '#94a3b8' }
 }
 
-function formatDueDate(dueDate: string, h: { dueDateToday: string; dueDateTomorrow: string; dueDateYesterday: string }): string {
+function formatDueDate(
+    dueDate: string,
+    h: { dueDateToday: string; dueDateTomorrow: string; dueDateYesterday: string },
+): string {
     const d = new Date(dueDate + 'T00:00:00')
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -36,16 +39,18 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
     const { t } = useI18n()
     const h = t.home
 
-    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id })
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+        id: task.id,
+    })
 
-    const style = transform
-        ? { transform: CSS.Translate.toString(transform) }
-        : undefined
+    const style: React.CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
 
     const urgency = getTaskUrgency(task)
     const { name: assigneeName, color: assigneeColor } = getAssigneeInfo(task, members)
     const roomDef = ROOM_DEFS[task.room]
-
     const roomKey = `room${task.room.charAt(0).toUpperCase() + task.room.slice(1)}` as keyof typeof h
     const roomLabel = h[roomKey] as string
 
@@ -60,8 +65,10 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
 
     // Due date
     const dueDateText = task.dueDate ? formatDueDate(task.dueDate, h) : null
-    const isDueOverdue = task.dueDate && task.status !== 'done'
-        && new Date(task.dueDate + 'T00:00:00') < new Date(new Date().setHours(0, 0, 0, 0))
+    const isDueOverdue =
+        task.dueDate &&
+        task.status !== 'done' &&
+        new Date(task.dueDate + 'T00:00:00') < new Date(new Date().setHours(0, 0, 0, 0))
 
     const isGhosting = isDragging && !isDragOverlay
 
@@ -79,7 +86,10 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
                     <span className="kc-title">{task.title}</span>
                     <button
                         className="kc-delete"
-                        onClick={(e) => { e.stopPropagation(); onDelete(task) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            onDelete(task)
+                        }}
                         aria-label={h.deleteTask}
                     >
                         ×
@@ -87,7 +97,9 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
                 </div>
 
                 <div className="kc-meta">
-                    <span className="kc-room">{roomDef.icon} {roomLabel}</span>
+                    <span className="kc-room">
+                        {roomDef.icon} {roomLabel}
+                    </span>
                     <span className="kc-sep">·</span>
                     <span className="kc-dot" style={{ background: assigneeColor }} />
                     <span className="kc-assignee">{assigneeName}</span>

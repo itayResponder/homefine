@@ -1,6 +1,11 @@
 // src/hooks/useTasks.ts
 import { useEffect, useState } from 'react'
-import { subscribeTasks, addTask, removeTask, completeTask as dbCompleteTask, updateTask, moveTaskStatus as dbMoveStatus } from '../firebase/homeDb'
+import {
+    subscribeTasks, addTask, removeTask,
+    completeTask as dbCompleteTask, updateTask,
+    moveTaskStatus as dbMoveStatus,
+    batchUpdateTaskOrders,
+} from '../firebase/homeDb'
 import type { Task, TaskStatus } from '../types/home'
 
 export const useTasks = (householdId: string) => {
@@ -21,6 +26,7 @@ export const useTasks = (householdId: string) => {
     const complete = (task: Task) => dbCompleteTask(householdId, task)
     const update = (id: string, data: Partial<Omit<Task, 'id'>>) => updateTask(householdId, id, data)
     const moveStatus = (task: Task, status: TaskStatus) => dbMoveStatus(householdId, task, status)
+    const reorder = (updates: { id: string; order: number }[]) => batchUpdateTaskOrders(householdId, updates)
 
-    return { tasks, ready, add, remove, complete, update, moveStatus }
+    return { tasks, ready, add, remove, complete, update, moveStatus, reorder }
 }

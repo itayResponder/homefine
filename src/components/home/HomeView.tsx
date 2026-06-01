@@ -25,7 +25,7 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
     const { showConfirm } = useConfirm()
     const { showToast } = useToast()
 
-    const { tasks, add: addTask, remove: removeTask, moveStatus } = useTasks(householdId)
+    const { tasks, add: addTask, remove: removeTask, moveStatus, reorder } = useTasks(householdId)
     const { items, add: addItem, toggle: toggleItem, remove: removeItem, clearDone } = useShoppingList(householdId)
 
     const [tab, setTab] = useState<HomeTab>('tasks')
@@ -83,6 +83,7 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
                     tasks={tasks}
                     members={members}
                     onMoveStatus={handleMoveStatus}
+                    onReorder={reorder}
                     onDelete={handleDeleteTask}
                     onAddClick={() => setShowAddTask(true)}
                 />
