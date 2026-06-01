@@ -65,7 +65,6 @@ export function ShoppingView({ items, members, currentMemberId, onAdd, onToggle,
                             key={item.id}
                             item={item}
                             members={members}
-                            currentMemberId={currentMemberId}
                             onToggle={onToggle}
                             onDelete={onDelete}
                         />
@@ -84,8 +83,7 @@ export function ShoppingView({ items, members, currentMemberId, onAdd, onToggle,
                                     key={item.id}
                                     item={item}
                                     members={members}
-                                    currentMemberId={currentMemberId}
-                                    onToggle={onToggle}
+                                            onToggle={onToggle}
                                     onDelete={onDelete}
                                 />
                             ))}
