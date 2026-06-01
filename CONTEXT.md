@@ -108,6 +108,10 @@ rent, electricity, water, gas, internet, mobile, property_tax, food, entertainme
 - ✅ Add member via pills `+` button — `AddMemberModal.tsx` opens from AppNav's `＋` pill (after member pills). Add-member form removed from SettingsView; member chips list remains there for deletion only.
 - ✅ Logo colors fixed & consistent everywhere — "Home" = `#0F172A` (dark), "Fine" = `#2563EB` (blue). Previously DashboardPage used `var(--ac)` (theme-dependent) and JoinPage used `var(--brand)` for the wrong part. App.tsx + AppPage.tsx loaders also had colors inverted. All now match LandingPage and AppHeader.
 
+- ✅ Home module (tasks + shopping) — module switcher כספים/בית above content. Tasks grouped by room with condition bar (fresh/medium/due/overdue based on days-since-done ratio). Auto-rotation among members. Shopping list with real-time sync, one-tap toggle, clear done. Firebase paths: `tasks/` + `shoppingItems/` under household. Components: `src/components/home/` tree. Hooks: `useTasks`, `useShoppingList`. DB: `src/firebase/homeDb.ts`. Types: `src/types/home.ts`. Constants: `src/constants/rooms.ts`. Utils: `src/utils/taskUrgency.ts`. i18n: `t.home.*` section added to all three files.
+- ✅ Home module navigation redesign — module switcher (💰 כספים / 🏠 בית) changed from white-pill segmented control to filled accent-color pill (`.mod-nav` + `.mod-nav-btn` + `.mod-nav-btn--active` in AppPage.css). Sub-tabs (✅ משימות / 🛒 קניות) changed from segmented control to underline style with border-bottom indicator (`.hv-tabs`/`.hv-tab` in HomeView.css). Clear visual hierarchy: primary nav = filled colored button, secondary nav = underline.
+- ✅ addTask error handling — `HomeView` now catches Firebase write failures and shows a toast (`t.home.addTaskError`). Root cause of silent failures: `database.rules.json` must be deployed with `firebase deploy --only database` for `tasks` + `shoppingItems` paths to be active in production.
+
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel (metadata only, for app owner)
 - ❌ Viewer role (read-only member)

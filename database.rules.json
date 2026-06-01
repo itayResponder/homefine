@@ -50,6 +50,14 @@
             ".write": "auth != null && ((auth.uid === $participantUid && root.child('userHouseholds').child(auth.uid).child($householdId).exists()) || root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid)"
           }
         },
+        "tasks": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
+        "shoppingItems": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
         "joinRequests": {
           ".read": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid",
           "$requestUid": {

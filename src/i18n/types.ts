@@ -138,6 +138,50 @@ export interface T {
     syncConnected: string
     syncConnecting: string
 
+    // ── Home module (tasks + shopping) ───────────────────
+    home: {
+        moduleFinance: string
+        moduleHome: string
+        tabTasks: string
+        tabShopping: string
+        roomBathroom: string
+        roomKitchen: string
+        roomLiving: string
+        roomBedroom: string
+        roomOutdoor: string
+        roomGeneral: string
+        addTaskBtn: string
+        taskTitleLabel: string
+        taskTitlePlaceholder: string
+        roomLabel: string
+        assignLabel: string
+        rotation: string
+        intervalLabel: string
+        intervalOnce: string
+        intervalDaily: string
+        interval2Days: string
+        intervalWeekly: string
+        interval2Weeks: string
+        intervalMonthly: string
+        markDone: string
+        lastDoneToday: string
+        lastDoneDays: (n: number) => string
+        neverDone: string
+        noTasks: string
+        deleteTask: string
+        currentTurn: (name: string) => string
+        urgencyFresh: string
+        urgencyMedium: string
+        urgencyDue: string
+        urgencyOverdue: string
+        shoppingPlaceholder: string
+        addItemBtn: string
+        clearDone: string
+        doneDivider: string
+        noItems: string
+        addTaskError: string
+    }
+
     // ── Landing page ─────────────────────────────────────
     landing: {
         navCta: string

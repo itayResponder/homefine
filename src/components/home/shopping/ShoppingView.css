@@ -1,0 +1,143 @@
+/* src/components/home/shopping/ShoppingView.css */
+
+.sv-root {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sv-add-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sv-inp {
+    flex: 1;
+}
+
+.sv-add-btn {
+    flex-shrink: 0;
+}
+
+.sv-empty {
+    text-align: center;
+    color: #94a3b8;
+    font-size: .85rem;
+    padding: 32px 0;
+}
+
+.sv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sv-divider {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 2px 4px;
+    font-size: .75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.sv-clear {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: .72rem;
+    color: #94a3b8;
+    font-family: inherit;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: background .15s, color .15s;
+}
+
+.sv-clear:hover {
+    background: #fee2e2;
+    color: #EF4444;
+}
+
+/* ── Item row ── */
+.sir-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 12px;
+    transition: opacity .2s;
+}
+
+.sir-row--done {
+    opacity: .55;
+}
+
+.sir-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color .15s, background .15s;
+}
+
+.sir-check:not([style*="background"]):hover {
+    border-color: var(--ac, #2563EB);
+}
+
+.sir-checkmark {
+    color: #fff;
+    font-size: .65rem;
+    font-weight: 700;
+}
+
+.sir-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.sir-text {
+    font-size: .88rem;
+    color: #0f172a;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.sir-row--done .sir-text {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.sir-adder {
+    font-size: .7rem;
+    font-weight: 600;
+    opacity: .75;
+}
+
+.sir-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #cbd5e1;
+    padding: 2px 4px;
+    transition: color .15s;
+    flex-shrink: 0;
+}
+
+.sir-delete:hover {
+    color: #EF4444;
+}
