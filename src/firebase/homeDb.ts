@@ -14,8 +14,13 @@ export const addTask = (householdId: string, task: Omit<Task, 'id'>) =>
 export const removeTask = (householdId: string, id: string) =>
     remove(hRef(householdId, `tasks/${id}`))
 
-export const updateTask = (householdId: string, id: string, data: Partial<Omit<Task, 'id'>>) =>
-    update(hRef(householdId, `tasks/${id}`), data)
+export const updateTask = (householdId: string, id: string, data: Partial<Omit<Task, 'id'>>) => {
+    // Firebase rejects undefined values; convert to null (Firebase deletes null fields)
+    const cleaned = Object.fromEntries(
+        Object.entries(data).map(([k, v]) => [k, v === undefined ? null : v]),
+    )
+    return update(hRef(householdId, `tasks/${id}`), cleaned)
+}
 
 export const completeTask = async (householdId: string, task: Task): Promise<void> => {
     const doneBy =
