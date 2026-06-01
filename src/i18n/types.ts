@@ -193,6 +193,13 @@ export interface T {
         dueDateYesterday: string
         estimatedDaysPlaceholder: string
         noTasksInColumn: string
+        // Edit modal
+        editTask: string
+        editTaskTitle: string
+        statusLabel: string
+        createdByLabel: string
+        createdOnLabel: string
+        estimatedDaysUnit: string
     }
 
     // ── Landing page ─────────────────────────────────────

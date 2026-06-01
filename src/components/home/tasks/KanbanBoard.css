@@ -33,7 +33,7 @@
 }
 
 .tg-group--todo        { border-inline-start-color: #94a3b8; }
-.tg-group--in-progress { border-inline-start-color: #2563eb; }
+.tg-group--in-progress { border-inline-start-color: var(--ac, #2563eb); }
 .tg-group--done        { border-inline-start-color: #10b981; }
 
 /* Header */
@@ -75,7 +75,7 @@
 }
 
 .tg-group--todo        .tg-label { color: #475569; }
-.tg-group--in-progress .tg-label { color: #2563eb; }
+.tg-group--in-progress .tg-label { color: var(--ac, #2563eb); }
 .tg-group--done        .tg-label { color: #10b981; }
 
 /* Count badge */
@@ -90,7 +90,7 @@
     text-align: center;
 }
 
-.tg-group--in-progress .tg-count { background: #dbeafe; color: #1d4ed8; }
+.tg-group--in-progress .tg-count { background: var(--acl, #dbeafe); color: var(--acd, #1d4ed8); }
 .tg-group--done        .tg-count { background: #d1fae5; color: #065f46; }
 
 /* Group body — droppable zone */

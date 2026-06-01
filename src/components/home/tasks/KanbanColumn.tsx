@@ -13,9 +13,10 @@ interface Props {
     tasks: Task[]
     members: Member[]
     onDelete: (task: Task) => void
+    onEdit: (task: Task) => void
 }
 
-export function TaskGroup({ status, label, emptyText, tasks, members, onDelete }: Props) {
+export function TaskGroup({ status, label, emptyText, tasks, members, onDelete, onEdit }: Props) {
     const { setNodeRef } = useDroppable({ id: status })
     const [collapsed, setCollapsed] = useState(false)
 
@@ -42,6 +43,7 @@ export function TaskGroup({ status, label, emptyText, tasks, members, onDelete }
                                     task={task}
                                     members={members}
                                     onDelete={onDelete}
+                                    onEdit={onEdit}
                                 />
                             ))
                         )}

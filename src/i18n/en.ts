@@ -179,6 +179,12 @@ export const en: T = {
         dueDateYesterday: 'Yesterday',
         estimatedDaysPlaceholder: 'e.g. 3',
         noTasksInColumn: 'No tasks',
+        editTask: 'Edit',
+        editTaskTitle: 'Edit Task',
+        statusLabel: 'Status',
+        createdByLabel: 'Created by',
+        createdOnLabel: 'Created',
+        estimatedDaysUnit: 'days',
     },
 
     landing: {

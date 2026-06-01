@@ -8,6 +8,7 @@ import { KanbanBoard } from './tasks/KanbanBoard'
 import { AddTaskModal } from './tasks/AddTaskModal'
 import { ShoppingView } from './shopping/ShoppingView'
 import type { Task, TaskStatus } from '../../types/home'
+import { inferTaskStatus } from './tasks/KanbanBoard'
 import type { Member } from '../../types'
 import './HomeView.css'
 
@@ -25,7 +26,7 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
     const { showConfirm } = useConfirm()
     const { showToast } = useToast()
 
-    const { tasks, add: addTask, remove: removeTask, moveStatus, reorder } = useTasks(householdId)
+    const { tasks, add: addTask, remove: removeTask, moveStatus, reorder, update: updateTask } = useTasks(householdId)
     const { items, add: addItem, toggle: toggleItem, remove: removeItem, clearDone } = useShoppingList(householdId)
 
     const [tab, setTab] = useState<HomeTab>('tasks')
@@ -40,6 +41,17 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
             danger: true,
         })
         if (confirmed) removeTask(task.id)
+    }
+
+    const handleEditTask = async (task: Task, updates: Partial<Omit<Task, 'id'>>) => {
+        const { status, ...rest } = updates
+        if (status && status !== inferTaskStatus(task)) {
+            await moveStatus(task, status)
+        }
+        const restKeys = Object.keys(rest)
+        if (restKeys.length > 0) {
+            await updateTask(task.id, rest)
+        }
     }
 
     const handleAddTask = async (task: Omit<Task, 'id'>) => {
@@ -85,6 +97,7 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
                     onMoveStatus={handleMoveStatus}
                     onReorder={reorder}
                     onDelete={handleDeleteTask}
+                    onEdit={handleEditTask}
                     onAddClick={() => setShowAddTask(true)}
                 />
             )}

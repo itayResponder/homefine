@@ -179,6 +179,12 @@ export const he: T = {
         dueDateYesterday: 'אתמול',
         estimatedDaysPlaceholder: 'לדוגמה: 3',
         noTasksInColumn: 'אין משימות',
+        editTask: 'ערוך',
+        editTaskTitle: 'עריכת משימה',
+        statusLabel: 'סטטוס',
+        createdByLabel: 'יוצר',
+        createdOnLabel: 'נוצר',
+        estimatedDaysUnit: 'ימים',
     },
 
     landing: {

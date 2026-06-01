@@ -2,7 +2,7 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useI18n } from '../../../i18n/context'
-import { getTaskUrgency } from '../../../utils/taskUrgency'
+import { getIntervalLabel } from '../../../constants/tasks'
 import { ROOM_DEFS } from '../../../constants/rooms'
 import type { Task } from '../../../types/home'
 import type { Member } from '../../../types'
@@ -12,6 +12,7 @@ interface Props {
     task: Task
     members: Member[]
     onDelete: (task: Task) => void
+    onEdit: (task: Task) => void
     isDragOverlay?: boolean
 }
 
@@ -19,6 +20,15 @@ function getAssigneeInfo(task: Task, members: Member[]) {
     const id = task.assignedTo === 'rotation' ? task.rotationOrder?.[0] : task.assignedTo
     const member = members.find((m) => m.id === id)
     return { name: member?.name ?? '—', color: member?.color ?? '#94a3b8' }
+}
+
+function getCreatorName(task: Task, members: Member[]): string {
+    return members.find((m) => m.id === task.createdBy)?.name ?? '—'
+}
+
+function formatDate(ts: number): string {
+    const d = new Date(ts)
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
 }
 
 function formatDueDate(
@@ -35,7 +45,7 @@ function formatDueDate(
     return `${d.getDate()}/${d.getMonth() + 1}`
 }
 
-export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: Props) {
+export function KanbanCard({ task, members, onDelete, onEdit, isDragOverlay = false }: Props) {
     const { t } = useI18n()
     const h = t.home
 
@@ -48,11 +58,12 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
         transition,
     }
 
-    const urgency = getTaskUrgency(task)
     const { name: assigneeName, color: assigneeColor } = getAssigneeInfo(task, members)
+    const creatorName = getCreatorName(task, members)
     const roomDef = ROOM_DEFS[task.room]
     const roomKey = `room${task.room.charAt(0).toUpperCase() + task.room.slice(1)}` as keyof typeof h
     const roomLabel = h[roomKey] as string
+    const intervalText = getIntervalLabel(task.intervalDays, h)
 
     // Progress bar (in-progress + estimatedDays)
     const showProgress = task.status === 'in-progress' && !!task.estimatedDays
@@ -76,7 +87,7 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
         <div
             ref={setNodeRef}
             style={style}
-            className={`kc-card kc-card--${urgency}${isGhosting ? ' kc-card--ghost' : ''}${isDragOverlay ? ' kc-card--overlay' : ''}`}
+            className={`kc-card kc-card--${task.status ?? 'todo'}${isGhosting ? ' kc-card--ghost' : ''}${isDragOverlay ? ' kc-card--overlay' : ''}`}
             {...listeners}
             {...attributes}
         >
@@ -85,11 +96,15 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
                 <div className="kc-top">
                     <span className="kc-title">{task.title}</span>
                     <button
+                        className="kc-edit"
+                        onClick={(e) => { e.stopPropagation(); onEdit(task) }}
+                        aria-label={h.editTask}
+                    >
+                        ✎
+                    </button>
+                    <button
                         className="kc-delete"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            onDelete(task)
-                        }}
+                        onClick={(e) => { e.stopPropagation(); onDelete(task) }}
                         aria-label={h.deleteTask}
                     >
                         ×
@@ -105,11 +120,27 @@ export function KanbanCard({ task, members, onDelete, isDragOverlay = false }: P
                     <span className="kc-assignee">{assigneeName}</span>
                 </div>
 
+                <div className="kc-meta kc-details">
+                    <span className="kc-interval">🔄 {intervalText}</span>
+                    {!!task.estimatedDays && (
+                        <>
+                            <span className="kc-sep">·</span>
+                            <span>⏱ {task.estimatedDays} {h.estimatedDaysUnit}</span>
+                        </>
+                    )}
+                </div>
+
                 {dueDateText && (
                     <div className={`kc-due${isDueOverdue ? ' kc-due--overdue' : ''}`}>
                         📅 {dueDateText}
                     </div>
                 )}
+
+                <div className="kc-footer">
+                    <span>{h.createdByLabel}: {creatorName}</span>
+                    <span className="kc-sep">·</span>
+                    <span>{formatDate(task.createdAt)}</span>
+                </div>
 
                 {showProgress && (
                     <div className="kc-progress">

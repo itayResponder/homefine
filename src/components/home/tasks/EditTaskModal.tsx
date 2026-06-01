@@ -1,31 +1,34 @@
-// src/components/home/tasks/AddTaskModal.tsx
+// src/components/home/tasks/EditTaskModal.tsx
 import React, { useState } from 'react'
 import { useI18n } from '../../../i18n/context'
 import { ROOM_ORDER, ROOM_DEFS } from '../../../constants/rooms'
 import { INTERVALS } from '../../../constants/tasks'
 import { CustomSelect } from '../../ui/CustomSelect'
 import { CustomDatePicker } from '../../ui/CustomDatePicker'
-import type { Task, TaskRoom } from '../../../types/home'
+import type { Task, TaskRoom, TaskStatus } from '../../../types/home'
 import type { Member } from '../../../types'
 import './AddTaskModal.css'
 
 interface Props {
+    task: Task
     members: Member[]
-    currentMemberId?: string
-    onAdd: (task: Omit<Task, 'id'>) => void
+    onSave: (updates: Partial<Omit<Task, 'id'>>) => void
     onClose: () => void
 }
 
-export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props) {
+export function EditTaskModal({ task, members, onSave, onClose }: Props) {
     const { t } = useI18n()
     const h = t.home
 
-    const [title, setTitle] = useState('')
-    const [room, setRoom] = useState<TaskRoom>('general')
-    const [assignedTo, setAssignedTo] = useState<string>(currentMemberId ?? members[0]?.id ?? 'rotation')
-    const [intervalDays, setIntervalDays] = useState(7)
-    const [dueDate, setDueDate] = useState('')
-    const [estimatedDays, setEstimatedDays] = useState('')
+    const [title, setTitle]               = useState(task.title)
+    const [room, setRoom]                 = useState<TaskRoom>(task.room)
+    const [assignedTo, setAssignedTo]     = useState(task.assignedTo)
+    const [intervalDays, setIntervalDays] = useState(task.intervalDays)
+    const [dueDate, setDueDate]           = useState(task.dueDate ?? '')
+    const [estimatedDays, setEstimatedDays] = useState(
+        task.estimatedDays != null ? String(task.estimatedDays) : '',
+    )
+    const [status, setStatus]             = useState<TaskStatus>(task.status ?? 'todo')
 
     const roomOptions = ROOM_ORDER.map((r) => ({
         value: r,
@@ -42,32 +45,52 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
         label: h[key] as string,
     }))
 
+    const statusOptions: { value: TaskStatus; label: string }[] = [
+        { value: 'todo',        label: h.kanbanTodo },
+        { value: 'in-progress', label: h.kanbanInProgress },
+        { value: 'done',        label: h.kanbanDone },
+    ]
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         if (!title.trim()) return
 
-        const isRotation = assignedTo === 'rotation'
-        const task: Omit<Task, 'id'> = {
+        const updates: Partial<Omit<Task, 'id'>> = {
             title: title.trim(),
             room,
-            assignedTo: isRotation ? 'rotation' : assignedTo,
-            ...(isRotation ? { rotationOrder: members.map((m) => m.id) } : {}),
+            assignedTo,
             intervalDays,
-            createdAt: Date.now(),
-            createdBy: currentMemberId ?? members[0]?.id ?? '',
-            status: 'todo',
-            ...(dueDate ? { dueDate } : {}),
-            ...(estimatedDays && !isNaN(Number(estimatedDays)) ? { estimatedDays: Number(estimatedDays) } : {}),
+            status,
+            ...(dueDate ? { dueDate } : { dueDate: undefined }),
+            ...(estimatedDays && !isNaN(Number(estimatedDays))
+                ? { estimatedDays: Number(estimatedDays) }
+                : { estimatedDays: undefined }),
         }
-        onAdd(task)
-        onClose()
+
+        // Handle rotation order when switching assignedTo
+        if (assignedTo === 'rotation' && task.assignedTo !== 'rotation') {
+            updates.rotationOrder = members.map((m) => m.id)
+        } else if (assignedTo !== 'rotation') {
+            updates.rotationOrder = undefined
+        }
+
+        // Set startedAt when moving to in-progress for the first time
+        if (status === 'in-progress' && !task.startedAt) {
+            updates.startedAt = Date.now()
+        }
+        // Set lastDoneAt when moving to done
+        if (status === 'done' && task.status !== 'done') {
+            updates.lastDoneAt = Date.now()
+        }
+
+        onSave(updates)
     }
 
     return (
         <div className="ap-modal-overlay atm-overlay" onClick={onClose}>
             <div className="ap-modal atm-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="ap-modal-header">
-                    <span>{h.addTaskBtn.replace('+ ', '')}</span>
+                    <span>{h.editTaskTitle}</span>
                     <button className="ap-modal-close" onClick={onClose}>×</button>
                 </div>
 
@@ -83,6 +106,16 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
                             placeholder={h.taskTitlePlaceholder}
                             autoFocus
                             required
+                        />
+                    </label>
+
+                    {/* Status */}
+                    <label className="atm-label">
+                        <span>{h.statusLabel}</span>
+                        <CustomSelect
+                            options={statusOptions}
+                            value={status}
+                            onChange={(v) => setStatus(v as TaskStatus)}
                         />
                     </label>
 
@@ -146,7 +179,7 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
                             {t.cancel}
                         </button>
                         <button type="submit" className="sbtn" disabled={!title.trim()}>
-                            {t.add}
+                            {t.saveChanges}
                         </button>
                     </div>
                 </form>

@@ -10,6 +10,7 @@ import type { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { TaskGroup } from './KanbanColumn'
 import { KanbanCard } from './KanbanCard'
+import { EditTaskModal } from './EditTaskModal'
 import { useI18n } from '../../../i18n/context'
 import type { Task, TaskStatus } from '../../../types/home'
 import type { Member } from '../../../types'
@@ -34,14 +35,16 @@ interface Props {
     onMoveStatus: (task: Task, status: TaskStatus) => void
     onReorder: (updates: { id: string; order: number }[]) => void
     onDelete: (task: Task) => void
+    onEdit: (task: Task, updates: Partial<Omit<Task, 'id'>>) => void
     onAddClick: () => void
 }
 
-export function KanbanBoard({ tasks, members, onMoveStatus, onReorder, onDelete, onAddClick }: Props) {
+export function KanbanBoard({ tasks, members, onMoveStatus, onReorder, onDelete, onEdit, onAddClick }: Props) {
     const { t } = useI18n()
     const h = t.home
 
     const [activeTask, setActiveTask] = useState<Task | null>(null)
+    const [editingTask, setEditingTask] = useState<Task | null>(null)
     const [localTasks, setLocalTasks] = useState<Task[]>([])
     const dragActive = useRef(false)
 
@@ -156,6 +159,7 @@ export function KanbanBoard({ tasks, members, onMoveStatus, onReorder, onDelete,
                             tasks={localTasks.filter((t) => inferTaskStatus(t) === status)}
                             members={members}
                             onDelete={onDelete}
+                            onEdit={setEditingTask}
                         />
                     ))}
                 </div>
@@ -166,11 +170,21 @@ export function KanbanBoard({ tasks, members, onMoveStatus, onReorder, onDelete,
                             task={activeTask}
                             members={members}
                             onDelete={() => {}}
+                            onEdit={() => {}}
                             isDragOverlay
                         />
                     )}
                 </DragOverlay>
             </DndContext>
+
+            {editingTask && (
+                <EditTaskModal
+                    task={editingTask}
+                    members={members}
+                    onSave={(updates) => { onEdit(editingTask, updates); setEditingTask(null) }}
+                    onClose={() => setEditingTask(null)}
+                />
+            )}
         </div>
     )
 }

@@ -977,3 +977,14 @@
 .cd-day.today { color: var(--ac); font-weight: 700; }
 .cd-day.sel { background: var(--ac); color: #fff; font-weight: 600; }
 .cd-day.empty { pointer-events: none; }
+
+/* Open upward variant */
+.cd-wrap.open-up .cd-pop {
+    top: auto;
+    bottom: calc(100% + 4px);
+}
+
+@media (max-width: 480px) {
+    .cd-day { padding: 9px 1px; font-size: 13px; }
+    .cd-pop  { padding: 14px 10px; }
+}
