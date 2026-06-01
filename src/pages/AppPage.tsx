@@ -24,6 +24,7 @@ import { RecurringSection } from '../components/app/RecurringSection'
 import { LogsSection } from '../components/app/LogsSection'
 import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
+import { AddMemberModal } from '../components/app/AddMemberModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
 import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant, subscribeUserMembership, leaveHousehold } from '../firebase/db'
@@ -100,6 +101,7 @@ export default function AppPage() {
     const [month, setMonth] = useState(currentMonth)
     const [editingTx, setEditingTx] = useState<Transaction | null>(null)
     const [modal, setModal] = useState<'settings' | 'logs' | null>(null)
+    const [showAddMember, setShowAddMember] = useState(false)
 
     // ── Auto-apply recurring charges ──────────────────────────────────────────
     const txRef = useRef(transactions)
@@ -263,8 +265,8 @@ export default function AppPage() {
     if (!appReady) {
         return (
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFF', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2563EB', letterSpacing: '-0.02em', opacity: 0.6 }}>
-                    Home<span style={{ color: '#0F172A' }}>Fine</span>
+                <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.02em', opacity: 0.6 }}>
+                    Home<span style={{ color: '#2563EB' }}>Fine</span>
                 </span>
             </div>
         )
@@ -302,6 +304,7 @@ export default function AppPage() {
                     expensesOnly={expensesOnly}
                     onChange={setView}
                     onRemoveMember={handleRemoveMember}
+                    onAddMember={() => setShowAddMember(true)}
                 />
 
                 {view === 'summary' && (
@@ -378,7 +381,6 @@ export default function AppPage() {
                                 recurringCharges={recurringCharges}
                                 members={members}
                                 logs={logs}
-                                onAddMember={handleAddMember}
                                 onRemoveMember={handleRemoveMember}
                                 primaryColor={primaryColor}
                                 onColorChange={updateColor}
@@ -395,6 +397,13 @@ export default function AppPage() {
                         {modal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
                     </div>
                 </div>
+            )}
+
+            {showAddMember && (
+                <AddMemberModal
+                    onAdd={handleAddMember}
+                    onClose={() => setShowAddMember(false)}
+                />
             )}
 
             {editingTx && (

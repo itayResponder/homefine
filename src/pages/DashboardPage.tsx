@@ -6,7 +6,7 @@ import { useHouseholds } from '../hooks/useHouseholds'
 import { useJoinRequests } from '../hooks/useJoinRequests'
 import { useUserColor } from '../hooks/useUserColor'
 import { buildColorVars } from '../utils/color'
-import { approveJoinRequest, denyJoinRequest, deleteHousehold } from '../firebase/db'
+import { approveJoinRequest, denyJoinRequest, deleteHousehold, addMember } from '../firebase/db'
 import { useConfirm } from '../contexts/ui'
 import { BellSVG, NotificationPanel } from '../components/ui/NotificationPanel'
 import '../components/ui/NotificationPanel.css'
@@ -25,6 +25,8 @@ export default function DashboardPage() {
 
     const [showCreate, setShowCreate] = useState(false)
     const [newName, setNewName] = useState('')
+    const [ownerName, setOwnerName] = useState('')
+    const [ownerNameEn, setOwnerNameEn] = useState('')
     const [loading, setLoading] = useState(false)
     const [copied, setCopied] = useState<string | null>(null)
     const [settingsOpen, setSettingsOpen] = useState(false)
@@ -50,11 +52,25 @@ export default function DashboardPage() {
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!newName.trim()) return
+        if (!newName.trim() || !ownerName.trim()) return
         setLoading(true)
         const id = await create(newName.trim())
+        await addMember(id, {
+            name: ownerName.trim(),
+            ...(ownerNameEn.trim() ? { nameEn: ownerNameEn.trim() } : {}),
+            ...(user?.uid ? { userId: user.uid } : {}),
+            color: '#6C63FF',
+            createdAt: Date.now(),
+        })
         setLoading(false)
         navigate(`/app/${id}`)
+    }
+
+    const handleCancelCreate = () => {
+        setShowCreate(false)
+        setNewName('')
+        setOwnerName('')
+        setOwnerNameEn('')
     }
 
     const handleCopyLink = (e: React.MouseEvent, householdId: string) => {
@@ -214,11 +230,28 @@ export default function DashboardPage() {
                                 autoFocus
                                 required
                             />
+                            <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', margin: '14px 0 8px' }}>
+                                {isRtl ? 'שמך בבית' : 'Your name in this household'}
+                            </div>
+                            <input
+                                className="db-input"
+                                value={ownerName}
+                                onChange={(e) => setOwnerName(e.target.value)}
+                                placeholder={isRtl ? 'למשל: איתי' : 'e.g. Itay'}
+                                required
+                            />
+                            <input
+                                className="db-input"
+                                style={{ marginTop: 8 }}
+                                value={ownerNameEn}
+                                onChange={(e) => setOwnerNameEn(e.target.value)}
+                                placeholder={isRtl ? 'שם באנגלית (אופציונלי)' : 'English name (optional)'}
+                            />
                             <div className="db-form-actions">
                                 <button type="submit" className="db-btn-primary" disabled={loading}>
                                     {loading ? '...' : (isRtl ? 'צור' : 'Create')}
                                 </button>
-                                <button type="button" className="db-btn-ghost" onClick={() => setShowCreate(false)}>
+                                <button type="button" className="db-btn-ghost" onClick={handleCancelCreate}>
                                     {t.cancel}
                                 </button>
                             </div>

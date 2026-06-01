@@ -9,7 +9,6 @@ interface Props {
     recurringCharges: RecurringCharge[]
     members: Member[]
     logs: LogEntry[]
-    onAddMember: (name: string, nameEn?: string) => void
     onRemoveMember: (id: string) => void
     primaryColor: string
     onColorChange: (color: string) => void
@@ -35,24 +34,13 @@ function fmtJoinDate(ts: number): string {
 
 export function SettingsView({
     transactions, recurringCharges, members, logs,
-    onAddMember, onRemoveMember, primaryColor, onColorChange,
+    onRemoveMember, primaryColor, onColorChange,
     isOwner, meta, onUpdateSettings, onRename,
     currentUserId, onToggleMemberIncome,
     participants, onRemoveParticipant,
 }: Props) {
     const { t } = useI18n()
-    const [newName, setNewName] = useState('')
-    const [newNameEn, setNewNameEn] = useState('')
     const categories = Object.entries(t.categoryOptions) as [TransactionCategory, string][]
-
-    const handleAddMember = (e: React.FormEvent) => {
-        e.preventDefault()
-        const name = newName.trim()
-        if (!name) return
-        onAddMember(name, newNameEn.trim() || undefined)
-        setNewName('')
-        setNewNameEn('')
-    }
 
     const handleExport = () => {
         const data = { transactions, recurringCharges, members, logs }
@@ -226,30 +214,6 @@ export function SettingsView({
                         ))}
                     </div>
                 )}
-                <form onSubmit={handleAddMember}>
-                    <div className="fg fg2" style={{ marginBottom: 8 }}>
-                        <div className="fl">
-                            <label>{t.memberNameLabel}</label>
-                            <input
-                                className="inp"
-                                value={newName}
-                                onChange={(e) => setNewName(e.target.value)}
-                                placeholder={t.memberNamePlaceholder}
-                                required
-                            />
-                        </div>
-                        <div className="fl">
-                            <label>{t.memberNameEnLabel}</label>
-                            <input
-                                className="inp"
-                                value={newNameEn}
-                                onChange={(e) => setNewNameEn(e.target.value)}
-                                placeholder={t.memberNameEnPlaceholder}
-                            />
-                        </div>
-                    </div>
-                    <button type="submit" className="sbtn">{t.add}</button>
-                </form>
             </div>
 
             {/* Categories */}

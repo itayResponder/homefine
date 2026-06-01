@@ -11,9 +11,10 @@ interface Props {
     expensesOnly?: boolean
     onChange: (v: AppView) => void
     onRemoveMember: (id: string) => void
+    onAddMember: () => void
 }
 
-export function AppNav({ view, members, expensesOnly, onChange, onRemoveMember }: Props) {
+export function AppNav({ view, members, expensesOnly, onChange, onRemoveMember, onAddMember }: Props) {
     const { t } = useI18n()
     const memberName = useMemberName()
 
@@ -59,6 +60,10 @@ export function AppNav({ view, members, expensesOnly, onChange, onRemoveMember }
                     </button>
                 )
             })}
+
+            <button className="pill pill--add" onClick={onAddMember} aria-label="Add member">
+                ＋
+            </button>
 
             {tail.map((p) => (
                 <button

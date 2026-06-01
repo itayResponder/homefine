@@ -34,10 +34,10 @@
 .db-logo {
     font-size: 1.15rem;
     font-weight: 800;
-    color: var(--ac, #6C63FF);
+    color: #0F172A;
     letter-spacing: -0.02em;
 }
-.db-logo span { color: #0F172A; }
+.db-logo span { color: #2563EB; }
 
 .db-header-right {
     display: flex;

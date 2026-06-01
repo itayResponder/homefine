@@ -15,11 +15,11 @@
 .jp-logo {
     font-size: 1.25rem;
     font-weight: 800;
-    color: var(--brand);
+    color: #0F172A;
     letter-spacing: -0.02em;
 }
 
-.jp-logo span { color: #0F172A; }
+.jp-logo span { color: #2563EB; }
 
 .jp-card {
     background: #fff;

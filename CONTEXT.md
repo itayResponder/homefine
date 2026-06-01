@@ -33,7 +33,7 @@ Any Google account can sign in. Access control is enforced server-side via Fireb
 - **[member name]** — per-member stats + expenses + income (X button to delete)
 - **חיובים קבועים** — recurring charges management
 - **לוגים** — change history (via settings gear → dropdown)
-- **הגדרות** — member management, income privacy, owner controls, color theme, export
+- **הגדרות** — member management (chips list + remove), income privacy, owner controls, color theme, export. Add-member form was moved out of Settings to the pills `+` button modal.
 
 ## Key Hooks
 | Hook | Args | Purpose |
@@ -104,6 +104,9 @@ rent, electricity, water, gas, internet, mobile, property_tax, food, entertainme
 - Deploy: `firebase deploy --only database`
 
 - ✅ Landing page updated — CTA changed from "התחל בחינם/Start for Free" → "התחל עכשיו/Get Started"; stats updated (removed "חינם/Free", added "מרובה/Multi" — manage multiple households); feature 6 updated from whitelist → invite link + owner approval description; bottom CTA desc updated; hero mockup replaced with real locale-aware screenshots (`/screenshot-he.png`, `/screenshot-en.png` — switches automatically by language).
+- ✅ Member card auto-created on household creation — DashboardPage creation form now collects owner name (Hebrew required, English optional); card created via `addMember` from `firebase/db` immediately after household creation with color `#6C63FF`.
+- ✅ Add member via pills `+` button — `AddMemberModal.tsx` opens from AppNav's `＋` pill (after member pills). Add-member form removed from SettingsView; member chips list remains there for deletion only.
+- ✅ Logo colors fixed & consistent everywhere — "Home" = `#0F172A` (dark), "Fine" = `#2563EB` (blue). Previously DashboardPage used `var(--ac)` (theme-dependent) and JoinPage used `var(--brand)` for the wrong part. App.tsx + AppPage.tsx loaders also had colors inverted. All now match LandingPage and AppHeader.
 
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel (metadata only, for app owner)
