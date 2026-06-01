@@ -3,5 +3,19 @@
     "allow": [
       "Bash(npx tsc *)"
     ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$s = git diff HEAD --name-only; if ($s) { '{\"systemMessage\": \"Source files modified - update CONTEXT.md and memory files if not done.\"}' }",
+            "shell": "powershell",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }

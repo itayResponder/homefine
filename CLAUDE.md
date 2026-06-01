@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Session Start — Always Do This First
+At the start of every conversation, read `CONTEXT.md` to get the current project state before starting any work.
+
+## Auto-Update Rule
+After completing any feature or significant change — without waiting to be asked — automatically:
+1. Update `CONTEXT.md` (add to "What's Built", fix outdated descriptions)
+2. Update the relevant memory files in `C:\Users\itay\.claude\projects\d--Itay-Projects-Itay-Projects-homefine\memory\`
+3. Update `MEMORY.md` index if a new memory file was added
+
 ## Commands
 
 ```bash
@@ -83,7 +92,7 @@ Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir,
 `RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via debounced `useEffect` (600ms) in `AppPage`.
 
 ### Navigation (AppNav pills)
-Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] → [member pills with × to delete] → חיובים קבועים → לוגים → הגדרות. Member pills dynamically generated from `members[]`. Clicking × triggers `handleRemoveMember` (deletes member + all their transactions/recurring).
+Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] → [member pills with × to delete] → ＋ → חיובים קבועים. Logs and Settings are opened via modals from AppHeader (not pills). Member pills dynamically generated from `members[]`. Clicking × triggers `handleRemoveMember` (deletes member + all their transactions/recurring). Clicking ＋ opens `AddMemberModal`.
 
 ### Member Name Localization
 `useMemberName()` hook returns a function `(member) => string` — uses `member.nameEn` when locale is English, `member.name` (Hebrew) otherwise. Members have both `name` (Hebrew) and optional `nameEn` (English) fields.
@@ -93,6 +102,7 @@ Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] →
 - `src/components/ui/CustomDatePicker.tsx` — styled calendar (cd-* classes)
 - `src/components/ui/Money.tsx` — currency display
 - `src/components/ui/NotificationPanel.tsx` — join request panel + BellSVG export
+- `src/components/app/AddMemberModal.tsx` — modal for adding a member (name HE + EN), opened via AppNav ＋ pill
 
 ### CSS Conventions
 - All shared design-system classes in `src/pages/AppPage.css` (`.ap-root`, `.wrap`, `.hero`, `.pills`, `.pill`, `.fcard`, `.inp`, `.sbtn`, etc.)
