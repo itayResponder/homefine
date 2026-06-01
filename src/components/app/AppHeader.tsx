@@ -1,5 +1,6 @@
 // src/components/app/AppHeader.tsx
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useI18n } from '../../i18n/context'
 import { LanguageToggle } from '../LanguageToggle'
 import { BellSVG, NotificationPanel } from '../ui/NotificationPanel'
@@ -9,9 +10,10 @@ import './AppHeader.css'
 
 interface Props {
     user: AppUser | null
+    householdId: string
     onLogout: () => void
-    onOpenSettings: () => void
-    onOpenLogs: () => void
+    onOpenSettings?: () => void
+    onOpenLogs?: () => void
     onDashboard: () => void
     joinRequests?: JoinRequest[]
     onApproveJoin?: (householdId: string, uid: string) => void
@@ -20,14 +22,19 @@ interface Props {
 }
 
 export function AppHeader({
-    user, onLogout, onOpenSettings, onOpenLogs, onDashboard,
+    user, householdId, onLogout, onOpenSettings, onOpenLogs, onDashboard,
     joinRequests = [], onApproveJoin, onDenyJoin, onLeave,
 }: Props) {
     const { t } = useI18n()
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
     const [menuOpen, setMenuOpen] = useState(false)
     const [notifOpen, setNotifOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
     const notifRef = useRef<HTMLDivElement>(null)
+
+    const isHomeActive = pathname === `/app/${householdId}/home`
+    const isFinanceActive = !isHomeActive
 
     useEffect(() => {
         const close = (e: MouseEvent) => {
@@ -44,6 +51,22 @@ export function AppHeader({
     return (
         <header className="ap-header">
             <div className="ap-logo">Home<span>Fine</span></div>
+
+            {/* App navbar */}
+            <nav className="ap-nav">
+                <button
+                    className={`ap-nav-btn${isFinanceActive ? ' ap-nav-btn--active' : ''}`}
+                    onClick={() => navigate(`/app/${householdId}`)}
+                >
+                    {t.navFinance}
+                </button>
+                <button
+                    className={`ap-nav-btn${isHomeActive ? ' ap-nav-btn--active' : ''}`}
+                    onClick={() => navigate(`/app/${householdId}/home`)}
+                >
+                    {t.navHousehold}
+                </button>
+            </nav>
 
             <div className="ap-user">
                 <LanguageToggle />
@@ -92,8 +115,12 @@ export function AppHeader({
                     {menuOpen && (
                         <div className="ap-settings-dropdown">
                             <button onClick={() => pick(onDashboard)}>{t.myHouseholds}</button>
-                            <button onClick={() => pick(onOpenSettings)}>{t.tabSettings}</button>
-                            <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
+                            {onOpenSettings && (
+                                <button onClick={() => pick(onOpenSettings)}>{t.tabSettings}</button>
+                            )}
+                            {onOpenLogs && (
+                                <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
+                            )}
                             {onLeave && (
                                 <button className="ap-settings-dropdown-logout" onClick={() => pick(onLeave)}>
                                     {t.dir === 'rtl' ? 'עזוב בית' : 'Leave household'}

@@ -36,6 +36,8 @@ export interface T {
     tabSettings: string
     navRecurring: string   // kept for AppNav compat
     navLogs: string        // kept for AppNav compat
+    navFinance: string
+    navHousehold: string
 
     // ── Core app UI ──────────────────────────────────────
     signOut: string

@@ -23,6 +23,8 @@ export const he: T = {
     tabSettings: 'הגדרות',
     navRecurring: 'חיובים קבועים',
     navLogs: 'לוגים',
+    navFinance: 'כספים',
+    navHousehold: 'ניהול משק בית',
 
     signOut: 'התנתק',
     myHouseholds: 'הבתים שלי',

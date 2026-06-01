@@ -27,6 +27,36 @@
     color: #2563EB;
 }
 
+/* ── App navbar (כספים / ניהול משק בית) ── */
+.ap-nav {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, .06);
+    border-radius: 14px;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.ap-nav-btn {
+    padding: 7px 18px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    font-size: .82rem;
+    font-weight: 700;
+    color: #0F172A;
+    cursor: pointer;
+    transition: background .15s, color .15s, box-shadow .15s;
+    white-space: nowrap;
+}
+
+.ap-nav-btn--active {
+    background: #2563EB;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, .28);
+}
+
 /* ── Month navigation — always LTR so arrows stay consistent ── */
 .ap-month-nav {
     display: flex;
@@ -185,8 +215,23 @@
         justify-content: space-between;
     }
 
-    .ap-month-nav {
+    .ap-nav {
         order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 4px;
+        margin-bottom: 2px;
+    }
+
+    .ap-nav-btn {
+        flex: 1;
+        text-align: center;
+        padding: 7px 8px;
+        font-size: .78rem;
+    }
+
+    .ap-month-nav {
+        order: 4;
         width: 100%;
         justify-content: center;
         padding-bottom: 0.25rem;

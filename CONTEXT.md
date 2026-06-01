@@ -24,7 +24,8 @@ Any Google account can sign in. Access control is enforced server-side via Fireb
 | `/` | LandingPage | Marketing page |
 | `/dashboard` | DashboardPage | Household list, create/join |
 | `/join/:householdId` | JoinPage | Sends join request (owner must approve) |
-| `/app/:householdId` | AppPage | Main app, all views |
+| `/app/:householdId` | AppPage | Finance app (כספים) — all finance views |
+| `/app/:householdId/home` | HouseholdPage | Household management (ניהול משק בית) — tasks + shopping |
 
 ## AppPage Views (pills nav)
 - **סיכום** — per-member summary cards + recent transactions
@@ -109,8 +110,8 @@ rent, electricity, water, gas, internet, mobile, property_tax, food, entertainme
 - ✅ Logo colors fixed & consistent everywhere — "Home" = `#0F172A` (dark), "Fine" = `#2563EB` (blue). Previously DashboardPage used `var(--ac)` (theme-dependent) and JoinPage used `var(--brand)` for the wrong part. App.tsx + AppPage.tsx loaders also had colors inverted. All now match LandingPage and AppHeader.
 
 - ✅ Home module (tasks + shopping) — module switcher כספים/בית above content. Tasks grouped by room with condition bar (fresh/medium/due/overdue based on days-since-done ratio). Auto-rotation among members. Shopping list with real-time sync, one-tap toggle, clear done. Firebase paths: `tasks/` + `shoppingItems/` under household. Components: `src/components/home/` tree. Hooks: `useTasks`, `useShoppingList`. DB: `src/firebase/homeDb.ts`. Types: `src/types/home.ts`. Constants: `src/constants/rooms.ts`. Utils: `src/utils/taskUrgency.ts`. i18n: `t.home.*` section added to all three files.
-- ✅ Home module navigation redesign — module switcher (💰 כספים / 🏠 בית) changed from white-pill segmented control to filled accent-color pill (`.mod-nav` + `.mod-nav-btn` + `.mod-nav-btn--active` in AppPage.css). Sub-tabs (✅ משימות / 🛒 קניות) changed from segmented control to underline style with border-bottom indicator (`.hv-tabs`/`.hv-tab` in HomeView.css). Clear visual hierarchy: primary nav = filled colored button, secondary nav = underline.
 - ✅ addTask error handling — `HomeView` now catches Firebase write failures and shows a toast (`t.home.addTaskError`). Root cause of silent failures: `database.rules.json` must be deployed with `firebase deploy --only database` for `tasks` + `shoppingItems` paths to be active in production.
+- ✅ Two-app architecture — AppPage (כספים, `/app/:householdId`) and HouseholdPage (ניהול משק בית, `/app/:householdId/home`) are separate routes. AppHeader is shared and contains a fixed-color (#2563EB) navbar with two pills: כספים / ניהול משק בית. AppHeader uses `useLocation` + `useNavigate` internally; receives `householdId` prop. `onOpenSettings` and `onOpenLogs` are now optional props — AppPage passes both, HouseholdPage passes neither (future: household settings). Both pages have auth guard via `subscribeUserMembership`. HouseholdPage renders HomeView (tasks + shopping sub-tabs). AppPage no longer has module switcher or HomeView.
 
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel (metadata only, for app owner)

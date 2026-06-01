@@ -23,6 +23,8 @@ export const en: T = {
     tabSettings: 'Settings',
     navRecurring: 'Recurring',
     navLogs: 'Logs',
+    navFinance: 'Finance',
+    navHousehold: 'Household',
 
     signOut: 'Sign out',
     myHouseholds: 'My households',

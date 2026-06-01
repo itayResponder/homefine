@@ -25,7 +25,6 @@ import { LogsSection } from '../components/app/LogsSection'
 import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { AddMemberModal } from '../components/app/AddMemberModal'
-import { HomeView } from '../components/home/HomeView'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
 import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant, subscribeUserMembership, leaveHousehold } from '../firebase/db'
@@ -98,14 +97,11 @@ export default function AppPage() {
     }, [!!meta, user?.uid])
 
     // ── UI state ──────────────────────────────────────────────────────────────
-    const [module, setModule] = useState<'finance' | 'home'>('finance')
     const [view, setView] = useState('summary')
     const [month, setMonth] = useState(currentMonth)
     const [editingTx, setEditingTx] = useState<Transaction | null>(null)
     const [modal, setModal] = useState<'settings' | 'logs' | null>(null)
     const [showAddMember, setShowAddMember] = useState(false)
-
-    const currentMemberId = members.find((m) => m.userId === user?.uid)?.id
 
     // ── Auto-apply recurring charges ──────────────────────────────────────────
     const txRef = useRef(transactions)
@@ -280,6 +276,7 @@ export default function AppPage() {
         <div className="ap-root" style={buildColorVars(primaryColor) as React.CSSProperties}>
             <AppHeader
                 user={user}
+                householdId={householdId}
                 onLogout={handleLogout}
                 onOpenSettings={() => setModal('settings')}
                 onOpenLogs={() => setModal('logs')}
@@ -293,32 +290,6 @@ export default function AppPage() {
             <OnlineBar online={online} />
 
             <div className="wrap">
-                {/* Module navigation — Finance / Home */}
-                <div className="mod-nav">
-                    <button
-                        className={`mod-nav-btn${module === 'finance' ? ' mod-nav-btn--active' : ''}`}
-                        onClick={() => setModule('finance')}
-                    >
-                        <span className="mod-nav-icon">💰</span>
-                        {t.home.moduleFinance}
-                    </button>
-                    <button
-                        className={`mod-nav-btn${module === 'home' ? ' mod-nav-btn--active' : ''}`}
-                        onClick={() => setModule('home')}
-                    >
-                        <span className="mod-nav-icon">🏠</span>
-                        {t.home.moduleHome}
-                    </button>
-                </div>
-
-                {module === 'home' ? (
-                    <HomeView
-                        householdId={householdId}
-                        members={members}
-                        currentMemberId={currentMemberId}
-                    />
-                ) : (
-                    <>
                 <HeroCard
                     members={members}
                     transactions={transactions}
@@ -392,8 +363,6 @@ export default function AppPage() {
                         onAdd={handleAddRecurring}
                         onDelete={handleDeleteRecurring}
                     />
-                )}
-                    </>
                 )}
 
             </div>
