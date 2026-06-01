@@ -93,7 +93,6 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
                 <ShoppingView
                     items={items}
                     members={members}
-                    currentMemberId={currentMemberId}
                     onAdd={(text) => addItem(text, currentMemberId ?? '')}
                     onToggle={handleToggleItem}
                     onDelete={removeItem}
