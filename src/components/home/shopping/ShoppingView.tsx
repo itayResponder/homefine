@@ -9,14 +9,13 @@ import './ShoppingView.css'
 interface Props {
     items: ShoppingItem[]
     members: Member[]
-    currentMemberId?: string
     onAdd: (text: string) => void
     onToggle: (id: string, done: boolean) => void
     onDelete: (id: string) => void
     onClearDone: () => void
 }
 
-export function ShoppingView({ items, members, currentMemberId, onAdd, onToggle, onDelete, onClearDone }: Props) {
+export function ShoppingView({ items, members, onAdd, onToggle, onDelete, onClearDone }: Props) {
     const { t } = useI18n()
     const h = t.home
     const [text, setText] = useState('')
