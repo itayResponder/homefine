@@ -103,6 +103,8 @@ rent, electricity, water, gas, internet, mobile, property_tax, food, entertainme
 - Users can remove themselves from a household (delete their own `userHouseholds` entry)
 - Deploy: `firebase deploy --only database`
 
+- ✅ Landing page updated — CTA changed from "התחל בחינם/Start for Free" → "התחל עכשיו/Get Started"; stats updated (removed "חינם/Free", added "מרובה/Multi" — manage multiple households); feature 6 updated from whitelist → invite link + owner approval description; bottom CTA desc updated; hero mockup replaced with real locale-aware screenshots (`/screenshot-he.png`, `/screenshot-en.png` — switches automatically by language).
+
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel (metadata only, for app owner)
 - ❌ Viewer role (read-only member)
