@@ -1,5 +1,4 @@
 // src/components/home/tasks/TaskRoomGroup.tsx
-import React from 'react'
 import { useI18n } from '../../../i18n/context'
 import { TaskCard } from './TaskCard'
 import { getTaskUrgency } from '../../../utils/taskUrgency'

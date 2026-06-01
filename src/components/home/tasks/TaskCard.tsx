@@ -1,5 +1,4 @@
 // src/components/home/tasks/TaskCard.tsx
-import React from 'react'
 import { useI18n } from '../../../i18n/context'
 import { getTaskUrgency, getDaysSince } from '../../../utils/taskUrgency'
 import type { Task } from '../../../types/home'

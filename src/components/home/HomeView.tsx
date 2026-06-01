@@ -1,5 +1,5 @@
 // src/components/home/HomeView.tsx
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useConfirm, useToast } from '../../contexts/ui'
 import { useTasks } from '../../hooks/useTasks'

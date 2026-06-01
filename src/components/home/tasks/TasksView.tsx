@@ -1,5 +1,4 @@
 // src/components/home/tasks/TasksView.tsx
-import React from 'react'
 import { useI18n } from '../../../i18n/context'
 import { TaskRoomGroup } from './TaskRoomGroup'
 import { ROOM_ORDER } from '../../../constants/rooms'

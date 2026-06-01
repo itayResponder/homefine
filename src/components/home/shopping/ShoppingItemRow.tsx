@@ -1,5 +1,4 @@
 // src/components/home/shopping/ShoppingItemRow.tsx
-import React from 'react'
 import type { ShoppingItem } from '../../../types/home'
 import type { Member } from '../../../types'
 
@@ -18,7 +17,7 @@ export function ShoppingItemRow({ item, members, currentMemberId, onToggle, onDe
         <div className={`sir-row${item.done ? ' sir-row--done' : ''}`}>
             <button
                 className="sir-check"
-                onClick={() => onToggle(item.id, !item.done, currentMemberId)}
+                onClick={() => onToggle(item.id, !item.done)}
                 aria-label={item.done ? 'Uncheck' : 'Check'}
                 style={{ borderColor: item.done ? (adder?.color ?? '#2563EB') : undefined,
                          background: item.done ? (adder?.color ?? '#2563EB') : undefined }}
