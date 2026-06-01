@@ -1,7 +1,7 @@
 // src/hooks/useTasks.ts
 import { useEffect, useState } from 'react'
-import { subscribeTasks, addTask, removeTask, completeTask as dbCompleteTask, updateTask } from '../firebase/homeDb'
-import type { Task } from '../types/home'
+import { subscribeTasks, addTask, removeTask, completeTask as dbCompleteTask, updateTask, moveTaskStatus as dbMoveStatus } from '../firebase/homeDb'
+import type { Task, TaskStatus } from '../types/home'
 
 export const useTasks = (householdId: string) => {
     const [tasks, setTasks] = useState<Task[]>([])
@@ -20,6 +20,7 @@ export const useTasks = (householdId: string) => {
     const remove = (id: string) => removeTask(householdId, id)
     const complete = (task: Task) => dbCompleteTask(householdId, task)
     const update = (id: string, data: Partial<Omit<Task, 'id'>>) => updateTask(householdId, id, data)
+    const moveStatus = (task: Task, status: TaskStatus) => dbMoveStatus(householdId, task, status)
 
-    return { tasks, ready, add, remove, complete, update }
+    return { tasks, ready, add, remove, complete, update, moveStatus }
 }

@@ -4,6 +4,8 @@ export type TaskRoom = 'bathroom' | 'kitchen' | 'living' | 'bedroom' | 'general'
 
 export type TaskUrgency = 'fresh' | 'medium' | 'due' | 'overdue'
 
+export type TaskStatus = 'todo' | 'in-progress' | 'done'
+
 export interface Task {
     id: string
     title: string
@@ -15,6 +17,11 @@ export interface Task {
     lastDoneBy?: string               // memberId
     createdAt: number
     createdBy: string                 // memberId
+    // Kanban fields
+    status?: TaskStatus
+    dueDate?: string                  // YYYY-MM-DD
+    estimatedDays?: number            // expected duration for progress bar
+    startedAt?: number                // timestamp when moved to in-progress
 }
 
 export interface ShoppingItem {

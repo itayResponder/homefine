@@ -30,6 +30,8 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
     const [room, setRoom] = useState<TaskRoom>('general')
     const [assignedTo, setAssignedTo] = useState<string>(currentMemberId ?? members[0]?.id ?? 'rotation')
     const [intervalDays, setIntervalDays] = useState(7)
+    const [dueDate, setDueDate] = useState('')
+    const [estimatedDays, setEstimatedDays] = useState('')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -44,6 +46,9 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
             intervalDays,
             createdAt: Date.now(),
             createdBy: currentMemberId ?? members[0]?.id ?? '',
+            status: 'todo',
+            ...(dueDate ? { dueDate } : {}),
+            ...(estimatedDays && !isNaN(Number(estimatedDays)) ? { estimatedDays: Number(estimatedDays) } : {}),
         }
         onAdd(task)
         onClose()
@@ -117,6 +122,31 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
                                 </option>
                             ))}
                         </select>
+                    </label>
+
+                    {/* Due date */}
+                    <label className="atm-label">
+                        <span>{h.dueDateLabel}</span>
+                        <input
+                            className="inp"
+                            type="date"
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
+                        />
+                    </label>
+
+                    {/* Estimated days */}
+                    <label className="atm-label">
+                        <span>{h.estimatedDaysLabel}</span>
+                        <input
+                            className="inp"
+                            type="number"
+                            min="1"
+                            max="365"
+                            value={estimatedDays}
+                            onChange={(e) => setEstimatedDays(e.target.value)}
+                            placeholder={h.estimatedDaysPlaceholder}
+                        />
                     </label>
 
                     <div className="atm-footer">

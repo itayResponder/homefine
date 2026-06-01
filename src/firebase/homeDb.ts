@@ -1,7 +1,7 @@
 // src/firebase/homeDb.ts
 import { ref, push, remove, update, onValue, off } from 'firebase/database'
 import { db } from './config'
-import type { Task, ShoppingItem } from '../types/home'
+import type { Task, ShoppingItem, TaskStatus } from '../types/home'
 
 const hRef = (householdId: string, path: string) =>
     ref(db, `households/${householdId}/${path}`)
@@ -34,6 +34,24 @@ export const completeTask = async (householdId: string, task: Task): Promise<voi
             ...task.rotationOrder.slice(1),
             task.rotationOrder[0],
         ]
+    }
+
+    await updateTask(householdId, task.id, updates)
+}
+
+export const moveTaskStatus = async (householdId: string, task: Task, newStatus: TaskStatus): Promise<void> => {
+    const updates: Partial<Omit<Task, 'id'>> = { status: newStatus }
+
+    if (newStatus === 'in-progress' && !task.startedAt) {
+        updates.startedAt = Date.now()
+    }
+    if (newStatus === 'done') {
+        updates.lastDoneAt = Date.now()
+        const doneBy = task.assignedTo === 'rotation' ? task.rotationOrder?.[0] : task.assignedTo
+        updates.lastDoneBy = doneBy
+        if (task.assignedTo === 'rotation' && task.rotationOrder && task.rotationOrder.length > 1) {
+            updates.rotationOrder = [...task.rotationOrder.slice(1), task.rotationOrder[0]]
+        }
     }
 
     await updateTask(householdId, task.id, updates)

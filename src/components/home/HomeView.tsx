@@ -4,10 +4,10 @@ import { useI18n } from '../../i18n/context'
 import { useConfirm, useToast } from '../../contexts/ui'
 import { useTasks } from '../../hooks/useTasks'
 import { useShoppingList } from '../../hooks/useShoppingList'
-import { TasksView } from './tasks/TasksView'
+import { KanbanBoard } from './tasks/KanbanBoard'
 import { AddTaskModal } from './tasks/AddTaskModal'
 import { ShoppingView } from './shopping/ShoppingView'
-import type { Task } from '../../types/home'
+import type { Task, TaskStatus } from '../../types/home'
 import type { Member } from '../../types'
 import './HomeView.css'
 
@@ -25,13 +25,13 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
     const { showConfirm } = useConfirm()
     const { showToast } = useToast()
 
-    const { tasks, add: addTask, remove: removeTask, complete: completeTask } = useTasks(householdId)
+    const { tasks, add: addTask, remove: removeTask, moveStatus } = useTasks(householdId)
     const { items, add: addItem, toggle: toggleItem, remove: removeItem, clearDone } = useShoppingList(householdId)
 
     const [tab, setTab] = useState<HomeTab>('tasks')
     const [showAddTask, setShowAddTask] = useState(false)
 
-    const handleCompleteTask = (task: Task) => completeTask(task)
+    const handleMoveStatus = (task: Task, status: TaskStatus) => moveStatus(task, status)
 
     const handleDeleteTask = async (task: Task) => {
         const confirmed = await showConfirm({
@@ -79,13 +79,12 @@ export function HomeView({ householdId, members, currentMemberId }: Props) {
 
             {/* Content */}
             {tab === 'tasks' && (
-                <TasksView
+                <KanbanBoard
                     tasks={tasks}
                     members={members}
-                    currentMemberId={currentMemberId}
-                    onComplete={handleCompleteTask}
+                    onMoveStatus={handleMoveStatus}
                     onDelete={handleDeleteTask}
-                    onAdd={() => setShowAddTask(true)}
+                    onAddClick={() => setShowAddTask(true)}
                 />
             )}
 

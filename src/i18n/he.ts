@@ -169,6 +169,16 @@ export const he: T = {
         doneDivider: 'סיימתי',
         noItems: 'הרשימה ריקה',
         addTaskError: 'שגיאה בהוספת משימה',
+        kanbanTodo: 'לבצע',
+        kanbanInProgress: 'בתהליך',
+        kanbanDone: 'בוצע',
+        dueDateLabel: 'תאריך יעד',
+        estimatedDaysLabel: 'משך משוער (ימים)',
+        dueDateToday: 'היום',
+        dueDateTomorrow: 'מחר',
+        dueDateYesterday: 'אתמול',
+        estimatedDaysPlaceholder: 'לדוגמה: 3',
+        noTasksInColumn: 'אין משימות',
     },
 
     landing: {

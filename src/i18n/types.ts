@@ -182,6 +182,17 @@ export interface T {
         doneDivider: string
         noItems: string
         addTaskError: string
+        // Kanban
+        kanbanTodo: string
+        kanbanInProgress: string
+        kanbanDone: string
+        dueDateLabel: string
+        estimatedDaysLabel: string
+        dueDateToday: string
+        dueDateTomorrow: string
+        dueDateYesterday: string
+        estimatedDaysPlaceholder: string
+        noTasksInColumn: string
     }
 
     // ── Landing page ─────────────────────────────────────

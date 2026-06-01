@@ -169,6 +169,16 @@ export const en: T = {
         doneDivider: 'Done',
         noItems: 'List is empty',
         addTaskError: 'Failed to add task',
+        kanbanTodo: 'To Do',
+        kanbanInProgress: 'In Progress',
+        kanbanDone: 'Done',
+        dueDateLabel: 'Due Date',
+        estimatedDaysLabel: 'Estimated duration (days)',
+        dueDateToday: 'Today',
+        dueDateTomorrow: 'Tomorrow',
+        dueDateYesterday: 'Yesterday',
+        estimatedDaysPlaceholder: 'e.g. 3',
+        noTasksInColumn: 'No tasks',
     },
 
     landing: {

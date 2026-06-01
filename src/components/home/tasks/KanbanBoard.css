@@ -1,0 +1,107 @@
+/* src/components/home/tasks/KanbanBoard.css */
+
+.kb-root {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+}
+
+.kb-toolbar {
+    display: flex;
+    align-items: center;
+}
+
+.kb-add-btn {
+    font-size: .82rem;
+    padding: 8px 18px;
+}
+
+/* Board — horizontal scroll on small screens */
+.kb-board {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Column */
+.kb-col {
+    flex: 0 0 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f1f5f9;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.kb-col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px 10px;
+    gap: 8px;
+}
+
+.kb-col-label {
+    font-size: .82rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+}
+
+.kb-col-count {
+    background: #e2e8f0;
+    color: #475569;
+    font-size: .72rem;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 1px 8px;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Column body — droppable zone */
+.kb-col-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 10px 12px;
+    min-height: 80px;
+    border-radius: 0 0 16px 16px;
+    transition: background .15s;
+}
+
+.kb-col-body--over {
+    background: #dbeafe;
+}
+
+.kb-col-empty {
+    font-size: .78rem;
+    color: #94a3b8;
+    text-align: center;
+    padding: 16px 0;
+    font-style: italic;
+}
+
+/* Column accent colors */
+.kb-col--todo      .kb-col-header { border-bottom: 2px solid #e2e8f0; }
+.kb-col--in-progress .kb-col-header { border-bottom: 2px solid #bfdbfe; }
+.kb-col--done      .kb-col-header { border-bottom: 2px solid #bbf7d0; }
+
+.kb-col--in-progress { background: #eff6ff; }
+.kb-col--done        { background: #f0fdf4; }
+
+.kb-col--in-progress .kb-col-label { color: #1d4ed8; }
+.kb-col--done        .kb-col-label { color: #15803d; }
+
+/* Responsive: stack columns on very narrow screens */
+@media (max-width: 520px) {
+    .kb-col {
+        flex: 0 0 240px;
+    }
+}
