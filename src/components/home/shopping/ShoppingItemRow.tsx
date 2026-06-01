@@ -5,12 +5,11 @@ import type { Member } from '../../../types'
 interface Props {
     item: ShoppingItem
     members: Member[]
-    currentMemberId?: string
     onToggle: (id: string, done: boolean) => void
     onDelete: (id: string) => void
 }
 
-export function ShoppingItemRow({ item, members, currentMemberId, onToggle, onDelete }: Props) {
+export function ShoppingItemRow({ item, members, onToggle, onDelete }: Props) {
     const adder = members.find((m) => m.id === item.addedBy)
 
     return (
