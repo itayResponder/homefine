@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import { useI18n } from '../../../i18n/context'
 import { ROOM_ORDER, ROOM_DEFS } from '../../../constants/rooms'
+import { CustomSelect } from '../../ui/CustomSelect'
+import { CustomDatePicker } from '../../ui/CustomDatePicker'
 import type { Task, TaskRoom } from '../../../types/home'
 import type { Member } from '../../../types'
 import './AddTaskModal.css'
@@ -33,6 +35,21 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
     const [dueDate, setDueDate] = useState('')
     const [estimatedDays, setEstimatedDays] = useState('')
 
+    const roomOptions = ROOM_ORDER.map((r) => ({
+        value: r,
+        label: `${ROOM_DEFS[r].icon} ${h[`room${r.charAt(0).toUpperCase() + r.slice(1)}` as 'roomBathroom']}`,
+    }))
+
+    const assignOptions = [
+        ...members.map((m) => ({ value: m.id, label: m.name })),
+        { value: 'rotation', label: `🔄 ${h.rotation}` },
+    ]
+
+    const intervalOptions = INTERVALS.map(({ days, key }) => ({
+        value: String(days),
+        label: h[key] as string,
+    }))
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         if (!title.trim()) return
@@ -55,7 +72,7 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
     }
 
     return (
-        <div className="ap-modal-overlay" onClick={onClose}>
+        <div className="ap-modal-overlay atm-overlay" onClick={onClose}>
             <div className="ap-modal atm-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="ap-modal-header">
                     <span>{h.addTaskBtn.replace('+ ', '')}</span>
@@ -80,58 +97,41 @@ export function AddTaskModal({ members, currentMemberId, onAdd, onClose }: Props
                     {/* Room */}
                     <label className="atm-label">
                         <span>{h.roomLabel}</span>
-                        <select
-                            className="inp atm-select"
+                        <CustomSelect
+                            options={roomOptions}
                             value={room}
-                            onChange={(e) => setRoom(e.target.value as TaskRoom)}
-                        >
-                            {ROOM_ORDER.map((r) => (
-                                <option key={r} value={r}>
-                                    {ROOM_DEFS[r].icon} {h[`room${r.charAt(0).toUpperCase() + r.slice(1)}` as 'roomBathroom']}
-                                </option>
-                            ))}
-                        </select>
+                            onChange={(v) => setRoom(v as TaskRoom)}
+                        />
                     </label>
 
                     {/* Assigned to */}
                     <label className="atm-label">
                         <span>{h.assignLabel}</span>
-                        <select
-                            className="inp atm-select"
+                        <CustomSelect
+                            options={assignOptions}
                             value={assignedTo}
-                            onChange={(e) => setAssignedTo(e.target.value)}
-                        >
-                            {members.map((m) => (
-                                <option key={m.id} value={m.id}>{m.name}</option>
-                            ))}
-                            <option value="rotation">🔄 {h.rotation}</option>
-                        </select>
+                            onChange={setAssignedTo}
+                        />
                     </label>
 
                     {/* Frequency */}
                     <label className="atm-label">
                         <span>{h.intervalLabel}</span>
-                        <select
-                            className="inp atm-select"
-                            value={intervalDays}
-                            onChange={(e) => setIntervalDays(Number(e.target.value))}
-                        >
-                            {INTERVALS.map(({ days, key }) => (
-                                <option key={days} value={days}>
-                                    {h[key] as string}
-                                </option>
-                            ))}
-                        </select>
+                        <CustomSelect
+                            options={intervalOptions}
+                            value={String(intervalDays)}
+                            onChange={(v) => setIntervalDays(Number(v))}
+                        />
                     </label>
 
                     {/* Due date */}
                     <label className="atm-label">
                         <span>{h.dueDateLabel}</span>
-                        <input
-                            className="inp"
-                            type="date"
+                        <CustomDatePicker
                             value={dueDate}
-                            onChange={(e) => setDueDate(e.target.value)}
+                            onChange={setDueDate}
+                            placeholder={h.dueDateLabel}
+                            openUp
                         />
                     </label>
 

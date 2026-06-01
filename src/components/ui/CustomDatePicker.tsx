@@ -6,8 +6,10 @@ const DOW_HE = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש']
 const DOW_EN = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
 interface Props {
-    value: string      // YYYY-MM-DD
+    value: string      // YYYY-MM-DD or ''
     onChange: (v: string) => void
+    placeholder?: string
+    openUp?: boolean
 }
 
 function parseISO(s: string): { y: number; m: number; d: number } {
@@ -24,17 +26,21 @@ function fmtDisplay(s: string, locale: string): string {
     return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 }
 
-export function CustomDatePicker({ value, onChange }: Props) {
+export function CustomDatePicker({ value, onChange, placeholder, openUp }: Props) {
     const { t } = useI18n()
     const isHe = t.locale.startsWith('he')
     const DOW = isHe ? DOW_HE : DOW_EN
 
-    const { y: selY, m: selM, d: selD } = parseISO(value)
+    const today = new Date()
+    const hasValue = value !== ''
+    const { y: selY, m: selM, d: selD } = hasValue
+        ? parseISO(value)
+        : { y: today.getFullYear(), m: today.getMonth(), d: -1 }
+
     const [open, setOpen] = useState(false)
     const [navY, setNavY] = useState(selY)
     const [navM, setNavM] = useState(selM)
     const wrapRef = useRef<HTMLDivElement>(null)
-    const today = new Date()
 
     useEffect(() => {
         const handler = (e: MouseEvent) => {
@@ -47,7 +53,10 @@ export function CustomDatePicker({ value, onChange }: Props) {
     }, [])
 
     const handleOpen = () => {
-        if (!open) { setNavY(selY); setNavM(selM) }
+        if (!open) {
+            setNavY(hasValue ? selY : today.getFullYear())
+            setNavM(hasValue ? selM : today.getMonth())
+        }
         setOpen((v) => !v)
     }
 
@@ -76,10 +85,13 @@ export function CustomDatePicker({ value, onChange }: Props) {
     const monthLabel = `${t.monthNames[navM]} ${navY}`
 
     return (
-        <div className="cd-wrap" ref={wrapRef}>
-            <div className={`cd-trig${open ? ' open' : ''}`} onClick={handleOpen}>
+        <div className={`cd-wrap${openUp ? ' open-up' : ''}`} ref={wrapRef}>
+            <div
+                className={`cd-trig${open ? ' open' : ''}${!hasValue ? ' cs-placeholder' : ''}`}
+                onClick={handleOpen}
+            >
                 <span style={{ fontSize: 14, color: '#9490CC' }}>📅</span>
-                <span>{fmtDisplay(value, t.locale)}</span>
+                <span>{hasValue ? fmtDisplay(value, t.locale) : (placeholder ?? '')}</span>
                 <span className="arr">{open ? '▲' : '▼'}</span>
             </div>
 
@@ -94,7 +106,7 @@ export function CustomDatePicker({ value, onChange }: Props) {
                         {DOW.map((d) => <div key={d} className="cd-dow">{d}</div>)}
                         {cells.map((d, i) => {
                             if (d === null) return <div key={`e${i}`} className="cd-day empty" />
-                            const isSel = d === selD && navM === selM && navY === selY
+                            const isSel = hasValue && d === selD && navM === selM && navY === selY
                             const isToday =
                                 d === today.getDate() &&
                                 navM === today.getMonth() &&

@@ -1,7 +1,19 @@
 /* src/components/home/tasks/AddTaskModal.css */
 
-.atm-modal {
+/* Override ap-modal: let dropdowns/calendar float freely */
+.ap-modal.atm-modal {
     width: min(420px, 94vw);
+    overflow: visible;
+    max-height: none;
+}
+
+/* Overlay scrolls on small screens instead of the modal */
+.ap-modal-overlay.atm-overlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    /* Center vertically on tall screens; fall back to 1.5rem on short ones */
+    padding-top: max(1.5rem, calc((100vh - 680px) / 2));
+    padding-bottom: 1.5rem;
 }
 
 .atm-form {
@@ -20,15 +32,23 @@
     color: #475569;
 }
 
-.atm-select {
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
-}
-
 .atm-footer {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
     padding-top: 4px;
+}
+
+@media (max-width: 480px) {
+    .ap-modal.atm-modal { width: 96vw; }
+
+    .atm-footer {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+    .atm-footer .sbtn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
 }
