@@ -1,16 +1,12 @@
 // src/pages/AppPage.tsx
-import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
-import { useMembers } from '../hooks/useMembers'
+import { useEffect, useRef, useState } from 'react'
+import { useHouseholdContext } from './HouseholdLayout'
 import { useTransactions } from '../hooks/useTransactions'
 import { useRecurring } from '../hooks/useRecurring'
 import { useLogs } from '../hooks/useLogs'
-import { usePresence } from '../hooks/usePresence'
 import { useI18n } from '../i18n/context'
 import { useToast } from '../contexts/ui'
 import { useConfirm } from '../contexts/ui'
-import { AppHeader } from '../components/app/AppHeader'
 import { AppNav } from '../components/app/AppNav'
 import { HeroCard } from '../components/app/HeroCard'
 import { SummaryView } from '../components/app/SummaryView'
@@ -24,12 +20,8 @@ import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { AddMemberModal } from '../components/app/AddMemberModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
-import { approveJoinRequest, denyJoinRequest, seedParticipant, subscribeParticipants, removeParticipant, subscribeUserMembership, leaveHousehold } from '../firebase/db'
+import { subscribeParticipants, removeParticipant } from '../firebase/db'
 import type { Participant } from '../types'
-import { useUserColor } from '../hooks/useUserColor'
-import { useHouseholdMeta } from '../hooks/useHouseholdMeta'
-import { useJoinRequests } from '../hooks/useJoinRequests'
-import { buildColorVars } from '../utils/color'
 import { formatCurrency } from '../utils/format'
 import type { LogDiff, RecurringCharge, Transaction } from '../types'
 import './AppPage.css'
@@ -42,61 +34,33 @@ function computeDiffs(before: Transaction, after: Partial<Transaction>): LogDiff
 }
 
 export default function AppPage() {
-    const navigate = useNavigate()
-    const { householdId = '' } = useParams<{ householdId: string }>()
-    const { user, logout } = useAuth()
-    const { members, ready: membersReady, add: addMember, remove: removeMember } = useMembers(householdId)
+    const {
+        householdId, user, members, membersReady,
+        isOwner, expensesOnly, meta,
+        primaryColor, updateColor,
+        openModal, setOpenModal,
+        updateSettings, renameMeta, toggleMemberIncome,
+        addMember: ctxAddMember, removeMember: ctxRemoveMember,
+    } = useHouseholdContext()
+
     const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions(householdId)
     const { recurringCharges, ready: recurringReady, add: addRecurring, remove: removeRecurring } = useRecurring(householdId)
     const { logs, add: addLog, remove: removeLog, clear: clearLogs } = useLogs(householdId)
-    const online = usePresence(householdId, user)
     const { t } = useI18n()
     const { showToast } = useToast()
     const { showConfirm } = useConfirm()
-    const { color: primaryColor, loading: colorLoading, updateColor } = useUserColor(user?.uid)
-    const { meta, isOwner, expensesOnly, updateSettings, renameMeta, toggleMemberIncome } = useHouseholdMeta(householdId, user?.uid)
 
-    // Join requests — only subscribed when user is owner
-    const ownedEntry = isOwner && meta ? [{ id: householdId, name: meta.name }] : []
-    const joinRequests = useJoinRequests(ownedEntry)
-
-    // Kick user out if they lose household membership (removed by owner or direct URL access without permission)
-    const membershipInitRef = useRef(false)
-    useEffect(() => {
-        if (!user) return
-        membershipInitRef.current = false
-        return subscribeUserMembership(householdId, user.uid, (isMember) => {
-            if (!membershipInitRef.current) {
-                membershipInitRef.current = true
-                if (!isMember) navigate('/dashboard', { replace: true })
-            } else if (!isMember) {
-                navigate('/dashboard', { replace: true })
-            }
-        })
-    }, [user?.uid, householdId])
-
-    // Participants — only subscribed and seeded when user is owner
+    // Participants — owner only, for SettingsView
     const [participants, setParticipants] = useState<Participant[]>([])
     useEffect(() => {
         if (!isOwner || !householdId) return
         return subscribeParticipants(householdId, setParticipants)
     }, [isOwner, householdId])
 
-    useEffect(() => {
-        if (!user || !meta) return
-        seedParticipant(householdId, user.uid, {
-            name: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-            joinedAt: meta.createdAt,
-        }).catch(() => { /* member may load before meta propagates — safe to ignore */ })
-    }, [!!meta, user?.uid])
-
     // ── UI state ──────────────────────────────────────────────────────────────
     const [view, setView] = useState('summary')
     const [month, setMonth] = useState(currentMonth)
     const [editingTx, setEditingTx] = useState<Transaction | null>(null)
-    const [modal, setModal] = useState<'settings' | 'logs' | null>(null)
     const [showAddMember, setShowAddMember] = useState(false)
 
     // ── Auto-apply recurring charges ──────────────────────────────────────────
@@ -190,9 +154,8 @@ export default function AppPage() {
     }
 
     // ── Handlers — members ───────────────────────────────────────────────────
-    const handleAddMember = (name: string, nameEn?: string) => addMember(name, nameEn, user?.uid)
+    const handleAddMember = (name: string, nameEn?: string) => ctxAddMember(name, nameEn, user?.uid)
 
-    // Default "of who" to the current user's member card, or 'shared' if not found
     const handleRemoveMember = async (id: string) => {
         const m = members.find((x) => x.id === id)
         if (!m) return
@@ -210,25 +173,18 @@ export default function AppPage() {
             danger: true,
         })
         if (!confirmed) return
-        // Delete all transactions for this member
         await Promise.all(
             transactions.filter((tx) => tx.memberId === id).map((tx) => removeTransaction(tx.id))
         )
-        // Delete all recurring charges for this member
         await Promise.all(
             recurringCharges.filter((r) => r.memberId === id).map((r) => removeRecurring(r.id))
         )
-        await removeMember(id)
+        ctxRemoveMember(id)
         if (view === `member:${id}`) setView('summary')
     }
 
-    const handleApproveJoin = async (hId: string, uid: string) => {
-        const request = joinRequests.find(r => r.householdId === hId && r.uid === uid)
-        await approveJoinRequest(hId, uid, request ? { name: request.name, email: request.email, photoURL: request.photoURL } : undefined)
-    }
-
     const handleRemoveParticipant = async (uid: string) => {
-        const p = participants.find(p => p.uid === uid)
+        const p = participants.find((p) => p.uid === uid)
         if (!p) return
         const confirmed = await showConfirm({
             title: `הסרת ${p.name}`,
@@ -239,28 +195,11 @@ export default function AppPage() {
         await removeParticipant(householdId, uid)
     }
 
-    const handleLeaveHousehold = async () => {
-        if (!user) return
-        const confirmed = await showConfirm({
-            title: t.dir === 'rtl' ? 'עזיבת הבית' : 'Leave household',
-            sub: t.dir === 'rtl' ? 'בטוח שאתה רוצה לעזוב? תאבד את הגישה לבית.' : 'Are you sure you want to leave? You will lose access.',
-            danger: true,
-        })
-        if (!confirmed) return
-        await leaveHousehold(householdId, user.uid)
-        navigate('/dashboard')
-    }
-
-    const handleLogout = async () => {
-        await logout()
-        navigate('/')
-    }
-
-    const appReady = !colorLoading && membersReady && txReady && recurringReady
+    const appReady = membersReady && txReady && recurringReady
 
     if (!appReady) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFF', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <div className="wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
                 <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.02em', opacity: 0.6 }}>
                     Home<span style={{ color: '#2563EB' }}>Fine</span>
                 </span>
@@ -269,22 +208,7 @@ export default function AppPage() {
     }
 
     return (
-        <div className="ap-root" style={buildColorVars(primaryColor) as React.CSSProperties}>
-            <AppHeader
-                user={user}
-                householdId={householdId}
-                onLogout={handleLogout}
-                onOpenSettings={() => setModal('settings')}
-                onOpenLogs={() => setModal('logs')}
-                onDashboard={() => navigate('/dashboard')}
-                joinRequests={isOwner ? joinRequests : []}
-                onApproveJoin={isOwner ? handleApproveJoin : undefined}
-                onDenyJoin={isOwner ? denyJoinRequest : undefined}
-                onLeave={!isOwner ? handleLeaveHousehold : undefined}
-                online={online}
-            />
-
-
+        <>
             <div className="wrap">
                 <HeroCard
                     members={members}
@@ -360,19 +284,18 @@ export default function AppPage() {
                         onDelete={handleDeleteRecurring}
                     />
                 )}
-
             </div>
 
-            {modal && (
-                <div className="ap-modal-overlay" onClick={() => setModal(null)}>
+            {openModal && (
+                <div className="ap-modal-overlay" onClick={() => setOpenModal(null)}>
                     <div className="ap-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="ap-modal-header">
                             <span className="ap-modal-title">
-                                {modal === 'settings' ? t.tabSettings : t.navLogs}
+                                {openModal === 'settings' ? t.tabSettings : t.navLogs}
                             </span>
-                            <button className="ap-modal-close" onClick={() => setModal(null)}>✕</button>
+                            <button className="ap-modal-close" onClick={() => setOpenModal(null)}>✕</button>
                         </div>
-                        {modal === 'settings' && (
+                        {openModal === 'settings' && (
                             <SettingsView
                                 transactions={transactions}
                                 recurringCharges={recurringCharges}
@@ -391,7 +314,7 @@ export default function AppPage() {
                                 onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
                             />
                         )}
-                        {modal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
+                        {openModal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
                     </div>
                 </div>
             )}
@@ -411,6 +334,6 @@ export default function AppPage() {
                     onSave={handleEditSave}
                 />
             )}
-        </div>
+        </>
     )
 }

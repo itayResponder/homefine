@@ -8,8 +8,9 @@ At the start of every conversation, read `CONTEXT.md` to get the current project
 ## Auto-Update Rule
 After completing any feature or significant change — without waiting to be asked — automatically:
 1. Update `CONTEXT.md` (add to "What's Built", fix outdated descriptions)
-2. Update the relevant memory files in `C:\Users\itay\.claude\projects\d--Itay-Projects-Itay-Projects-homefine\memory\`
-3. Update `MEMORY.md` index if a new memory file was added
+2. Update `CLAUDE.md` if routing, architecture patterns, or data flow changed
+3. Update the relevant memory files in `C:\Users\itay\.claude\projects\d--Itay-Projects-Itay-Projects-homefine\memory\`
+4. Update `MEMORY.md` index if a new memory file was added
 
 ## Commands
 
@@ -29,14 +30,18 @@ npx tsc --noEmit   # TypeScript type-check only
 React 19 + TypeScript + Vite, Firebase Realtime Database (not Firestore), Firebase Auth (Google OAuth), React Router v7, deployed to Firebase Hosting.
 
 ### Routing
-4 routes in `App.tsx`:
+Routes in `App.tsx`:
 - `/` → `LandingPage` (public)
 - `/dashboard` → `DashboardPage` (auth-gated, household list)
 - `/join/:householdId` → `JoinPage` (sends join request, not direct join)
-- `/app/:householdId` → `AppPage` (auth-gated, main app)
+- `/app/:householdId` → `HouseholdLayout` (auth-gated, nested layout)
+  - index → `AppPage` (כספים — finance views)
+  - `home` → `HouseholdPage` (ניהול משק בית — tasks + shopping)
+
+**Layout Route pattern:** `HouseholdLayout.tsx` is a React Router v7 nested layout. It renders `AppHeader` once and holds all shared hooks. Switching between tabs never remounts AppHeader or re-runs shared hooks. Child pages access shared state via `useHouseholdContext()` = `useOutletContext<HouseholdContextType>()` (exported from `HouseholdLayout.tsx`). `HouseholdContextType` carries: `householdId`, `user`, `members`, `membersReady`, `online`, `isOwner`, `expensesOnly`, `meta`, `primaryColor`, `updateColor`, `joinRequests`, `openModal`/`setOpenModal`, `updateSettings`, `renameMeta`, `toggleMemberIncome`, `addMember`, `removeMember`.
 
 ### Data Flow
-All data is scoped to a `householdId` from `useParams`. Every hook (`useMembers`, `useTransactions`, `useRecurring`, `useLogs`) takes `householdId` as first arg, opens a Firebase `onValue` listener, and exposes `ready: boolean`. `AppPage` waits for all hooks + `useUserColor` to be ready before rendering.
+All data is scoped to a `householdId`. Shared hooks (useMembers, usePresence, useUserColor, useHouseholdMeta, useJoinRequests) live in `HouseholdLayout`. Finance-specific hooks (useTransactions, useRecurring, useLogs) live in `AppPage`. Every hook takes `householdId` as first arg, opens a Firebase `onValue` listener, and exposes `ready: boolean`. `AppPage` waits for `membersReady + txReady + recurringReady` before rendering content.
 
 Firebase path structure:
 ```
@@ -46,12 +51,14 @@ households/{householdId}/
   transactions/     ← Transaction[]
   recurringCharges/ ← RecurringCharge[]
   logs/             ← LogEntry[]
-  presence/         ← online users
+  presence/         ← {uid: {name, photoURL?, ts, online: boolean}} — persistent per-member
   joinRequests/     ← {uid: {name, email, photoURL, ts}} — owner-read, self-write
   participants/     ← {uid: {name, email, photoURL, joinedAt}} — owner only
 userHouseholds/{uid}/{householdId} ← true
 userPrefs/{uid}/primaryColor ← hex string
 ```
+
+**Presence behavior:** record is created on first connect, persists until user leaves/is removed from household. `online: true` on connect, `online: false` on disconnect (via `onDisconnect().update`) or React unmount. `leaveHousehold` and `removeParticipant` both call `remove(presence/{uid})`. AppHeader shows all household users with green dot (online) or gray dot (offline).
 
 ### Authentication & Security
 `useAuth.ts` uses `onAuthStateChanged` — **no whitelist**. Any Google account can log in. Access control is enforced server-side via Firebase Security Rules (`database.rules.json`):

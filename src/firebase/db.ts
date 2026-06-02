@@ -30,6 +30,7 @@ export const joinHousehold = async (householdId: string, uid: string): Promise<v
 export const leaveHousehold = async (householdId: string, uid: string): Promise<void> => {
     await remove(ref(db, `userHouseholds/${uid}/${householdId}`))
     await remove(ref(db, `households/${householdId}/participants/${uid}`)).catch(() => {})
+    await remove(hRef(householdId, `presence/${uid}`)).catch(() => {})
 }
 
 export const deleteHousehold = async (householdId: string): Promise<void> => {
@@ -146,17 +147,22 @@ export const subscribeLogs = (householdId: string, cb: (logs: LogEntry[]) => voi
 }
 
 // ─── Presence ────────────────────────────────────────────────────────────────
-export const setPresence = (householdId: string, uid: string, data: { name: string; ts: number } | null) => {
+export type PresenceRecord = { name: string; photoURL?: string; ts: number; online: boolean }
+
+export const setPresence = (householdId: string, uid: string, data: PresenceRecord | null) => {
     const r = hRef(householdId, `presence/${uid}`)
     return data === null ? remove(r) : set(r, data)
 }
 
+export const setPresenceOnline = (householdId: string, uid: string, online: boolean) =>
+    update(hRef(householdId, `presence/${uid}`), { online })
+
 export const setupDisconnectCleanup = (householdId: string, uid: string) =>
-    onDisconnect(hRef(householdId, `presence/${uid}`)).remove()
+    onDisconnect(hRef(householdId, `presence/${uid}`)).update({ online: false })
 
 export const subscribePresence = (
     householdId: string,
-    cb: (users: Record<string, { name: string; ts: number }>) => void,
+    cb: (users: Record<string, PresenceRecord>) => void,
 ) => {
     const r = hRef(householdId, 'presence')
     onValue(r, (snap) => cb(snap.val() ?? {}))
@@ -243,4 +249,5 @@ export const subscribeParticipants = (
 export const removeParticipant = async (householdId: string, uid: string): Promise<void> => {
     await remove(ref(db, `userHouseholds/${uid}/${householdId}`))
     await remove(ref(db, `households/${householdId}/participants/${uid}`))
+    await remove(hRef(householdId, `presence/${uid}`)).catch(() => {})
 }

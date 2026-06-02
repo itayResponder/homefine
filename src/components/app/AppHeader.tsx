@@ -6,6 +6,7 @@ import { LanguageToggle } from '../LanguageToggle'
 import { BellSVG, NotificationPanel } from '../ui/NotificationPanel'
 import '../ui/NotificationPanel.css'
 import type { AppUser, JoinRequest } from '../../types'
+import type { PresenceMap } from '../../hooks/usePresence'
 import './AppHeader.css'
 
 interface Props {
@@ -19,7 +20,7 @@ interface Props {
     onApproveJoin?: (householdId: string, uid: string) => void
     onDenyJoin?: (householdId: string, uid: string) => void
     onLeave?: () => void
-    online?: Record<string, { name: string }>
+    online?: PresenceMap
 }
 
 const AVATAR_COLORS = ['#6366F1','#EC4899','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EF4444','#06B6D4']
@@ -55,10 +56,10 @@ export function AppHeader({
     const pick = (action: () => void) => { setMenuOpen(false); action() }
     const isOwner = onApproveJoin !== undefined
 
-    const onlineUsers = Object.values(online)
+    const onlineEntries = Object.entries(online)
     const MAX_SHOWN = 4
-    const shownUsers = onlineUsers.slice(0, MAX_SHOWN)
-    const overflow = onlineUsers.length - MAX_SHOWN
+    const shownEntries = onlineEntries.slice(0, MAX_SHOWN)
+    const overflow = onlineEntries.length - MAX_SHOWN
 
     return (
         <header className="ap-header">
@@ -81,17 +82,20 @@ export function AppHeader({
             </nav>
 
             <div className="ap-user">
-                {onlineUsers.length > 0 && (
+                {onlineEntries.length > 0 && (
                     <div className="ah-online">
-                        {shownUsers.map((u) => (
+                        {shownEntries.map(([uid, u]) => (
                             <div
-                                key={u.name}
+                                key={uid}
                                 className="ah-online-avatar"
-                                style={{ background: nameToColor(u.name) }}
+                                style={u.photoURL ? undefined : { background: nameToColor(u.name) }}
                                 title={u.name}
                             >
-                                {u.name.charAt(0)}
-                                <span className="ah-online-dot" />
+                                {u.photoURL
+                                    ? <img src={u.photoURL} alt={u.name} className="ah-online-photo" />
+                                    : u.name.charAt(0)
+                                }
+                                <span className={`ah-online-dot${u.online ? '' : ' ah-online-dot--offline'}`} />
                             </div>
                         ))}
                         {overflow > 0 && (
@@ -100,9 +104,6 @@ export function AppHeader({
                     </div>
                 )}
                 <LanguageToggle />
-                {user?.photoURL && (
-                    <img src={user.photoURL} alt={user.displayName} className="ap-avatar" />
-                )}
 
                 {/* Notification bell — only shown for owners */}
                 {isOwner && (

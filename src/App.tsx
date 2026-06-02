@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import LandingPage from './pages/LandingPage.tsx';
+import HouseholdLayout from './pages/HouseholdLayout.tsx';
 import AppPage from './pages/AppPage.tsx';
 import HouseholdPage from './pages/HouseholdPage.tsx';
 import DashboardPage from './pages/DashboardPage.tsx';
@@ -26,8 +27,10 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={user ? <DashboardPage /> : <Navigate to="/" replace />} />
         <Route path="/join/:householdId" element={<JoinPage />} />
-        <Route path="/app/:householdId" element={user ? <AppPage /> : <Navigate to="/" replace />} />
-        <Route path="/app/:householdId/home" element={user ? <HouseholdPage /> : <Navigate to="/" replace />} />
+        <Route path="/app/:householdId" element={user ? <HouseholdLayout /> : <Navigate to="/" replace />}>
+          <Route index element={<AppPage />} />
+          <Route path="home" element={<HouseholdPage />} />
+        </Route>
         <Route path="/app" element={<Navigate to={user ? '/dashboard' : '/'} replace />} />
       </Routes>
     </BrowserRouter>

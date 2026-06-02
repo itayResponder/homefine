@@ -1,25 +1,39 @@
 // src/hooks/usePresence.ts
 import { useEffect, useState } from 'react'
 import { setPresence, setupDisconnectCleanup, subscribePresence } from '../firebase/db'
+import type { PresenceRecord } from '../firebase/db'
 import type { AppUser } from '../types'
 
-export type PresenceMap = Record<string, { name: string; ts: number }>
+export type PresenceMap = Record<string, PresenceRecord>
 
 export const usePresence = (householdId: string, user: AppUser | null): PresenceMap => {
-    const [online, setOnline] = useState<PresenceMap>({})
+    const [presence, setPresenceMap] = useState<PresenceMap>({})
 
     useEffect(() => {
         if (!user || !householdId) return
-        const { uid, displayName } = user
-        setPresence(householdId, uid, { name: displayName, ts: Date.now() })
+        const { uid, displayName, photoURL } = user
+        setPresence(householdId, uid, {
+            name: displayName,
+            photoURL: photoURL ?? undefined,
+            ts: Date.now(),
+            online: true,
+        })
         setupDisconnectCleanup(householdId, uid)
-        return () => { setPresence(householdId, uid, null) }
-    }, [user, householdId])
+        return () => {
+            // Mark offline but keep the record — disappears only when removed from household
+            setPresence(householdId, uid, {
+                name: displayName,
+                photoURL: photoURL ?? undefined,
+                ts: Date.now(),
+                online: false,
+            })
+        }
+    }, [user?.uid, householdId])
 
     useEffect(() => {
         if (!householdId) return
-        return subscribePresence(householdId, setOnline)
+        return subscribePresence(householdId, setPresenceMap)
     }, [householdId])
 
-    return online
+    return presence
 }
