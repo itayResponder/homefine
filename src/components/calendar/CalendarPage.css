@@ -5,6 +5,9 @@
     height: calc(100vh - 56px);
     background: var(--bg, #F8FAFF);
     overflow: hidden;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 /* ── Calendar inner nav (Today / month nav) ─────────────────────── */
@@ -89,6 +92,7 @@
 .cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: 110px;
     border-inline-start: 1px solid #E2E8F0;
     border-top: 1px solid #E2E8F0;
 }
@@ -507,6 +511,7 @@
 
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 600px) {
+    .cal-grid { grid-auto-rows: auto; }
     .cal-day { min-height: 60px; }
     .cal-toolbar-month { min-width: 120px; font-size: 0.92rem; }
     .cal-date-row,
