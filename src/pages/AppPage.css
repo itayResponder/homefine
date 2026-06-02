@@ -995,7 +995,33 @@
     bottom: calc(100% + 4px);
 }
 
+.cd-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+    z-index: 9998;
+}
+
 @media (max-width: 480px) {
     .cd-day { padding: 9px 1px; font-size: 13px; }
-    .cd-pop  { padding: 14px 10px; }
+
+    .cd-backdrop { display: block; }
+
+    .cd-pop {
+        position: fixed;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        bottom: 0;
+        top: auto;
+        border-radius: 20px 20px 0 0;
+        min-width: unset;
+        padding: 20px 16px 32px;
+        box-shadow: 0 -4px 24px rgba(108, 99, 255, .18);
+    }
+
+    .cd-wrap.open-up .cd-pop {
+        bottom: 0;
+        top: auto;
+    }
 }

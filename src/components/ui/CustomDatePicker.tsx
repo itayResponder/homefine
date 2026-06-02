@@ -95,6 +95,8 @@ export function CustomDatePicker({ value, onChange, placeholder, openUp }: Props
                 <span className="arr">{open ? '▲' : '▼'}</span>
             </div>
 
+            {open && <div className="cd-backdrop" onClick={() => setOpen(false)} />}
+
             {open && (
                 <div className="cd-pop">
                     <div className="cd-nav">
