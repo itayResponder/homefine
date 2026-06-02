@@ -295,26 +295,28 @@ export default function AppPage() {
                             </span>
                             <button className="ap-modal-close" onClick={() => setOpenModal(null)}>✕</button>
                         </div>
-                        {openModal === 'settings' && (
-                            <SettingsView
-                                transactions={transactions}
-                                recurringCharges={recurringCharges}
-                                members={members}
-                                logs={logs}
-                                onRemoveMember={handleRemoveMember}
-                                primaryColor={primaryColor}
-                                onColorChange={updateColor}
-                                isOwner={isOwner}
-                                meta={meta}
-                                onUpdateSettings={updateSettings}
-                                onRename={renameMeta}
-                                currentUserId={user?.uid}
-                                onToggleMemberIncome={toggleMemberIncome}
-                                participants={isOwner ? participants : undefined}
-                                onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
-                            />
-                        )}
-                        {openModal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
+                        <div className="ap-modal-body">
+                            {openModal === 'settings' && (
+                                <SettingsView
+                                    transactions={transactions}
+                                    recurringCharges={recurringCharges}
+                                    members={members}
+                                    logs={logs}
+                                    onRemoveMember={handleRemoveMember}
+                                    primaryColor={primaryColor}
+                                    onColorChange={updateColor}
+                                    isOwner={isOwner}
+                                    meta={meta}
+                                    onUpdateSettings={updateSettings}
+                                    onRename={renameMeta}
+                                    currentUserId={user?.uid}
+                                    onToggleMemberIncome={toggleMemberIncome}
+                                    participants={isOwner ? participants : undefined}
+                                    onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
+                                />
+                            )}
+                            {openModal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
+                        </div>
                     </div>
                 </div>
             )}
