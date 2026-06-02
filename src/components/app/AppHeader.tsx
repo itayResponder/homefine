@@ -19,11 +19,18 @@ interface Props {
     onApproveJoin?: (householdId: string, uid: string) => void
     onDenyJoin?: (householdId: string, uid: string) => void
     onLeave?: () => void
+    online?: Record<string, { name: string }>
+}
+
+const AVATAR_COLORS = ['#6366F1','#EC4899','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EF4444','#06B6D4']
+function nameToColor(name: string): string {
+    const sum = [...name].reduce((a, c) => a + c.charCodeAt(0), 0)
+    return AVATAR_COLORS[sum % AVATAR_COLORS.length]
 }
 
 export function AppHeader({
     user, householdId, onLogout, onOpenSettings, onOpenLogs, onDashboard,
-    joinRequests = [], onApproveJoin, onDenyJoin, onLeave,
+    joinRequests = [], onApproveJoin, onDenyJoin, onLeave, online = {},
 }: Props) {
     const { t } = useI18n()
     const navigate = useNavigate()
@@ -48,6 +55,11 @@ export function AppHeader({
     const pick = (action: () => void) => { setMenuOpen(false); action() }
     const isOwner = onApproveJoin !== undefined
 
+    const onlineUsers = Object.values(online)
+    const MAX_SHOWN = 4
+    const shownUsers = onlineUsers.slice(0, MAX_SHOWN)
+    const overflow = onlineUsers.length - MAX_SHOWN
+
     return (
         <header className="ap-header">
             <div className="ap-logo">Home<span>Fine</span></div>
@@ -69,6 +81,24 @@ export function AppHeader({
             </nav>
 
             <div className="ap-user">
+                {onlineUsers.length > 0 && (
+                    <div className="ah-online">
+                        {shownUsers.map((u) => (
+                            <div
+                                key={u.name}
+                                className="ah-online-avatar"
+                                style={{ background: nameToColor(u.name) }}
+                                title={u.name}
+                            >
+                                {u.name.charAt(0)}
+                                <span className="ah-online-dot" />
+                            </div>
+                        ))}
+                        {overflow > 0 && (
+                            <span className="ah-online-more">+{overflow}</span>
+                        )}
+                    </div>
+                )}
                 <LanguageToggle />
                 {user?.photoURL && (
                     <img src={user.photoURL} alt={user.displayName} className="ap-avatar" />

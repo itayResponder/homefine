@@ -7,13 +7,10 @@ import { useTransactions } from '../hooks/useTransactions'
 import { useRecurring } from '../hooks/useRecurring'
 import { useLogs } from '../hooks/useLogs'
 import { usePresence } from '../hooks/usePresence'
-import { useSyncStatus } from '../hooks/useSyncStatus'
 import { useI18n } from '../i18n/context'
 import { useToast } from '../contexts/ui'
 import { useConfirm } from '../contexts/ui'
 import { AppHeader } from '../components/app/AppHeader'
-import { SyncBar } from '../components/app/SyncBar'
-import { OnlineBar } from '../components/app/OnlineBar'
 import { AppNav } from '../components/app/AppNav'
 import { HeroCard } from '../components/app/HeroCard'
 import { SummaryView } from '../components/app/SummaryView'
@@ -53,7 +50,6 @@ export default function AppPage() {
     const { recurringCharges, ready: recurringReady, add: addRecurring, remove: removeRecurring } = useRecurring(householdId)
     const { logs, add: addLog, remove: removeLog, clear: clearLogs } = useLogs(householdId)
     const online = usePresence(householdId, user)
-    const syncStatus = useSyncStatus()
     const { t } = useI18n()
     const { showToast } = useToast()
     const { showConfirm } = useConfirm()
@@ -285,9 +281,9 @@ export default function AppPage() {
                 onApproveJoin={isOwner ? handleApproveJoin : undefined}
                 onDenyJoin={isOwner ? denyJoinRequest : undefined}
                 onLeave={!isOwner ? handleLeaveHousehold : undefined}
+                online={online}
             />
-            <SyncBar status={syncStatus} />
-            <OnlineBar online={online} />
+
 
             <div className="wrap">
                 <HeroCard

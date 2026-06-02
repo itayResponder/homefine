@@ -187,6 +187,61 @@
     color: #EF4444 !important;
 }
 
+/* ── Online avatars in header ── */
+.ah-online {
+    display: flex;
+    align-items: center;
+    padding-inline-end: 10px;
+    margin-inline-end: 2px;
+    border-inline-end: 1px solid #E2E8F0;
+}
+
+.ah-online-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #fff;
+    position: relative;
+    margin-inline-start: -6px;
+    cursor: default;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.06);
+}
+
+.ah-online-avatar:first-child {
+    margin-inline-start: 0;
+}
+
+.ah-online-dot {
+    position: absolute;
+    bottom: 0;
+    inset-inline-end: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22C55E;
+    border: 1.5px solid #fff;
+    animation: ah-pulse 2s ease-in-out infinite;
+}
+
+.ah-online-more {
+    margin-inline-start: 5px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #94A3B8;
+}
+
+@keyframes ah-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
 /* Bell badge — shared wrapper (.np-wrap, .np-dropdown) is in NotificationPanel.css */
 .ap-notif-badge {
     position: absolute;

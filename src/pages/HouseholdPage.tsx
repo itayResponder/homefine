@@ -10,6 +10,7 @@ import { useHouseholdMeta } from '../hooks/useHouseholdMeta'
 import { useJoinRequests } from '../hooks/useJoinRequests'
 import { AppHeader } from '../components/app/AppHeader'
 import { HomeView } from '../components/home/HomeView'
+import { usePresence } from '../hooks/usePresence'
 import { approveJoinRequest, denyJoinRequest, subscribeUserMembership, leaveHousehold } from '../firebase/db'
 import { buildColorVars } from '../utils/color'
 import './AppPage.css'
@@ -23,6 +24,7 @@ export default function HouseholdPage() {
     const { members, ready: membersReady } = useMembers(householdId)
     const { color: primaryColor, loading: colorLoading } = useUserColor(user?.uid)
     const { meta, isOwner } = useHouseholdMeta(householdId, user?.uid)
+    const online = usePresence(householdId, user)
 
     const ownedEntry = isOwner && meta ? [{ id: householdId, name: meta.name }] : []
     const joinRequests = useJoinRequests(ownedEntry)
@@ -87,6 +89,7 @@ export default function HouseholdPage() {
                 onApproveJoin={isOwner ? handleApproveJoin : undefined}
                 onDenyJoin={isOwner ? denyJoinRequest : undefined}
                 onLeave={!isOwner ? handleLeaveHousehold : undefined}
+                online={online}
             />
             <div className="wrap">
                 <HomeView
