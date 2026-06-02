@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { todayISO } from '../../utils/date'
+import { AmountInput } from '../ui/AmountInput'
 import type { Member, Transaction, TransactionCategory, TransactionType } from '../../types'
 import './AddTransactionModal.css'
 
@@ -92,15 +93,12 @@ export function AddTransactionModal({ members, defaultMemberId, onClose, onSubmi
                     {/* Amount */}
                     <div className="ap-form-row">
                         <label>{t.amountLabel}</label>
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
+                        <AmountInput
                             className="ap-input"
                             value={form.amount}
-                            onChange={(e) => set('amount', e.target.value)}
-                            required
+                            onChange={(v) => set('amount', v)}
                             placeholder="0"
+                            required
                         />
                     </div>
 

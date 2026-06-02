@@ -5,6 +5,7 @@ import { useMemberName } from '../../hooks/useMemberName'
 import { todayISO } from '../../utils/date'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
+import { AmountInput } from '../ui/AmountInput'
 import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
 import type { Member, Transaction, TransactionCategory } from '../../types'
@@ -73,7 +74,7 @@ export function IncomeView({ transactions, members, month, currentUserId, onAdd,
                         </div>
                         <div className="fl">
                             <label>{t.amountLabel}</label>
-                            <input type="number" min="0" step="0.01" className="inp" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0" required />
+                            <AmountInput className="inp" value={amount} onChange={setAmount} placeholder="0" required />
                         </div>
                     </div>
                     <div className="fg fg3">

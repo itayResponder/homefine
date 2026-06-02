@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
+import { AmountInput } from '../ui/AmountInput'
 import type { Member, Transaction, TransactionCategory, TransactionType } from '../../types'
 import './AddTransactionModal.css'
 
@@ -79,7 +80,7 @@ export function EditTransactionModal({ tx, members, onClose, onSave }: Props) {
                     {/* Amount */}
                     <div className="ap-form-row">
                         <label>{t.amountLabel}</label>
-                        <input type="number" min="0" step="0.01" className="ap-input" value={form.amount} onChange={(e) => set('amount', e.target.value)} required />
+                        <AmountInput className="ap-input" value={form.amount} onChange={(v) => set('amount', v)} required />
                     </div>
 
                     {/* Description */}

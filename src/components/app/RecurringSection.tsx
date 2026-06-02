@@ -7,6 +7,7 @@ import { computeStartYearMonth } from '../../utils/recurring'
 import { CATEGORY_ICONS } from '../../constants/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
+import { AmountInput } from '../ui/AmountInput'
 import { Money } from '../ui/Money'
 import type { Member, RecurringCharge, TransactionCategory, TransactionType } from '../../types'
 import './RecurringSection.css'
@@ -120,13 +121,10 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                     </div>
                     <div className="rec-field">
                         <label>{t.amountLabel}</label>
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
+                        <AmountInput
                             className="ap-input"
                             value={form.amount}
-                            onChange={(e) => setField('amount', e.target.value)}
+                            onChange={(v) => setField('amount', v)}
                             placeholder="0"
                             required
                         />
