@@ -13,6 +13,8 @@ export default function JoinPage() {
 
     const [meta, setMeta] = useState<HouseholdMeta | null>(null)
     const [metaLoading, setMetaLoading] = useState(true)
+    const [nameHe, setNameHe] = useState('')
+    const [nameEn, setNameEn] = useState('')
     const [sending, setSending] = useState(false)
     const [sent, setSent] = useState(false)
 
@@ -32,13 +34,15 @@ export default function JoinPage() {
     }, [user, householdId, navigate])
 
     const handleRequest = async () => {
-        if (!user || !householdId) return
+        if (!user || !householdId || !nameHe.trim()) return
         setSending(true)
         await createJoinRequest(householdId, user.uid, {
             name: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
             ts: Date.now(),
+            nameHe: nameHe.trim(),
+            ...(nameEn.trim() ? { nameEn: nameEn.trim() } : {}),
         })
         setSending(false)
         setSent(true)
@@ -93,8 +97,29 @@ export default function JoinPage() {
                     </>
                 ) : (
                     <>
-                        <p className="jp-sub">שלום, {user.displayName?.split(' ')[0]} 👋<br/>שלח בקשת הצטרפות לבעל הבית</p>
-                        <button className="jp-btn" onClick={handleRequest} disabled={sending}>
+                        <p className="jp-sub">שלום, {user.displayName?.split(' ')[0]} 👋<br/>כיצד תרצה להיקרא בבית?</p>
+                        <div className="jp-fields">
+                            <div className="jp-field">
+                                <label>שם בעברית</label>
+                                <input
+                                    className="jp-input"
+                                    value={nameHe}
+                                    onChange={(e) => setNameHe(e.target.value)}
+                                    placeholder="למשל: איתי"
+                                    autoFocus
+                                />
+                            </div>
+                            <div className="jp-field">
+                                <label>שם באנגלית</label>
+                                <input
+                                    className="jp-input"
+                                    value={nameEn}
+                                    onChange={(e) => setNameEn(e.target.value)}
+                                    placeholder="eg: Itay"
+                                />
+                            </div>
+                        </div>
+                        <button className="jp-btn" onClick={handleRequest} disabled={sending || !nameHe.trim()}>
                             {sending ? '...' : 'שלח בקשת הצטרפות'}
                         </button>
                     </>

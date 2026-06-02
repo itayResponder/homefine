@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ]
   },
   "hooks": {
@@ -13,6 +15,17 @@
             "command": "$s = git diff HEAD --name-only; if ($s) { '{\"systemMessage\": \"Source files modified - update CONTEXT.md and memory files if not done.\"}' }",
             "shell": "powershell",
             "timeout": 10
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$r = npx tsc --noEmit 2>&1; if ($LASTEXITCODE -ne 0) { '{\"systemMessage\": \"TypeScript type-check failed!\", \"hookSpecificOutput\": {\"hookEventName\": \"Stop\", \"additionalContext\": \"TypeScript type-check FAILED. Run npx tsc --noEmit, fix all errors, re-run to confirm clean, then complete.\"}}' }",
+            "shell": "powershell",
+            "timeout": 60,
+            "statusMessage": "TypeScript type-check..."
           }
         ]
       }

@@ -113,6 +113,7 @@ export default function HouseholdLayout() {
             hId,
             uid,
             request ? { name: request.name, email: request.email, photoURL: request.photoURL } : undefined,
+            request?.nameHe ? { nameHe: request.nameHe, nameEn: request.nameEn } : undefined,
         )
     }
 

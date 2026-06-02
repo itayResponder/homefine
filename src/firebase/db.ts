@@ -177,16 +177,30 @@ export const subscribeConnectionState = (cb: (connected: boolean) => void) => {
 }
 
 // ─── Join Requests ───────────────────────────────────────────────────────────
-type JoinRequestData = { name: string; email: string; photoURL?: string; ts: number }
+type JoinRequestData = { name: string; email: string; photoURL?: string; ts: number; nameHe?: string; nameEn?: string }
 
 export const createJoinRequest = (householdId: string, uid: string, data: JoinRequestData) =>
     set(ref(db, `households/${householdId}/joinRequests/${uid}`), data)
 
-export const approveJoinRequest = async (householdId: string, uid: string, participantData?: { name: string; email: string; photoURL?: string }): Promise<void> => {
+export const approveJoinRequest = async (
+    householdId: string,
+    uid: string,
+    participantData?: { name: string; email: string; photoURL?: string },
+    memberNameData?: { nameHe: string; nameEn?: string },
+): Promise<void> => {
     await set(ref(db, `userHouseholds/${uid}/${householdId}`), true)
     await remove(ref(db, `households/${householdId}/joinRequests/${uid}`))
     if (participantData) {
         await set(ref(db, `households/${householdId}/participants/${uid}`), { ...participantData, joinedAt: Date.now() })
+    }
+    if (memberNameData) {
+        await addMember(householdId, {
+            name: memberNameData.nameHe,
+            ...(memberNameData.nameEn ? { nameEn: memberNameData.nameEn } : {}),
+            userId: uid,
+            color: '#2563EB',
+            createdAt: Date.now(),
+        })
     }
 }
 

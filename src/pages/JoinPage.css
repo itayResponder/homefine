@@ -104,3 +104,41 @@
 
 .jp-sent-icon { font-size: 2rem; }
 .jp-sub--success { color: #10B981; font-weight: 600; }
+
+.jp-fields {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    text-align: start;
+}
+
+.jp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.jp-field label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9490CC;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.jp-input {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #0F172A;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+    background: #fff;
+}
+
+.jp-input:focus { border-color: var(--brand); }

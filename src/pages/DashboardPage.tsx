@@ -59,7 +59,7 @@ export default function DashboardPage() {
             name: ownerName.trim(),
             ...(ownerNameEn.trim() ? { nameEn: ownerNameEn.trim() } : {}),
             ...(user?.uid ? { userId: user.uid } : {}),
-            color: '#6C63FF',
+            color: '#2563EB',
             createdAt: Date.now(),
         })
         setLoading(false)
@@ -82,7 +82,13 @@ export default function DashboardPage() {
     }
 
     const handleApprove = async (householdId: string, uid: string) => {
-        await approveJoinRequest(householdId, uid)
+        const request = joinRequests.find((r) => r.householdId === householdId && r.uid === uid)
+        await approveJoinRequest(
+            householdId,
+            uid,
+            undefined,
+            request?.nameHe ? { nameHe: request.nameHe, nameEn: request.nameEn } : undefined,
+        )
     }
 
     const handleDeny = async (householdId: string, uid: string) => {
@@ -218,9 +224,15 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {showCreate && (
-                    <div className="db-form-card">
-                        <div className="db-form-title">{isRtl ? 'צור בית חדש' : 'Create new household'}</div>
+            </main>
+
+            {showCreate && (
+                <div className="db-modal-overlay" onClick={handleCancelCreate}>
+                    <div className="db-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="db-modal-header">
+                            <span className="db-modal-title">🏠 {isRtl ? 'צור בית חדש' : 'Create New Household'}</span>
+                            <button className="db-modal-close" onClick={handleCancelCreate}>✕</button>
+                        </div>
                         <form onSubmit={handleCreate}>
                             <input
                                 className="db-input"
@@ -230,23 +242,30 @@ export default function DashboardPage() {
                                 autoFocus
                                 required
                             />
-                            <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', margin: '14px 0 8px' }}>
+                            <div className="db-section-label">
                                 {isRtl ? 'שמך בבית' : 'Your name in this household'}
                             </div>
-                            <input
-                                className="db-input"
-                                value={ownerName}
-                                onChange={(e) => setOwnerName(e.target.value)}
-                                placeholder={isRtl ? 'למשל: איתי' : 'e.g. Itay'}
-                                required
-                            />
-                            <input
-                                className="db-input"
-                                style={{ marginTop: 8 }}
-                                value={ownerNameEn}
-                                onChange={(e) => setOwnerNameEn(e.target.value)}
-                                placeholder={isRtl ? 'שם באנגלית (אופציונלי)' : 'English name (optional)'}
-                            />
+                            <div className="db-fields-row">
+                                <div className="db-field">
+                                    <label>{t.memberNameLabel}</label>
+                                    <input
+                                        className="db-input"
+                                        value={ownerName}
+                                        onChange={(e) => setOwnerName(e.target.value)}
+                                        placeholder={t.memberNamePlaceholder}
+                                        required
+                                    />
+                                </div>
+                                <div className="db-field">
+                                    <label>{t.memberNameEnLabel}</label>
+                                    <input
+                                        className="db-input"
+                                        value={ownerNameEn}
+                                        onChange={(e) => setOwnerNameEn(e.target.value)}
+                                        placeholder={t.memberNameEnPlaceholder}
+                                    />
+                                </div>
+                            </div>
                             <div className="db-form-actions">
                                 <button type="submit" className="db-btn-primary" disabled={loading}>
                                     {loading ? '...' : (isRtl ? 'צור' : 'Create')}
@@ -257,8 +276,8 @@ export default function DashboardPage() {
                             </div>
                         </form>
                     </div>
-                )}
-            </main>
+                </div>
+            )}
         </div>
     )
 }

@@ -91,6 +91,8 @@ export interface JoinRequest {
     ts: number
     householdId: string      // populated by hook
     householdName: string    // populated by hook
+    nameHe?: string
+    nameEn?: string
 }
 
 export interface Participant {
