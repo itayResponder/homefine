@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { CATEGORY_ICONS } from '../../constants/categories'
+import { EditMemberModal } from './EditMemberModal'
 import type { HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, TransactionCategory } from '../../types'
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
     // Participants (owner only)
     participants?: Participant[]
     onRemoveParticipant?: (uid: string) => void
+    onRenameMember: (id: string, name: string, nameEn?: string) => void
 }
 
 const DEFAULT_COLOR = '#2563EB'
@@ -38,6 +40,7 @@ export function SettingsView({
     isOwner, meta, onUpdateSettings, onRename,
     currentUserId, onToggleMemberIncome,
     participants, onRemoveParticipant,
+    onRenameMember,
 }: Props) {
     const { t } = useI18n()
     const categories = Object.entries(t.categoryOptions) as [TransactionCategory, string][]
@@ -56,6 +59,7 @@ export function SettingsView({
     const isRtl = t.dir === 'rtl'
     const [renaming, setRenaming] = useState(false)
     const [newHouseName, setNewHouseName] = useState(meta?.name ?? '')
+    const [editingMember, setEditingMember] = useState<Member | null>(null)
 
     const handleRename = (e: React.FormEvent) => {
         e.preventDefault()
@@ -209,6 +213,13 @@ export function SettingsView({
                             <div key={m.id} className="catchip" style={{ border: `1.5px solid ${m.color}40`, color: m.color, background: m.color + '15' }}>
                                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: m.color, display: 'inline-block', flexShrink: 0 }} />
                                 {m.name}
+                                {m.userId === currentUserId && (
+                                    <button
+                                        onClick={() => setEditingMember(m)}
+                                        title={isRtl ? 'שנה שם' : 'Edit name'}
+                                        style={{ fontSize: 11, lineHeight: 1, opacity: 0.7 }}
+                                    >✏️</button>
+                                )}
                                 <button onClick={() => onRemoveMember(m.id)} title="מחק חבר">×</button>
                             </div>
                         ))}
@@ -308,6 +319,13 @@ export function SettingsView({
                     {t.exportJsonBtn}
                 </button>
             </div>
+            {editingMember && (
+                <EditMemberModal
+                    member={editingMember}
+                    onSave={(name, nameEn) => onRenameMember(editingMember.id, name, nameEn)}
+                    onClose={() => setEditingMember(null)}
+                />
+            )}
         </div>
     )
 }

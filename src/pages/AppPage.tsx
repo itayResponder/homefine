@@ -20,7 +20,7 @@ import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { AddMemberModal } from '../components/app/AddMemberModal'
 import { currentMonth } from '../utils/date'
 import { applyRecurring } from '../utils/recurring'
-import { subscribeParticipants, removeParticipant } from '../firebase/db'
+import { subscribeParticipants, removeParticipant, updateMember } from '../firebase/db'
 import type { Participant } from '../types'
 import { formatCurrency } from '../utils/format'
 import type { LogDiff, RecurringCharge, Transaction } from '../types'
@@ -183,6 +183,10 @@ export default function AppPage() {
         if (view === `member:${id}`) setView('summary')
     }
 
+    const handleRenameMember = (id: string, name: string, nameEn?: string) => {
+        updateMember(householdId, id, { name, nameEn: (nameEn ?? null) as string | undefined })
+    }
+
     const handleRemoveParticipant = async (uid: string) => {
         const p = participants.find((p) => p.uid === uid)
         if (!p) return
@@ -313,6 +317,7 @@ export default function AppPage() {
                                     onToggleMemberIncome={toggleMemberIncome}
                                     participants={isOwner ? participants : undefined}
                                     onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
+                                    onRenameMember={handleRenameMember}
                                 />
                             )}
                             {openModal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
