@@ -58,6 +58,10 @@
           ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
           ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
         },
+        "events": {
+          ".read": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()",
+          ".write": "auth != null && root.child('userHouseholds').child(auth.uid).child($householdId).exists()"
+        },
         "joinRequests": {
           ".read": "auth != null && root.child('households').child($householdId).child('meta/ownerId').val() === auth.uid",
           "$requestUid": {

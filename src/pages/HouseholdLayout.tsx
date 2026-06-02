@@ -117,7 +117,7 @@ export default function HouseholdLayout() {
         )
     }
 
-    const isFinanceTab = !pathname.endsWith('/home')
+    const isFinanceTab = !pathname.endsWith('/home') && !pathname.endsWith('/calendar')
 
     const ctx: HouseholdContextType = {
         householdId,

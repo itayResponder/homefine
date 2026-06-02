@@ -42,7 +42,8 @@ export function AppHeader({
     const notifRef = useRef<HTMLDivElement>(null)
 
     const isHomeActive = pathname === `/app/${householdId}/home`
-    const isFinanceActive = !isHomeActive
+    const isCalendarActive = pathname === `/app/${householdId}/calendar`
+    const isFinanceActive = !isHomeActive && !isCalendarActive
 
     useEffect(() => {
         const close = (e: MouseEvent) => {
@@ -78,6 +79,12 @@ export function AppHeader({
                     onClick={() => navigate(`/app/${householdId}/home`)}
                 >
                     {t.navHousehold}
+                </button>
+                <button
+                    className={`ap-nav-btn${isCalendarActive ? ' ap-nav-btn--active' : ''}`}
+                    onClick={() => navigate(`/app/${householdId}/calendar`)}
+                >
+                    {t.calendar.navCalendar}
                 </button>
             </nav>
 

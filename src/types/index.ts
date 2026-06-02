@@ -102,3 +102,24 @@ export interface Participant {
     photoURL?: string
     joinedAt: number
 }
+
+// ─── Calendar ────────────────────────────────────────────────────────────────
+
+export type RecurringFrequency = 'weekly' | 'monthly' | 'yearly'
+
+export interface CalendarEvent {
+    id: string
+    title: string
+    description?: string
+    startDate: string          // "YYYY-MM-DD"
+    endDate: string            // "YYYY-MM-DD" — equals startDate for single-day events
+    startTime?: string         // "HH:MM" — omit for all-day
+    endTime?: string           // "HH:MM"
+    color?: string             // hex — defaults to creator's primaryColor
+    createdBy: string          // uid
+    participants: string[]     // uid[] — empty = whole household ("everyone")
+    recurring?: {
+        frequency: RecurringFrequency
+        until?: string         // "YYYY-MM-DD" — omit for indefinite
+    }
+}

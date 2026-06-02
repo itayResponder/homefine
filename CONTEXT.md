@@ -15,6 +15,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 | `/join/:householdId` | JoinPage | Sends join request (owner must approve) |
 | `/app/:householdId` | HouseholdLayout → AppPage | Finance app (כספים) |
 | `/app/:householdId/home` | HouseholdLayout → HouseholdPage | Tasks + shopping (ניהול משק בית) |
+| `/app/:householdId/calendar` | HouseholdLayout → CalendarPage | Shared household calendar (יומן משותף) |
 
 ## What's Built
 - ✅ Multi-household support with invite links + owner approval flow
@@ -36,6 +37,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Landing page with locale-aware screenshots
 - ✅ Home module: Kanban tasks (dnd-kit, 3 columns: לבצע/בתהליך/בוצע) + shopping list
 - ✅ Settings + Logs modals (scrollable ap-modal-body pattern)
+- ✅ Shared calendar: monthly grid, multi-day events, participants tagging, recurring, EventModal (create/edit/delete)
 
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel

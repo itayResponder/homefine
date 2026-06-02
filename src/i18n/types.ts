@@ -202,6 +202,39 @@ export interface T {
         estimatedDaysUnit: string
     }
 
+    // ── Calendar module ──────────────────────────────────
+    calendar: {
+        navCalendar: string
+        title: string
+        today: string
+        allDay: string
+        everyone: string
+        participants: string
+        newEvent: string
+        editEvent: string
+        titleLabel: string
+        titlePlaceholder: string
+        descriptionLabel: string
+        descriptionPlaceholder: string
+        startDateLabel: string
+        endDateLabel: string
+        startTimeLabel: string
+        endTimeLabel: string
+        colorLabel: string
+        recurringLabel: string
+        recurringNone: string
+        recurringWeekly: string
+        recurringMonthly: string
+        recurringYearly: string
+        recurringUntilLabel: string
+        saveBtn: string
+        deleteEvent: string
+        noEvents: string
+        moreEvents: (n: number) => string
+        confirmDeleteTitle: string
+        confirmDeleteSub: (title: string) => string
+    }
+
     // ── Landing page ─────────────────────────────────────
     landing: {
         navCta: string

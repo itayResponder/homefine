@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage.tsx';
 import HouseholdLayout from './pages/HouseholdLayout.tsx';
 import AppPage from './pages/AppPage.tsx';
 import HouseholdPage from './pages/HouseholdPage.tsx';
+import CalendarPage from './pages/CalendarPage.tsx';
 import DashboardPage from './pages/DashboardPage.tsx';
 import JoinPage from './pages/JoinPage.tsx';
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/app/:householdId" element={user ? <HouseholdLayout /> : <Navigate to="/" replace />}>
           <Route index element={<AppPage />} />
           <Route path="home" element={<HouseholdPage />} />
+          <Route path="calendar" element={<CalendarPage />} />
         </Route>
         <Route path="/app" element={<Navigate to={user ? '/dashboard' : '/'} replace />} />
       </Routes>

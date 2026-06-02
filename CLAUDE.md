@@ -37,6 +37,7 @@ Routes in `App.tsx`:
 - `/app/:householdId` → `HouseholdLayout` (auth-gated, nested layout)
   - index → `AppPage` (כספים — finance views)
   - `home` → `HouseholdPage` (ניהול משק בית — tasks + shopping)
+  - `calendar` → `CalendarPage` (יומן משותף — shared household calendar)
 
 **Layout Route pattern:** `HouseholdLayout.tsx` is a React Router v7 nested layout. It renders `AppHeader` once and holds all shared hooks. Switching between tabs never remounts AppHeader or re-runs shared hooks. Child pages access shared state via `useHouseholdContext()` = `useOutletContext<HouseholdContextType>()` (exported from `HouseholdLayout.tsx`). `HouseholdContextType` carries: `householdId`, `user`, `members`, `membersReady`, `online`, `isOwner`, `expensesOnly`, `meta`, `primaryColor`, `updateColor`, `joinRequests`, `openModal`/`setOpenModal`, `updateSettings`, `renameMeta`, `toggleMemberIncome`, `addMember`, `removeMember`.
 
@@ -54,6 +55,7 @@ households/{householdId}/
   presence/         ← {uid: {name, photoURL?, ts, online: boolean}} — persistent per-member
   joinRequests/     ← {uid: {name, email, photoURL, ts}} — owner-read, self-write
   participants/     ← {uid: {name, email, photoURL, joinedAt}} — owner only
+  events/           ← CalendarEvent[] — member read/write
 userHouseholds/{uid}/{householdId} ← true
 userPrefs/{uid}/primaryColor ← hex string
 ```
