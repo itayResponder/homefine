@@ -2,14 +2,17 @@
 import { useMemo } from 'react'
 import { useI18n } from '../../i18n/context'
 import { CalendarDay } from './CalendarDay'
-import type { CalendarEvent } from '../../types'
+import type { CalendarEvent, Member } from '../../types'
 
 // Short day names — Sun→Sat in LTR, same order for RTL (grid stays same)
 const DOW_HE = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳']
 const DOW_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 function toYMD(d: Date): string {
-    return d.toISOString().slice(0, 10)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
 }
 
 function buildGridDays(year: number, month: number): Date[] {
@@ -62,11 +65,12 @@ interface Props {
     year: number
     month: number
     events: CalendarEvent[]
+    members: Member[]
     onDayClick: (date: Date) => void
     onEventClick: (event: CalendarEvent) => void
 }
 
-export function CalendarGrid({ year, month, events, onDayClick, onEventClick }: Props) {
+export function CalendarGrid({ year, month, events, members, onDayClick, onEventClick }: Props) {
     const { lang } = useI18n()
     const today = toYMD(new Date())
     const dowLabels = lang === 'he' ? DOW_HE : DOW_EN
@@ -93,6 +97,7 @@ export function CalendarGrid({ year, month, events, onDayClick, onEventClick }: 
                             isToday={toYMD(date) === today}
                             dayEvents={dayEvents}
                             totalEvents={dayEvents.length}
+                            members={members}
                             onDayClick={onDayClick}
                             onEventClick={(ev, e) => { e.stopPropagation(); onEventClick(ev) }}
                         />

@@ -80,14 +80,13 @@ export function EventModal({
         try {
             const data: Omit<CalendarEvent, 'id'> = {
                 title: title.trim(),
-                description: description.trim() || undefined,
                 startDate,
                 endDate,
-                startTime: allDay ? undefined : startTime,
-                endTime: allDay ? undefined : endTime,
                 color,
                 createdBy: event?.createdBy ?? currentUserId,
                 participants,
+                ...(description.trim() ? { description: description.trim() } : {}),
+                ...(!allDay ? { startTime, endTime } : {}),
                 ...(recurringFreq
                     ? { recurring: { frequency: recurringFreq, ...(recurringUntil ? { until: recurringUntil } : {}) } }
                     : {}),

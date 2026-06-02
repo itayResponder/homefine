@@ -10,7 +10,10 @@ import '../components/calendar/CalendarPage.css'
 import type { CalendarEvent } from '../types'
 
 function toYMD(d: Date): string {
-    return d.toISOString().slice(0, 10)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
 }
 
 type ModalState =
@@ -42,8 +45,14 @@ export default function CalendarPage() {
     }, [])
 
     const handleDayClick = useCallback((date: Date) => {
-        setModal({ mode: 'create', defaultDate: toYMD(date) })
-    }, [])
+        const ymd = toYMD(date)
+        const dayEvents = events.filter(e => e.startDate <= ymd && ymd <= e.endDate)
+        if (dayEvents.length === 1) {
+            setModal({ mode: 'edit', event: dayEvents[0] })
+        } else {
+            setModal({ mode: 'create', defaultDate: ymd })
+        }
+    }, [events])
 
     const handleEventClick = useCallback((event: CalendarEvent) => {
         setModal({ mode: 'edit', event })
@@ -76,6 +85,7 @@ export default function CalendarPage() {
                 year={year}
                 month={month}
                 events={events}
+                members={members}
                 onDayClick={handleDayClick}
                 onEventClick={handleEventClick}
             />

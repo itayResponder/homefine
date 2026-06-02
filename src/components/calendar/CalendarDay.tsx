@@ -1,8 +1,15 @@
 // src/components/calendar/CalendarDay.tsx
 import { useI18n } from '../../i18n/context'
-import type { CalendarEvent } from '../../types'
+import type { CalendarEvent, Member } from '../../types'
 
 const MAX_PILLS = 3
+const MAX_AVATARS = 2
+
+const AVATAR_COLORS = ['#6366F1','#EC4899','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EF4444','#06B6D4']
+function nameToColor(name: string): string {
+    const sum = [...name].reduce((a, c) => a + c.charCodeAt(0), 0)
+    return AVATAR_COLORS[sum % AVATAR_COLORS.length]
+}
 
 interface DayEvent {
     event: CalendarEvent
@@ -15,6 +22,7 @@ interface Props {
     isToday: boolean
     dayEvents: DayEvent[]
     totalEvents: number
+    members: Member[]
     onDayClick: (date: Date) => void
     onEventClick: (event: CalendarEvent, e: React.MouseEvent) => void
 }
@@ -25,6 +33,7 @@ export function CalendarDay({
     isToday,
     dayEvents,
     totalEvents,
+    members,
     onDayClick,
     onEventClick,
 }: Props) {
@@ -50,17 +59,43 @@ export function CalendarDay({
         >
             <div className="cal-day-num">{date.getDate()}</div>
 
-            {visibleEvents.map(({ event, spanType }) => (
-                <span
-                    key={event.id + '-' + date.toISOString()}
-                    className={`cal-event-pill${spanClass(spanType)}`}
-                    style={{ background: event.color || 'var(--ac, #2563EB)' }}
-                    onClick={(e) => { e.stopPropagation(); onEventClick(event, e) }}
-                    title={event.title}
-                >
-                    {spanType !== 'mid' && spanType !== 'end' ? event.title : ' '}
-                </span>
-            ))}
+            {visibleEvents.map(({ event, spanType }) => {
+                const showContent = spanType !== 'mid' && spanType !== 'end'
+                const eventParticipants = event.participants ?? []
+                const taggedMembers = showContent && eventParticipants.length > 0
+                    ? members.filter(m => eventParticipants.includes(m.id)).slice(0, MAX_AVATARS)
+                    : []
+
+                return (
+                    <span
+                        key={event.id + '-' + date.getDate()}
+                        className={`cal-event-pill${spanClass(spanType)}`}
+                        style={{ background: event.color || 'var(--ac, #2563EB)' }}
+                        onClick={(e) => { e.stopPropagation(); onEventClick(event, e) }}
+                        title={event.title}
+                    >
+                        {showContent ? (
+                            <span className="cal-pill-inner">
+                                <span className="cal-pill-title">{event.title}</span>
+                                {taggedMembers.length > 0 && (
+                                    <span className="cal-pill-avatars">
+                                        {taggedMembers.map(m => (
+                                            <span
+                                                key={m.id}
+                                                className="cal-pill-avatar"
+                                                style={{ background: nameToColor(m.name) }}
+                                                title={m.name}
+                                            >
+                                                {m.name.charAt(0)}
+                                            </span>
+                                        ))}
+                                    </span>
+                                )}
+                            </span>
+                        ) : ' '}
+                    </span>
+                )
+            })}
 
             {hidden > 0 && (
                 <span className="cal-more-link">
