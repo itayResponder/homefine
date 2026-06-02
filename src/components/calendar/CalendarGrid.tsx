@@ -67,7 +67,7 @@ interface Props {
 }
 
 export function CalendarGrid({ year, month, events, onDayClick, onEventClick }: Props) {
-    const { t, lang } = useI18n()
+    const { lang } = useI18n()
     const today = toYMD(new Date())
     const dowLabels = lang === 'he' ? DOW_HE : DOW_EN
     const gridDays = useMemo(() => buildGridDays(year, month), [year, month])
