@@ -30,7 +30,7 @@ function nameToColor(name: string): string {
 }
 
 export function AppHeader({
-    user, householdId, onLogout, onOpenSettings, onOpenLogs, onDashboard,
+    householdId, onLogout, onOpenSettings, onOpenLogs, onDashboard,
     joinRequests = [], onApproveJoin, onDenyJoin, onLeave, online = {},
 }: Props) {
     const { t } = useI18n()
