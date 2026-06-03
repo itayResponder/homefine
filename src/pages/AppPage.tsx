@@ -302,6 +302,7 @@ export default function AppPage() {
                         <div className="ap-modal-body">
                             {openModal === 'settings' && (
                                 <SettingsView
+                                    householdId={householdId}
                                     transactions={transactions}
                                     recurringCharges={recurringCharges}
                                     members={members}

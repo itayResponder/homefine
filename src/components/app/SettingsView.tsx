@@ -1,11 +1,15 @@
 // src/components/app/SettingsView.tsx
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { CATEGORY_ICONS } from '../../constants/categories'
 import { EditMemberModal } from './EditMemberModal'
-import type { HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, TransactionCategory } from '../../types'
+import { saveWebhookConfig, deleteWebhookConfig, subscribeWebhookConfig } from '../../firebase/db'
+import type { HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, TransactionCategory, WebhookConfig } from '../../types'
+
+const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
 interface Props {
+    householdId: string
     transactions: Transaction[]
     recurringCharges: RecurringCharge[]
     members: Member[]
@@ -35,6 +39,7 @@ function fmtJoinDate(ts: number): string {
 }
 
 export function SettingsView({
+    householdId,
     transactions, recurringCharges, members, logs,
     onRemoveMember, primaryColor, onColorChange,
     isOwner, meta, onUpdateSettings, onRename,
@@ -60,6 +65,10 @@ export function SettingsView({
     const [renaming, setRenaming] = useState(false)
     const [newHouseName, setNewHouseName] = useState(meta?.name ?? '')
     const [editingMember, setEditingMember] = useState<Member | null>(null)
+    const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
+    const [showKey, setShowKey] = useState(false)
+    const [showInstructions, setShowInstructions] = useState(false)
+    const [webhookSaving, setWebhookSaving] = useState(false)
 
     const handleRename = (e: React.FormEvent) => {
         e.preventDefault()
@@ -69,6 +78,30 @@ export function SettingsView({
     }
 
     const myMember = members.find(m => m.userId === currentUserId)
+
+    useEffect(() => {
+        if (!currentUserId) return
+        return subscribeWebhookConfig(currentUserId, setWebhookConfig)
+    }, [currentUserId])
+
+    const handleGenerateKey = async () => {
+        if (!currentUserId || !myMember) return
+        setWebhookSaving(true)
+        const apiKey = crypto.randomUUID()
+        await saveWebhookConfig(
+            currentUserId,
+            { apiKey, householdId, memberId: myMember.id },
+            webhookConfig?.apiKey,
+        )
+        setShowKey(true)
+        setWebhookSaving(false)
+    }
+
+    const handleDeleteConfig = async () => {
+        if (!currentUserId || !webhookConfig) return
+        await deleteWebhookConfig(currentUserId, webhookConfig.apiKey)
+        setShowKey(false)
+    }
 
     return (
         <div>
@@ -298,6 +331,126 @@ export function SettingsView({
                     )}
                 </div>
             </div>
+
+            {/* ── Automation ─────────────────────────────────────── */}
+            {currentUserId && myMember && (
+                <div className="fcard">
+                    <div className="fttl">⚡ {isRtl ? 'אוטומציה — Google Wallet' : 'Automation — Google Wallet'}</div>
+                    <div style={{ fontSize: 12, color: '#64748B', marginBottom: 14, lineHeight: 1.5 }}>
+                        {isRtl
+                            ? 'חבר את MacroDroid כדי שכל רכישה ב-Google Wallet תיכנס אוטומטית לאפליקציה.'
+                            : 'Connect MacroDroid so every Google Wallet purchase is added automatically.'}
+                    </div>
+
+                    {webhookConfig ? (
+                        <>
+                            {/* Webhook URL */}
+                            <div style={{ marginBottom: 10 }}>
+                                <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 4 }}>
+                                    Webhook URL
+                                </div>
+                                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                                    <code style={{ fontSize: 10, background: '#F1F5F9', padding: '6px 8px', borderRadius: 6, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', direction: 'ltr', display: 'block' }}>
+                                        {WEBHOOK_URL}
+                                    </code>
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(WEBHOOK_URL)}
+                                        style={{ padding: '6px 10px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0 }}
+                                    >
+                                        {isRtl ? 'העתק' : 'Copy'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* API Key */}
+                            <div style={{ marginBottom: 14 }}>
+                                <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 4 }}>
+                                    API Key
+                                </div>
+                                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                                    <code style={{ fontSize: 10, background: '#F1F5F9', padding: '6px 8px', borderRadius: 6, flex: 1, fontFamily: 'monospace', direction: 'ltr', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {showKey ? webhookConfig.apiKey : '••••••••-••••-••••-••••-••••••••••••'}
+                                    </code>
+                                    <button
+                                        onClick={() => setShowKey(s => !s)}
+                                        style={{ padding: '6px 8px', fontSize: 13, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', cursor: 'pointer', flexShrink: 0 }}
+                                    >
+                                        {showKey ? '🙈' : '👁'}
+                                    </button>
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(webhookConfig.apiKey)}
+                                        style={{ padding: '6px 10px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0 }}
+                                    >
+                                        {isRtl ? 'העתק' : 'Copy'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                                <button
+                                    onClick={handleGenerateKey}
+                                    disabled={webhookSaving}
+                                    style={{ padding: '7px 12px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit' }}
+                                >
+                                    {isRtl ? '🔄 צור מפתח חדש' : '🔄 Regenerate Key'}
+                                </button>
+                                <button
+                                    onClick={handleDeleteConfig}
+                                    style={{ padding: '7px 12px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid #FECDD3', background: '#FFF1F2', color: '#E11D48', cursor: 'pointer', fontFamily: 'inherit' }}
+                                >
+                                    {isRtl ? 'מחק' : 'Delete'}
+                                </button>
+                            </div>
+
+                            {/* MacroDroid instructions */}
+                            <button
+                                onClick={() => setShowInstructions(s => !s)}
+                                style={{ width: '100%', padding: '8px 12px', fontSize: 12, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: showInstructions ? 'var(--acl)' : 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left' }}
+                            >
+                                📱 {isRtl ? 'הוראות הגדרה — MacroDroid' : 'MacroDroid Setup Guide'} {showInstructions ? '▲' : '▼'}
+                            </button>
+
+                            {showInstructions && (
+                                <div style={{ marginTop: 10, fontSize: 12, color: '#334155', lineHeight: 1.7, background: '#F8FAFC', borderRadius: 8, padding: '12px 14px' }}>
+                                    {isRtl ? (
+                                        <ol style={{ margin: 0, paddingInlineStart: 18 }}>
+                                            <li>פתח MacroDroid ← צור Macro חדש</li>
+                                            <li>Trigger: <b>Notification Received</b> ← בחר <b>Google Wallet</b></li>
+                                            <li>Action: <b>HTTP Request</b> ← Method: <b>POST</b></li>
+                                            <li>URL: העתק את כתובת ה-Webhook מלמעלה</li>
+                                            <li>Content Type: <b>application/json</b></li>
+                                            <li>Body:</li>
+                                        </ol>
+                                    ) : (
+                                        <ol style={{ margin: 0, paddingInlineStart: 18 }}>
+                                            <li>Open MacroDroid → Create new Macro</li>
+                                            <li>Trigger: <b>Notification Received</b> → select <b>Google Wallet</b></li>
+                                            <li>Action: <b>HTTP Request</b> → Method: <b>POST</b></li>
+                                            <li>URL: Copy the Webhook URL above</li>
+                                            <li>Content Type: <b>application/json</b></li>
+                                            <li>Body:</li>
+                                        </ol>
+                                    )}
+                                    <pre style={{ marginTop: 8, background: '#1E293B', color: '#E2E8F0', borderRadius: 6, padding: '10px 12px', fontSize: 10, overflowX: 'auto', direction: 'ltr' }}>{`{
+  "title": "%%ntitle%%",
+  "body": "%%ntbody%%",
+  "apiKey": "${webhookConfig.apiKey}"
+}`}</pre>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <button
+                            onClick={handleGenerateKey}
+                            disabled={webhookSaving}
+                            style={{ padding: '10px 18px', fontSize: 13, fontWeight: 700, borderRadius: 'var(--rs)', border: 'none', background: 'var(--ac)', color: '#fff', cursor: 'pointer', fontFamily: 'inherit' }}
+                        >
+                            {webhookSaving ? '...' : (isRtl ? '⚡ הפעל אוטומציה' : '⚡ Enable Automation')}
+                        </button>
+                    )}
+                </div>
+            )}
 
             {/* Export */}
             <div className="fcard">

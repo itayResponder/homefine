@@ -1,5 +1,11 @@
 {
   "rules": {
+    "webhookKeys": {
+      "$apiKey": {
+        ".read": false,
+        ".write": "auth != null && (!data.exists() || data.child('uid').val() === auth.uid)"
+      }
+    },
     "userHouseholds": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",

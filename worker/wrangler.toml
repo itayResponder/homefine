@@ -1,0 +1,13 @@
+name = "homefine-webhook"
+main = "src/index.ts"
+compatibility_date = "2024-09-01"
+
+[vars]
+FIREBASE_DB_URL = "https://homefine-a7613-default-rtdb.europe-west1.firebasedatabase.app"
+
+# Secrets — set these once via CLI (never commit to git):
+#   wrangler secret put FIREBASE_CLIENT_EMAIL
+#   wrangler secret put FIREBASE_PRIVATE_KEY
+#
+# Get both values from Firebase Console → Project Settings → Service Accounts
+# → Generate new private key → download JSON → copy client_email and private_key

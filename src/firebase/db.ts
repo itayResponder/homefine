@@ -2,7 +2,7 @@
 import { ref, push, set, remove, update, onValue, off, onDisconnect, get } from 'firebase/database'
 
 import { db } from './config'
-import type { Member, Transaction, RecurringCharge, LogEntry, HouseholdMeta } from '../types'
+import type { Member, Transaction, RecurringCharge, LogEntry, HouseholdMeta, WebhookConfig } from '../types'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const hRef = (householdId: string, path: string) =>
@@ -264,4 +264,26 @@ export const removeParticipant = async (householdId: string, uid: string): Promi
     await remove(ref(db, `userHouseholds/${uid}/${householdId}`))
     await remove(ref(db, `households/${householdId}/participants/${uid}`))
     await remove(hRef(householdId, `presence/${uid}`)).catch(() => {})
+}
+
+// ─── Webhook Config ───────────────────────────────────────────────────────────
+export const saveWebhookConfig = async (
+    uid: string,
+    config: WebhookConfig,
+    oldApiKey?: string,
+): Promise<void> => {
+    if (oldApiKey) await remove(ref(db, `webhookKeys/${oldApiKey}`))
+    await set(ref(db, `webhookKeys/${config.apiKey}`), { uid, householdId: config.householdId, memberId: config.memberId })
+    await set(ref(db, `userPrefs/${uid}/webhookConfig`), config)
+}
+
+export const deleteWebhookConfig = async (uid: string, apiKey: string): Promise<void> => {
+    await remove(ref(db, `webhookKeys/${apiKey}`))
+    await remove(ref(db, `userPrefs/${uid}/webhookConfig`))
+}
+
+export const subscribeWebhookConfig = (uid: string, cb: (config: WebhookConfig | null) => void) => {
+    const r = ref(db, `userPrefs/${uid}/webhookConfig`)
+    onValue(r, (snap) => cb(snap.val() ?? null))
+    return () => off(r)
 }

@@ -103,6 +103,12 @@ export interface Participant {
     joinedAt: number
 }
 
+export interface WebhookConfig {
+    apiKey: string
+    householdId: string
+    memberId: string
+}
+
 // ─── Calendar ────────────────────────────────────────────────────────────────
 
 export type RecurringFrequency = 'weekly' | 'monthly' | 'yearly'
