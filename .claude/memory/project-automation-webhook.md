@@ -74,4 +74,14 @@ Service account from: Firebase Console → Project Settings → Service Accounts
 - Multi-household support: each household has own key, own macro ✅
 - UI simplified: no key/URL display, no regenerate button ✅
 
+**MacroDroid debugging session (2026-06-04) — status: ⏳ pending confirmation:**
+- Problem: real Google Wallet notification at 14:55 did NOT trigger the macro (no log entry)
+- Diagnosis: trigger works (Test Trigger fired → HTTP sent → 422 returned = expected, test sends dummy data)
+- Parser is fine: title-only format ("RIVYERA" with no date) → falls back to today's date correctly
+- 422 from Test Trigger is ALWAYS expected — test sends empty/dummy values, not real notification text
+- Root cause suspected: Android battery optimization killing MacroDroid in background
+- Fix applied: MacroDroid app battery changed from **Optimized → Unrestricted** (Settings → Apps → MacroDroid → Battery)
+- **Status: waiting to confirm with next real Google Wallet notification**
+- Notification Access: ON ✓ | Background usage limits: OFF ✓ | Battery: Unrestricted ✓
+
 **How to apply:** When user asks to migrate to Blaze or deploy the webhook, follow steps above.
