@@ -17,14 +17,14 @@ export default {
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders() })
     if (req.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405)
 
-    let body: { title?: string; body?: string; apiKey?: string }
+    let body: { title?: string; body?: string; apiKey?: string; isTest?: boolean }
     try {
       body = await req.json()
     } catch {
       return json({ ok: false, error: 'Invalid JSON' }, 400)
     }
 
-    const { title, body: notifBody, apiKey } = body
+    const { title, body: notifBody, apiKey, isTest } = body
     if (!apiKey) return json({ ok: false, error: 'Missing apiKey' }, 400)
     if (!title || !notifBody) return json({ ok: false, error: 'Missing title or body' }, 400)
 
@@ -45,12 +45,14 @@ export default {
 
     const { uid, householdId, memberId } = keyData
 
-    // ── Update lastPingedAt (fire and forget) ─────────────────────────────────
-    fetch(`${env.FIREBASE_DB_URL}/userPrefs/${uid}/webhookConfigs/${householdId}.json`, {
-      method: 'PATCH',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lastPingedAt: Date.now() }),
-    })
+    // ── Update lastPingedAt only for real MacroDroid pings ────────────────────
+    if (!isTest) {
+      fetch(`${env.FIREBASE_DB_URL}/userPrefs/${uid}/webhookConfigs/${householdId}.json`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lastPingedAt: Date.now() }),
+      })
+    }
 
     // ── Parse notification ────────────────────────────────────────────────────
     const parsed = parseWalletNotification(title, notifBody)
