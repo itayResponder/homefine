@@ -3,14 +3,18 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Session Start — Always Do This First
-At the start of every conversation, read `CONTEXT.md` to get the current project state before starting any work.
+At the start of every conversation:
+1. Read `CONTEXT.md` to get the current project state
+2. Read all files in `.claude/memory/` — these are the canonical memory files that travel with the repo
 
 ## Auto-Update Rule
 After completing any feature or significant change — without waiting to be asked — automatically:
 1. Update `CONTEXT.md` (add to "What's Built", fix outdated descriptions)
 2. Update `CLAUDE.md` if routing, architecture patterns, or data flow changed
-3. Update the relevant memory files in `C:\Users\itay\.claude\projects\d--Itay-Projects-Itay-Projects-homefine\memory\`
-4. Update `MEMORY.md` index if a new memory file was added
+3. Update the relevant memory files in **both**:
+   - `.claude/memory/` (canonical, in git — always update this one)
+   - `C:\Users\itay\.claude\projects\d--Itay-Projects-Itay-Projects-homefine\memory\` (local cache — update if on this machine)
+4. Update `.claude/memory/MEMORY.md` index if a new memory file was added
 
 ## Commands
 
