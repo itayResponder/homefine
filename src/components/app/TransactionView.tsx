@@ -1,4 +1,4 @@
-// src/components/app/IncomeView.tsx
+// src/components/app/TransactionView.tsx
 import { useState, useMemo } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
@@ -11,6 +11,7 @@ import { TxEntry } from './TxEntry'
 import type { Member, Transaction, TransactionCategory } from '../../types'
 
 interface Props {
+    type: 'expense' | 'income'
     transactions: Transaction[]
     members: Member[]
     month: string
@@ -20,7 +21,7 @@ interface Props {
     onEdit: (tx: Transaction) => void
 }
 
-export function IncomeView({ transactions, members, month, currentUserId, onAdd, onDelete, onEdit }: Props) {
+export function TransactionView({ type, transactions, members, month, currentUserId, onAdd, onDelete, onEdit }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [desc, setDesc] = useState('')
@@ -28,18 +29,21 @@ export function IncomeView({ transactions, members, month, currentUserId, onAdd,
     const [category, setCategory] = useState<TransactionCategory | ''>('')
     const [memberId, setMemberId] = useState<string | null>(null)
     const [date, setDate] = useState(todayISO)
+    const [errors, setErrors] = useState<{ desc?: string; amount?: string; category?: string }>({})
+
+    const isExpense = type === 'expense'
 
     const defaultMemberId = members.find((m) => m.userId === currentUserId)?.id ?? 'shared'
     const effectiveMemberId = memberId ?? defaultMemberId
 
-    const monthIncome = useMemo(
+    const monthTxs = useMemo(
         () =>
             transactions
-                .filter((tx) => tx.type === 'income' && tx.date.startsWith(month))
+                .filter((tx) => tx.type === type && tx.date.startsWith(month))
                 .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt),
-        [transactions, month],
+        [transactions, type, month],
     )
-    const total = useMemo(() => monthIncome.reduce((s, tx) => s + tx.amount, 0), [monthIncome])
+    const total = useMemo(() => monthTxs.reduce((s, tx) => s + tx.amount, 0), [monthTxs])
 
     const categoryOpts = Object.entries(t.categoryOptions).map(([k, v]) => ({ value: k, label: v }))
     const memberOpts = [
@@ -50,9 +54,17 @@ export function IncomeView({ transactions, members, month, currentUserId, onAdd,
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         const amt = parseFloat(amount)
-        if (!amt || !desc.trim() || !category) return
+        const newErrors = {
+            desc: !desc.trim() ? t.fieldRequired : undefined,
+            amount: (!amount || !amt || amt <= 0) ? t.amountRequired : undefined,
+            category: !category ? t.categoryRequired : undefined,
+        }
+        if (newErrors.desc || newErrors.amount || newErrors.category) {
+            setErrors(newErrors)
+            return
+        }
         await onAdd({
-            type: 'income', amount: amt, description: desc.trim(),
+            type, amount: amt, description: desc.trim(),
             category: category as TransactionCategory, memberId: effectiveMemberId, date, createdAt: Date.now(),
         })
         setDesc('')
@@ -60,27 +72,47 @@ export function IncomeView({ transactions, members, month, currentUserId, onAdd,
         setCategory('')
         setMemberId(null)
         setDate(todayISO())
+        setErrors({})
     }
 
     return (
         <div>
             <div className="fcard">
-                <div className="fttl">{t.newIncomeTitle}</div>
-                <form onSubmit={handleSubmit}>
+                <div className="fttl">{isExpense ? t.newExpenseTitle : t.newIncomeTitle}</div>
+                <form onSubmit={handleSubmit} noValidate>
                     <div className="fg fg2">
                         <div className="fl">
                             <label>{t.descriptionLabel}</label>
-                            <input className="inp" value={desc} onChange={(e) => setDesc(e.target.value)} placeholder={t.incomePlaceholder} required />
+                            <input
+                                className={`inp${errors.desc ? ' inp--error' : ''}`}
+                                value={desc}
+                                onChange={(e) => { setDesc(e.target.value); setErrors(prev => ({ ...prev, desc: undefined })) }}
+                                placeholder={isExpense ? t.expensePlaceholder : t.incomePlaceholder}
+                            />
+                            {errors.desc && <span className="field-error">{errors.desc}</span>}
                         </div>
                         <div className="fl">
                             <label>{t.amountLabel}</label>
-                            <AmountInput className="inp" value={amount} onChange={setAmount} placeholder="0" required />
+                            <AmountInput
+                                className={`inp${errors.amount ? ' inp--error' : ''}`}
+                                value={amount}
+                                onChange={(v) => { setAmount(v); setErrors(prev => ({ ...prev, amount: undefined })) }}
+                                placeholder="0"
+                            />
+                            {errors.amount && <span className="field-error">{errors.amount}</span>}
                         </div>
                     </div>
                     <div className="fg fg3">
                         <div className="fl">
                             <label>{t.categoryLabel}</label>
-                            <CustomSelect options={categoryOpts} value={category} onChange={(v) => setCategory(v as TransactionCategory)} placeholder={t.categoryLabel} />
+                            <CustomSelect
+                                options={categoryOpts}
+                                value={category}
+                                onChange={(v) => { setCategory(v as TransactionCategory); setErrors(prev => ({ ...prev, category: undefined })) }}
+                                placeholder={t.categoryLabel}
+                                error={!!errors.category}
+                            />
+                            {errors.category && <span className="field-error">{errors.category}</span>}
                         </div>
                         <div className="fl">
                             <label>{t.whoLabel}</label>
@@ -91,19 +123,19 @@ export function IncomeView({ transactions, members, month, currentUserId, onAdd,
                             <CustomDatePicker value={date} onChange={setDate} />
                         </div>
                     </div>
-                    <button type="submit" className="sbtn">{t.addIncomeBtn}</button>
+                    <button type="submit" className="sbtn">{isExpense ? t.addExpenseBtn : t.addIncomeBtn}</button>
                 </form>
             </div>
 
             <div className="sec-hd">
-                <span className="sec-ttl">{t.incomeThisMonth}</span>
-                {total > 0 && <span className="badge pos"><Money amount={total} sign="+" /></span>}
+                <span className="sec-ttl">{isExpense ? t.expensesThisMonth : t.incomeThisMonth}</span>
+                {total > 0 && <span className={`badge ${isExpense ? 'neg' : 'pos'}`}><Money amount={total} sign={isExpense ? '−' : '+'} /></span>}
             </div>
             <div className="card">
-                {monthIncome.length === 0 ? (
-                    <div className="empty"><p>{t.noIncome}</p></div>
+                {monthTxs.length === 0 ? (
+                    <div className="empty"><p>{isExpense ? t.noExpenses : t.noIncome}</p></div>
                 ) : (
-                    monthIncome.map((tx) => (
+                    monthTxs.map((tx) => (
                         <TxEntry key={tx.id} tx={tx} members={members} onEdit={onEdit} onDelete={onDelete} />
                     ))
                 )}

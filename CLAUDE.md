@@ -112,11 +112,28 @@ Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] →
 `useMemberName()` hook returns a function `(member) => string` — uses `member.nameEn` when locale is English, `member.name` (Hebrew) otherwise. Members have both `name` (Hebrew) and optional `nameEn` (English) fields.
 
 ### Shared UI Components
-- `src/components/ui/CustomSelect.tsx` — styled dropdown (cs-* classes)
+- `src/components/ui/CustomSelect.tsx` — styled dropdown (cs-* classes); accepts `error?: boolean` → applies `.cs-trig--error`
 - `src/components/ui/CustomDatePicker.tsx` — styled calendar (cd-* classes)
 - `src/components/ui/Money.tsx` — currency display
 - `src/components/ui/NotificationPanel.tsx` — join request panel + BellSVG export
-- `src/components/app/AddMemberModal.tsx` — modal for adding a member (name HE + EN), opened via AppNav ＋ pill
+- `src/components/app/AddMemberModal.tsx` — modal for adding a member (name HE + EN + duplicate check), opened via AppNav ＋ pill
+- `src/components/app/TransactionView.tsx` — unified expense/income form + list; accepts `type: 'expense' | 'income'`
+
+### Form Validation Pattern
+All forms use custom validation — no browser-native popups. Pattern:
+1. Add `noValidate` to `<form>`
+2. Keep `errors` state: `{ fieldName?: string }`
+3. On change: clear that field's error immediately
+4. On submit: validate all fields, `setErrors(newErrors)`, return early if any error
+5. Apply `inp--error` on `<input>` and `cs-trig--error` on `<CustomSelect error={!!errors.field} />`
+6. Render `<span className="field-error">{errors.field}</span>` below the input
+
+**No-layout-shift rule:** `.field-error` is `position: absolute; top: 100%` — it floats below the input without pushing other elements. Container (`.fl` / `.rec-field`) must have `position: relative`. Grid gap must be large enough to absorb the error height (~16px): `.fg` gap = 20px, `.rec-form-grid` gap = 1.2rem.
+
+**Tab isolation:** Forms with type-toggle tabs (e.g. RecurringSection expense/income) must reset the entire form state + errors on tab switch — not just the `type` field.
+
+Shared CSS classes (all in `AppPage.css`): `.inp--error`, `.cs-trig--error`, `.field-error`.
+RecurringSection uses `.ap-input--error` (defined in `AddTransactionModal.css`) instead of `.inp--error`.
 
 ### CSS Conventions
 - All shared design-system classes in `src/pages/AppPage.css` (`.ap-root`, `.wrap`, `.hero`, `.pills`, `.pill`, `.fcard`, `.inp`, `.sbtn`, etc.)

@@ -64,6 +64,10 @@ export interface T {
     addIncomeBtn: string
     expensePlaceholder: string
     incomePlaceholder: string
+    fieldRequired: string
+    amountRequired: string
+    categoryRequired: string
+    monthCountInvalid: string
     noExpenses: string
     noIncome: string
 
@@ -133,6 +137,12 @@ export interface T {
     memberNameEnLabel: string
     memberNamePlaceholder: string
     memberNameEnPlaceholder: string
+    memberNameRequired: string
+    memberNameInvalidFormat: string
+    memberNameEnRequired: string
+    memberNameEnInvalidFormat: string
+    memberNameDuplicate: string
+    memberNameEnDuplicate: string
 
     // ── Presence / Sync ──────────────────────────────────
     onlineNow: string

@@ -10,8 +10,7 @@ import { useConfirm } from '../contexts/ui'
 import { AppNav } from '../components/app/AppNav'
 import { HeroCard } from '../components/app/HeroCard'
 import { SummaryView } from '../components/app/SummaryView'
-import { ExpensesView } from '../components/app/ExpensesView'
-import { IncomeView } from '../components/app/IncomeView'
+import { TransactionView } from '../components/app/TransactionView'
 import { MemberView } from '../components/app/MemberView'
 import { RecurringSection } from '../components/app/RecurringSection'
 import { LogsSection } from '../components/app/LogsSection'
@@ -244,7 +243,8 @@ export default function AppPage() {
                 )}
 
                 {view === 'expenses' && (
-                    <ExpensesView
+                    <TransactionView
+                        type="expense"
                         transactions={transactions}
                         members={members}
                         month={month}
@@ -256,7 +256,8 @@ export default function AppPage() {
                 )}
 
                 {!expensesOnly && view === 'income' && (
-                    <IncomeView
+                    <TransactionView
+                        type="income"
                         transactions={transactions}
                         members={members}
                         month={month}
@@ -331,6 +332,7 @@ export default function AppPage() {
                 <AddMemberModal
                     onAdd={handleAddMember}
                     onClose={() => setShowAddMember(false)}
+                    members={members}
                 />
             )}
 

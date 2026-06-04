@@ -58,7 +58,7 @@
 .rec-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.75rem;
+    gap: 1.2rem;
     align-items: end;
 }
 
@@ -66,6 +66,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+    position: relative;
 }
 
 .rec-field label {

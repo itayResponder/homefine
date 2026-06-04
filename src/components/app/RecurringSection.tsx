@@ -43,19 +43,32 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
         category: '' as TransactionCategory,
         memberId: defaultMemberId(),
         startDate: todayISO(),
-        monthCount: '1',
+        monthCount: '',
     })
 
     const [form, setForm] = useState<FormState>(emptyForm)
+    const [errors, setErrors] = useState<{ description?: string; amount?: string; category?: string; monthCount?: string }>({})
 
-    const setField = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+    const setField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
         setForm((f) => ({ ...f, [key]: value }))
+        setErrors((prev) => ({ ...prev, [key]: undefined }))
+    }
 
     const handleSubmit = (e: { preventDefault(): void }) => {
         e.preventDefault()
         const amount = parseFloat(form.amount)
         const monthCount = parseInt(form.monthCount)
-        if (!amount || !form.description.trim() || !form.category || !monthCount || monthCount < 1) return
+        const mc = !form.monthCount.trim() || isNaN(monthCount) || monthCount < 1 || monthCount > 60
+        const newErrors = {
+            description: !form.description.trim() ? t.fieldRequired : undefined,
+            amount: (!form.amount || !amount || amount <= 0) ? t.amountRequired : undefined,
+            category: !form.category ? t.categoryRequired : undefined,
+            monthCount: mc ? t.monthCountInvalid : undefined,
+        }
+        if (newErrors.description || newErrors.amount || newErrors.category || newErrors.monthCount) {
+            setErrors(newErrors)
+            return
+        }
 
         const dayOfMonth = new Date(form.startDate).getDate()
         const startYearMonth = computeStartYearMonth(form.startDate)
@@ -72,6 +85,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
             active: true,
         })
         setForm(emptyForm())
+        setErrors({})
     }
 
     const getMemberName = useMemberName()
@@ -95,39 +109,39 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                     <button
                         type="button"
                         className={`rec-type-btn${form.type === 'expense' ? ' active' : ''}`}
-                        onClick={() => setField('type', 'expense')}
+                        onClick={() => { setForm({ ...emptyForm(), type: 'expense' }); setErrors({}) }}
                     >
                         {t.recurringExpense}
                     </button>
                     <button
                         type="button"
                         className={`rec-type-btn${form.type === 'income' ? ' active' : ''}`}
-                        onClick={() => setField('type', 'income')}
+                        onClick={() => { setForm({ ...emptyForm(), type: 'income' }); setErrors({}) }}
                     >
                         {t.recurringIncome}
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="rec-form-grid">
+                <form onSubmit={handleSubmit} className="rec-form-grid" noValidate>
                     <div className="rec-field">
                         <label>{t.descriptionLabel}</label>
                         <input
-                            className="ap-input"
+                            className={`ap-input${errors.description ? ' ap-input--error' : ''}`}
                             value={form.description}
                             onChange={(e) => setField('description', e.target.value)}
                             placeholder={t.descriptionPlaceholder}
-                            required
                         />
+                        {errors.description && <span className="field-error">{errors.description}</span>}
                     </div>
                     <div className="rec-field">
                         <label>{t.amountLabel}</label>
                         <AmountInput
-                            className="ap-input"
+                            className={`ap-input${errors.amount ? ' ap-input--error' : ''}`}
                             value={form.amount}
                             onChange={(v) => setField('amount', v)}
                             placeholder="0"
-                            required
                         />
+                        {errors.amount && <span className="field-error">{errors.amount}</span>}
                     </div>
                     <div className="rec-field">
                         <label>{t.categoryLabel}</label>
@@ -136,7 +150,9 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                             value={form.category}
                             onChange={(v) => setField('category', v as TransactionCategory)}
                             placeholder={t.categoryLabel}
+                            error={!!errors.category}
                         />
+                        {errors.category && <span className="field-error">{errors.category}</span>}
                     </div>
                     <div className="rec-field">
                         <label>{t.whoLabel}</label>
@@ -156,12 +172,12 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                             type="number"
                             min="1"
                             max="60"
-                            className="ap-input"
+                            className={`ap-input${errors.monthCount ? ' ap-input--error' : ''}`}
                             value={form.monthCount}
                             onChange={(e) => setField('monthCount', e.target.value)}
                             placeholder={monthCountPlaceholder}
-                            required
                         />
+                        {errors.monthCount && <span className="field-error">{errors.monthCount}</span>}
                     </div>
                     <button type="submit" className="rec-submit-btn">
                         {form.type === 'expense' ? t.recurringExpense : t.recurringIncome} +

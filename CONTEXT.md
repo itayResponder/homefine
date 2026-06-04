@@ -33,7 +33,8 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Delete member (cascades) + Leave household + Delete household
 - ✅ Membership guard (redirects if removed mid-session)
 - ✅ Create household modal (DashboardPage, side-by-side name fields)
-- ✅ AddMemberModal via pills ＋ button
+- ✅ AddMemberModal via pills ＋ button — custom validation (no browser popup): required fields, Hebrew/English character-set enforcement, duplicate name check; red border + field-error message
+- ✅ TransactionView — unified expense/income form+list (replaces separate ExpensesView/IncomeView); custom validation on desc (required), amount (>0), category (required); red border + field-error messages
 - ✅ Landing page with locale-aware screenshots
 - ✅ Home module: Kanban tasks (dnd-kit, 3 columns: לבצע/בתהליך/בוצע) + shopping list
 - ✅ Settings + Logs modals (scrollable ap-modal-body pattern)

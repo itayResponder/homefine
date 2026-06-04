@@ -10,3 +10,4 @@
 - [Update CLAUDE.md Too](feedback-update-claude-md.md) — Update CLAUDE.md after architectural changes, without being asked
 - [Calendar Module](project-calendar-module.md) — Shared calendar at /calendar: component map, data model, CSS prefix (cal-*), i18n under t.calendar.*
 - [Automation Webhook](project-automation-webhook.md) — Google Wallet→HomeFine via Cloudflare Worker; deploy steps + future Blaze migration path
+- [Form Validation Pattern](project-form-validation.md) — noValidate + errors state + .inp--error/.field-error; all forms must follow this; no browser popups
