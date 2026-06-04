@@ -176,6 +176,8 @@ export function SettingsView({
     const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
     const [showKey, setShowKey] = useState(false)
     const [webhookSaving, setWebhookSaving] = useState(false)
+    const [webhookTestStatus, setWebhookTestStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
+    const [webhookTestError, setWebhookTestError] = useState('')
 
     const handleRename = (e: React.FormEvent) => {
         e.preventDefault()
@@ -203,6 +205,31 @@ export function SettingsView({
         a.download = `HomeFine_${safeName}.mdr`
         a.click()
         URL.revokeObjectURL(url)
+    }
+
+    const handleTestWebhook = async () => {
+        if (!webhookConfig || !WEBHOOK_URL) return
+        setWebhookTestStatus('loading')
+        setWebhookTestError('')
+        try {
+            const today = new Date()
+            const dateStr = `${today.getDate()}/${today.getMonth() + 1}/${String(today.getFullYear()).slice(2)}`
+            const res = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiKey: webhookConfig.apiKey, title: `TEST  ${dateStr}`, body: '₪1.00 with Test Card ••0000' }),
+            })
+            const data = await res.json() as { ok: boolean; error?: string }
+            if (data.ok) {
+                setWebhookTestStatus('ok')
+            } else {
+                setWebhookTestStatus('error')
+                setWebhookTestError(data.error === 'Invalid API key' ? (isRtl ? 'מפתח לא תקין — צור מפתח חדש' : 'Invalid API key — regenerate') : (data.error ?? (isRtl ? 'שגיאה לא ידועה' : 'Unknown error')))
+            }
+        } catch {
+            setWebhookTestStatus('error')
+            setWebhookTestError(isRtl ? 'השרת לא זמין — נסה שוב' : 'Server unavailable — try again')
+        }
     }
 
     const handleGenerateKey = async () => {
@@ -525,6 +552,13 @@ export function SettingsView({
                                 </button>
                             </div>
 
+                            {/* Connection status */}
+                            <div style={{ fontSize: 11, padding: '7px 10px', borderRadius: 6, background: webhookConfig.lastPingedAt ? '#F0FDF4' : '#F8FAFC', color: webhookConfig.lastPingedAt ? '#16A34A' : '#94A3B8' }}>
+                                {webhookConfig.lastPingedAt
+                                    ? `🟢 ${isRtl ? 'מחובר — פעיל לאחרונה' : 'Connected — last active'} ${new Date(webhookConfig.lastPingedAt).toLocaleString(isRtl ? 'he-IL' : 'en-GB', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}`
+                                    : `⚪ ${isRtl ? 'טרם חובר — הורד את קובץ ההגדרה וייבא ל-MacroDroid' : 'Not connected yet — download config and import to MacroDroid'}`}
+                            </div>
+
                             {/* MacroDroid download */}
                             <button
                                 onClick={handleDownloadMacro}
@@ -537,6 +571,25 @@ export function SettingsView({
                                     ? 'פתח MacroDroid ← Export/Import ← Import ← בחר את הקובץ שהורדת. הכל מוגדר אוטומטית.'
                                     : 'Open MacroDroid → Export/Import → Import → select the downloaded file. Everything is pre-configured.'}
                             </div>
+
+                            {/* Test connection */}
+                            <button
+                                onClick={handleTestWebhook}
+                                disabled={webhookTestStatus === 'loading'}
+                                style={{ width: '100%', padding: '9px 12px', fontSize: 12, fontWeight: 700, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left', opacity: webhookTestStatus === 'loading' ? 0.6 : 1 }}
+                            >
+                                {webhookTestStatus === 'loading' ? '⏳' : '🔌'} {isRtl ? 'בדוק חיבור' : 'Test Connection'}
+                            </button>
+                            {webhookTestStatus === 'ok' && (
+                                <div style={{ fontSize: 11, color: '#16A34A', background: '#F0FDF4', borderRadius: 6, padding: '7px 10px' }}>
+                                    ✅ {isRtl ? 'עסקת בדיקה נוצרה! תוכל למחוק אותה מרשימת ההוצאות.' : 'Test transaction created! You can delete it from expenses.'}
+                                </div>
+                            )}
+                            {webhookTestStatus === 'error' && (
+                                <div style={{ fontSize: 11, color: '#E11D48', background: '#FFF1F2', borderRadius: 6, padding: '7px 10px' }}>
+                                    ❌ {webhookTestError}
+                                </div>
+                            )}
                         </>
                     ) : (
                         <button

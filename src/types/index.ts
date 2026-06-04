@@ -107,6 +107,7 @@ export interface WebhookConfig {
     apiKey: string
     householdId: string
     memberId: string
+    lastPingedAt?: number
 }
 
 // ─── Calendar ────────────────────────────────────────────────────────────────

@@ -45,6 +45,13 @@ export default {
 
     const { uid, householdId, memberId } = keyData
 
+    // ── Update lastPingedAt (fire and forget) ─────────────────────────────────
+    fetch(`${env.FIREBASE_DB_URL}/userPrefs/${uid}/webhookConfigs/${householdId}.json`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lastPingedAt: Date.now() }),
+    })
+
     // ── Parse notification ────────────────────────────────────────────────────
     const parsed = parseWalletNotification(title, notifBody)
     if (!parsed) {
