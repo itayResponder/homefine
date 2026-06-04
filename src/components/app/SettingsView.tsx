@@ -8,7 +8,7 @@ import type { HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, R
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
-function generateMacroDroidFile(apiKey: string, webhookUrl: string): string {
+function generateMacroDroidFile(apiKey: string, webhookUrl: string, householdName: string): string {
     const id = () => -(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1)
     const now = Date.now()
     return JSON.stringify({
@@ -41,7 +41,7 @@ function generateMacroDroidFile(apiKey: string, webhookUrl: string): string {
             m_excludeLog: false,
             m_headingColor: 0,
             m_isOrCondition: false,
-            m_name: 'Google Wallet → HomeFine',
+            m_name: `Google Wallet → ${householdName}`,
             m_triggerList: [{
                 disableLogging: false,
                 enableRegex: false,
@@ -193,12 +193,14 @@ export function SettingsView({
 
     const handleDownloadMacro = () => {
         if (!webhookConfig) return
-        const json = generateMacroDroidFile(webhookConfig.apiKey, WEBHOOK_URL)
-        const blob = new Blob([json], { type: 'application/json' })
+        const name = meta?.name ?? 'HomeFine'
+        const safeName = name.replace(/[^\w֐-׿\s-]/g, '').trim()
+        const json = generateMacroDroidFile(webhookConfig.apiKey, WEBHOOK_URL, name)
+        const blob = new Blob([json], { type: 'application/octet-stream' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'HomeFine_Wallet.mdr'
+        a.download = `HomeFine_${safeName}.mdr`
         a.click()
         URL.revokeObjectURL(url)
     }
