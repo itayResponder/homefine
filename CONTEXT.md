@@ -44,7 +44,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Parser (`worker/src/parser.ts`) — parses Google Wallet notification format: title `"MERCHANT  D/M/YY"` + body `"₪amount with CardName ••1289"`
 - ✅ `webhookKeys/{apiKey}` Firebase path — reverse lookup (uid, householdId, memberId). No client-read.
 - ✅ `userPrefs/{uid}/webhookConfigs/{householdId}` — **per-household** config (apiKey, householdId, memberId, lastPingedAt)
-- ✅ Automation UI in SettingsView — generate key, copy, regenerate, delete, connection status, test button, MacroDroid config download
+- ✅ Automation UI in SettingsView — connection status (🟢/⚪), `.mdr` download, test button, subtle "כבה אוטומציה" link. No URL/key display (baked into .mdr). Android only.
 - ✅ `.mdr` download — generates pre-configured MacroDroid macro file with household name in filename and macro name
 - ✅ `lastPingedAt` — worker writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app

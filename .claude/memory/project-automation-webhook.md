@@ -57,17 +57,21 @@ Service account from: Firebase Console → Project Settings → Service Accounts
 - Each household's Settings generates its own `.mdr` file
 - User imports both files → two macros in MacroDroid → both run in parallel on every purchase
 
-**Automation UI features (SettingsView):**
+**Automation UI features (SettingsView) — simplified:**
+- **No URL or API Key displayed** — key is baked into .mdr file, user never needs to see it
 - Connection status: 🟢 "מחובר — פעיל לאחרונה DD/MM/YY HH:MM" or ⚪ "טרם חובר"
-- "הורד קובץ הגדרה ל-MacroDroid" → downloads `HomeFine_{householdName}.mdr` with macro named "Google Wallet → {householdName}"
-- "בדוק חיבור" → sends ₪1 test transaction; shows ✅ success or ❌ error with reason
-- MacroDroid import: Export/Import → Import → Select items to import → uncheck "Clear existing data" → supports multiple households
+- "הורד קובץ הגדרה ל-MacroDroid" → downloads `HomeFine_{householdName}.mdr`
+- "בדוק חיבור" → sends ₪1 test transaction (isTest:true, does NOT update lastPingedAt); shows ✅/❌
+- "כבה אוטומציה" — subtle underline link at bottom, deletes config from Firebase
+- **Android only** — iOS has no notification interception equivalent; noted in UI description text
+- MacroDroid import: Export/Import → Import → Select items → uncheck "Clear existing data" → supports multiple households
 
 **Current deployment status (2026-06-04) — FULLY WORKING ✅:**
 - Worker at `https://homefine-webhook.homefine.workers.dev` ✅
 - Per-household API keys + lastPingedAt tracking ✅
 - MacroDroid .mdr download with household name ✅
-- Test connection button ✅
+- Test connection button (browser-only, does not update 🟢 status) ✅
 - Multi-household support: each household has own key, own macro ✅
+- UI simplified: no key/URL display, no regenerate button ✅
 
 **How to apply:** When user asks to migrate to Blaze or deploy the webhook, follow steps above.
