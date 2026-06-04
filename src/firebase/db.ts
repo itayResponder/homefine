@@ -269,21 +269,22 @@ export const removeParticipant = async (householdId: string, uid: string): Promi
 // ─── Webhook Config ───────────────────────────────────────────────────────────
 export const saveWebhookConfig = async (
     uid: string,
+    householdId: string,
     config: WebhookConfig,
     oldApiKey?: string,
 ): Promise<void> => {
     if (oldApiKey) await remove(ref(db, `webhookKeys/${oldApiKey}`))
     await set(ref(db, `webhookKeys/${config.apiKey}`), { uid, householdId: config.householdId, memberId: config.memberId })
-    await set(ref(db, `userPrefs/${uid}/webhookConfig`), config)
+    await set(ref(db, `userPrefs/${uid}/webhookConfigs/${householdId}`), config)
 }
 
-export const deleteWebhookConfig = async (uid: string, apiKey: string): Promise<void> => {
+export const deleteWebhookConfig = async (uid: string, householdId: string, apiKey: string): Promise<void> => {
     await remove(ref(db, `webhookKeys/${apiKey}`))
-    await remove(ref(db, `userPrefs/${uid}/webhookConfig`))
+    await remove(ref(db, `userPrefs/${uid}/webhookConfigs/${householdId}`))
 }
 
-export const subscribeWebhookConfig = (uid: string, cb: (config: WebhookConfig | null) => void) => {
-    const r = ref(db, `userPrefs/${uid}/webhookConfig`)
+export const subscribeWebhookConfig = (uid: string, householdId: string, cb: (config: WebhookConfig | null) => void) => {
+    const r = ref(db, `userPrefs/${uid}/webhookConfigs/${householdId}`)
     onValue(r, (snap) => cb(snap.val() ?? null))
     return () => off(r)
 }

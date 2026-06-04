@@ -159,6 +159,7 @@ function b64url(data: string | ArrayBuffer): string {
 
 async function importPrivateKey(pem: string): Promise<CryptoKey> {
   const pemBody = pem
+    .replace(/"/g, '')
     .replace(/\\n/g, '\n')
     .replace(/-----BEGIN PRIVATE KEY-----/g, '')
     .replace(/-----END PRIVATE KEY-----/g, '')

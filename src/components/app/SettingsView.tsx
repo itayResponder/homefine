@@ -81,8 +81,8 @@ export function SettingsView({
 
     useEffect(() => {
         if (!currentUserId) return
-        return subscribeWebhookConfig(currentUserId, setWebhookConfig)
-    }, [currentUserId])
+        return subscribeWebhookConfig(currentUserId, householdId, setWebhookConfig)
+    }, [currentUserId, householdId])
 
     const handleGenerateKey = async () => {
         if (!currentUserId || !myMember) return
@@ -90,6 +90,7 @@ export function SettingsView({
         const apiKey = crypto.randomUUID()
         await saveWebhookConfig(
             currentUserId,
+            householdId,
             { apiKey, householdId, memberId: myMember.id },
             webhookConfig?.apiKey,
         )
@@ -99,7 +100,7 @@ export function SettingsView({
 
     const handleDeleteConfig = async () => {
         if (!currentUserId || !webhookConfig) return
-        await deleteWebhookConfig(currentUserId, webhookConfig.apiKey)
+        await deleteWebhookConfig(currentUserId, householdId, webhookConfig.apiKey)
         setShowKey(false)
     }
 
@@ -415,21 +416,21 @@ export function SettingsView({
                                 <div style={{ marginTop: 10, fontSize: 12, color: '#334155', lineHeight: 1.7, background: '#F8FAFC', borderRadius: 8, padding: '12px 14px' }}>
                                     {isRtl ? (
                                         <ol style={{ margin: 0, paddingInlineStart: 18 }}>
-                                            <li>פתח MacroDroid ← צור Macro חדש</li>
-                                            <li>Trigger: <b>Notification Received</b> ← בחר <b>Google Wallet</b></li>
-                                            <li>Action: <b>HTTP Request</b> ← Method: <b>POST</b></li>
-                                            <li>URL: העתק את כתובת ה-Webhook מלמעלה</li>
-                                            <li>Content Type: <b>application/json</b></li>
-                                            <li>Body:</li>
+                                            <li>פתח MacroDroid ← לחץ <b>Add Macro</b></li>
+                                            <li>Triggers ← לחץ <b>+</b> ← חפש <b>notification</b> ← <b>Device Events → Notification → Notification Received</b> ← בחר <b>Google Wallet</b></li>
+                                            <li>Actions ← לחץ <b>+</b> ← <b>Web Interactions → HTTP Request</b></li>
+                                            <li>שנה Method ל-<b>POST</b> ← הכנס URL מלמעלה</li>
+                                            <li>לחץ טאב <b>Content Body</b> ← Content Type: <b>application/json</b></li>
+                                            <li>הדבק את ה-Body:</li>
                                         </ol>
                                     ) : (
                                         <ol style={{ margin: 0, paddingInlineStart: 18 }}>
-                                            <li>Open MacroDroid → Create new Macro</li>
-                                            <li>Trigger: <b>Notification Received</b> → select <b>Google Wallet</b></li>
-                                            <li>Action: <b>HTTP Request</b> → Method: <b>POST</b></li>
-                                            <li>URL: Copy the Webhook URL above</li>
-                                            <li>Content Type: <b>application/json</b></li>
-                                            <li>Body:</li>
+                                            <li>Open MacroDroid → tap <b>Add Macro</b></li>
+                                            <li>Triggers → tap <b>+</b> → search <b>notification</b> → <b>Device Events → Notification → Notification Received</b> → select <b>Google Wallet</b></li>
+                                            <li>Actions → tap <b>+</b> → <b>Web Interactions → HTTP Request</b></li>
+                                            <li>Change Method to <b>POST</b> → enter URL above</li>
+                                            <li>Tap <b>Content Body</b> tab → Content Type: <b>application/json</b></li>
+                                            <li>Paste the Body:</li>
                                         </ol>
                                     )}
                                     <pre style={{ marginTop: 8, background: '#1E293B', color: '#E2E8F0', borderRadius: 6, padding: '10px 12px', fontSize: 10, overflowX: 'auto', direction: 'ltr' }}>{`{
