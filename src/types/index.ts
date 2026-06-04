@@ -14,7 +14,7 @@ export type TransactionType = 'expense' | 'income'
 export type TransactionCategory =
     | 'rent' | 'electricity' | 'water' | 'gas' | 'internet' | 'mobile'
     | 'property_tax' | 'food' | 'entertainment' | 'health' | 'clothing'
-    | 'transport' | 'education' | 'baby' | 'loan' | 'salary' | 'bills' | 'nela' | 'other'
+    | 'transport' | 'education' | 'baby' | 'loan' | 'salary' | 'bills' | 'pet' | 'other'
 
 export interface Transaction {
     id: string

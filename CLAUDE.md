@@ -100,7 +100,7 @@ userPrefs/{uid}/webhookConfigs/{householdId} ← { apiKey, householdId, memberId
 Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir, sign)` for string contexts. Format: `−1,000 ₪`.
 
 ### Categories
-`TransactionCategory` has 19 values: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, nela, other. Icons in `src/constants/categories.ts`.
+`TransactionCategory` has 19 values: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, pet, other. Icons in `src/constants/categories.ts`.
 
 ### Recurring Charges
 `RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via debounced `useEffect` (600ms) in `AppPage`.
