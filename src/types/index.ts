@@ -11,10 +11,15 @@ export interface Member {
 }
 
 export type TransactionType = 'expense' | 'income'
-export type TransactionCategory =
-    | 'rent' | 'electricity' | 'water' | 'gas' | 'internet' | 'mobile'
-    | 'property_tax' | 'food' | 'entertainment' | 'health' | 'clothing'
-    | 'transport' | 'education' | 'baby' | 'loan' | 'salary' | 'bills' | 'pet' | 'other'
+export type TransactionCategory = string
+
+export interface Category {
+    id: string
+    name: string        // Hebrew / primary
+    nameEn: string      // English
+    icon: string        // emoji
+    order: number
+}
 
 export interface Transaction {
     id: string

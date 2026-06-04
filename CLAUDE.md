@@ -100,7 +100,7 @@ userPrefs/{uid}/webhookConfigs/{householdId} ← { apiKey, householdId, memberId
 Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir, sign)` for string contexts. Format: `−1,000 ₪`.
 
 ### Categories
-`TransactionCategory` has 19 values: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, pet, other. Icons in `src/constants/categories.ts`.
+Categories are **per-household and dynamic** — stored at `households/{id}/categories/{catId}` → `{ name, nameEn, icon, order }`. `TransactionCategory` is now `string`. On first load, `useCategories` auto-seeds the 19 defaults (same IDs: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, pet, other) so existing transactions display correctly. Members can add/edit/delete categories from the Settings modal via `CategoryManager`. Icon selection via `EmojiPicker` (~70 curated emojis from `EMOJI_GROUPS` in `src/constants/categories.ts`). Helpers in `src/utils/categories.ts`: `getCatIcon(categories, id)`, `getCatName(categories, id, locale)`, `categoriesToOptions(cats, locale)`. `categories` + CRUD actions live in `HouseholdContextType` (loaded in `HouseholdLayout`), passed as prop to all consumers (TransactionView, RecurringSection, TxEntry, etc.).
 
 ### Recurring Charges
 `RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via debounced `useEffect` (600ms) in `AppPage`.

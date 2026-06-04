@@ -3,17 +3,19 @@ import { useState, useMemo } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { todayISO } from '../../utils/date'
+import { categoriesToOptions } from '../../utils/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
 import { AmountInput } from '../ui/AmountInput'
 import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
-import type { Member, Transaction, TransactionCategory } from '../../types'
+import type { Category, Member, Transaction } from '../../types'
 
 interface Props {
     type: 'expense' | 'income'
     transactions: Transaction[]
     members: Member[]
+    categories: Category[]
     month: string
     currentUserId?: string
     onAdd: (tx: Omit<Transaction, 'id'>) => Promise<void>
@@ -21,12 +23,12 @@ interface Props {
     onEdit: (tx: Transaction) => void
 }
 
-export function TransactionView({ type, transactions, members, month, currentUserId, onAdd, onDelete, onEdit }: Props) {
+export function TransactionView({ type, transactions, members, categories, month, currentUserId, onAdd, onDelete, onEdit }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [desc, setDesc] = useState('')
     const [amount, setAmount] = useState('')
-    const [category, setCategory] = useState<TransactionCategory | ''>('')
+    const [category, setCategory] = useState('')
     const [memberId, setMemberId] = useState<string | null>(null)
     const [date, setDate] = useState(todayISO)
     const [errors, setErrors] = useState<{ desc?: string; amount?: string; category?: string }>({})
@@ -45,7 +47,7 @@ export function TransactionView({ type, transactions, members, month, currentUse
     )
     const total = useMemo(() => monthTxs.reduce((s, tx) => s + tx.amount, 0), [monthTxs])
 
-    const categoryOpts = Object.entries(t.categoryOptions).map(([k, v]) => ({ value: k, label: v }))
+    const categoryOpts = categoriesToOptions(categories, t.locale)
     const memberOpts = [
         { value: 'shared', label: t.shared },
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
@@ -65,7 +67,7 @@ export function TransactionView({ type, transactions, members, month, currentUse
         }
         await onAdd({
             type, amount: amt, description: desc.trim(),
-            category: category as TransactionCategory, memberId: effectiveMemberId, date, createdAt: Date.now(),
+            category, memberId: effectiveMemberId, date, createdAt: Date.now(),
         })
         setDesc('')
         setAmount('')
@@ -108,7 +110,7 @@ export function TransactionView({ type, transactions, members, month, currentUse
                             <CustomSelect
                                 options={categoryOpts}
                                 value={category}
-                                onChange={(v) => { setCategory(v as TransactionCategory); setErrors(prev => ({ ...prev, category: undefined })) }}
+                                onChange={(v) => { setCategory(v); setErrors(prev => ({ ...prev, category: undefined })) }}
                                 placeholder={t.categoryLabel}
                                 error={!!errors.category}
                             />
@@ -136,7 +138,7 @@ export function TransactionView({ type, transactions, members, month, currentUse
                     <div className="empty"><p>{isExpense ? t.noExpenses : t.noIncome}</p></div>
                 ) : (
                     monthTxs.map((tx) => (
-                        <TxEntry key={tx.id} tx={tx} members={members} onEdit={onEdit} onDelete={onDelete} />
+                        <TxEntry key={tx.id} tx={tx} members={members} categories={categories} onEdit={onEdit} onDelete={onDelete} />
                     ))
                 )}
             </div>

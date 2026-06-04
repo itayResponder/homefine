@@ -1,8 +1,8 @@
 // src/components/app/TransactionList.tsx
 import { useI18n } from '../../i18n/context'
-import { CATEGORY_ICONS } from '../../constants/categories'
+import { getCatIcon, getCatName } from '../../utils/categories'
 import { Money } from '../ui/Money'
-import type { Transaction } from '../../types'
+import type { Category, Transaction } from '../../types'
 import './TransactionList.css'
 
 interface ListProps {
@@ -10,6 +10,7 @@ interface ListProps {
     tabName: string
     monthLabel: string
     activeColor: string
+    categories: Category[]
     onDelete: (tx: Transaction) => void
     onEdit: (tx: Transaction) => void
     onAddClick: () => void
@@ -20,6 +21,7 @@ export function TransactionList({
     tabName,
     monthLabel,
     activeColor,
+    categories,
     onDelete,
     onEdit,
     onAddClick,
@@ -61,6 +63,7 @@ export function TransactionList({
                         <TransactionItem
                             key={tx.id}
                             tx={tx}
+                            categories={categories}
                             onDelete={onDelete}
                             onEdit={onEdit}
                         />
@@ -73,11 +76,12 @@ export function TransactionList({
 
 interface ItemProps {
     tx: Transaction
+    categories: Category[]
     onDelete: (tx: Transaction) => void
     onEdit: (tx: Transaction) => void
 }
 
-function TransactionItem({ tx, onDelete, onEdit }: ItemProps) {
+function TransactionItem({ tx, categories, onDelete, onEdit }: ItemProps) {
     const { t } = useI18n()
     const isExpense = tx.type === 'expense'
     const isRecurring = Boolean(tx.recurringId)
@@ -91,12 +95,12 @@ function TransactionItem({ tx, onDelete, onEdit }: ItemProps) {
                         background: isExpense ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)',
                     }}
                 >
-                    {CATEGORY_ICONS[tx.category]}
+                    {getCatIcon(categories, tx.category)}
                 </div>
                 <div>
                     <div className="ap-tx-desc">{tx.description}</div>
                     <div className="ap-tx-sub">
-                        {t.categoryNames[tx.category]} · {tx.date}
+                        {getCatName(categories, tx.category, t.locale)} · {tx.date}
                         {isRecurring && (
                             <span className="ap-tx-rec-badge">{t.recurringBadge}</span>
                         )}
@@ -110,7 +114,6 @@ function TransactionItem({ tx, onDelete, onEdit }: ItemProps) {
                 </div>
 
                 {isRecurring ? (
-                    /* Recurring transactions: no edit/delete (managed via Recurring view) */
                     <div className="ap-tx-rec-spacer" />
                 ) : (
                     <>

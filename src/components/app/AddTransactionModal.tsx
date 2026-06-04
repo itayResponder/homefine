@@ -3,11 +3,12 @@ import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { todayISO } from '../../utils/date'
 import { AmountInput } from '../ui/AmountInput'
-import type { Member, Transaction, TransactionCategory, TransactionType } from '../../types'
+import type { Category, Member, Transaction, TransactionType } from '../../types'
 import './AddTransactionModal.css'
 
 interface Props {
     members: Member[]
+    categories: Category[]
     defaultMemberId: string
     onClose: () => void
     onSubmit: (tx: Omit<Transaction, 'id'>) => Promise<void>
@@ -17,7 +18,7 @@ interface FormState {
     type: TransactionType
     amount: string
     description: string
-    category: TransactionCategory
+    category: string
     memberId: string
     date: string
 }
@@ -27,13 +28,13 @@ function buildInitialForm(defaultMemberId: string): FormState {
         type: 'expense',
         amount: '',
         description: '',
-        category: 'other',
+        category: '',
         memberId: defaultMemberId,
         date: todayISO(),
     }
 }
 
-export function AddTransactionModal({ members, defaultMemberId, onClose, onSubmit }: Props) {
+export function AddTransactionModal({ members, categories, defaultMemberId, onClose, onSubmit }: Props) {
     const { t } = useI18n()
     const [form, setForm] = useState<FormState>(() => buildInitialForm(defaultMemberId))
 
@@ -55,8 +56,6 @@ export function AddTransactionModal({ members, defaultMemberId, onClose, onSubmi
         })
         onClose()
     }
-
-    const categories = Object.entries(t.categoryOptions) as [TransactionCategory, string][]
 
     return (
         <div className="ap-overlay" onClick={onClose}>
@@ -121,11 +120,12 @@ export function AddTransactionModal({ members, defaultMemberId, onClose, onSubmi
                         <select
                             className="ap-input"
                             value={form.category}
-                            onChange={(e) => set('category', e.target.value as TransactionCategory)}
+                            onChange={(e) => set('category', e.target.value)}
                         >
-                            {categories.map(([key, label]) => (
-                                <option key={key} value={key}>
-                                    {label}
+                            <option value="">{t.categoryLabel}</option>
+                            {categories.map(c => (
+                                <option key={c.id} value={c.id}>
+                                    {c.icon} {t.locale === 'he-IL' ? c.name : (c.nameEn || c.name)}
                                 </option>
                             ))}
                         </select>

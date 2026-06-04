@@ -4,17 +4,18 @@ import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { todayISO } from '../../utils/date'
 import { computeStartYearMonth } from '../../utils/recurring'
-import { CATEGORY_ICONS } from '../../constants/categories'
+import { getCatIcon, getCatName, categoriesToOptions } from '../../utils/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
 import { AmountInput } from '../ui/AmountInput'
 import { Money } from '../ui/Money'
-import type { Member, RecurringCharge, TransactionCategory, TransactionType } from '../../types'
+import type { Category, Member, RecurringCharge, TransactionCategory, TransactionType } from '../../types'
 import './RecurringSection.css'
 
 interface Props {
     recurringCharges: RecurringCharge[]
     members: Member[]
+    categories: Category[]
     currentUserId?: string
     onAdd: (charge: Omit<RecurringCharge, 'id'>) => void
     onDelete: (r: RecurringCharge) => void
@@ -30,7 +31,7 @@ interface FormState {
     monthCount: string
 }
 
-export function RecurringSection({ recurringCharges, members, currentUserId, onAdd, onDelete }: Props) {
+export function RecurringSection({ recurringCharges, members, categories, currentUserId, onAdd, onDelete }: Props) {
     const { t } = useI18n()
 
     const defaultMemberId = () =>
@@ -89,7 +90,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
     }
 
     const getMemberName = useMemberName()
-    const categoryOpts = Object.entries(t.categoryOptions).map(([k, v]) => ({ value: k, label: v }))
+    const categoryOpts = categoriesToOptions(categories, t.locale)
     const memberOpts = [
         { value: 'shared', label: t.shared },
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
@@ -205,6 +206,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
                             key={r.id}
                             r={r}
                             members={members}
+                            categories={categories}
                             onDelete={onDelete}
                         />
                     ))}
@@ -217,6 +219,7 @@ export function RecurringSection({ recurringCharges, members, currentUserId, onA
 interface ItemProps {
     r: RecurringCharge
     members: Member[]
+    categories: Category[]
     onDelete: (r: RecurringCharge) => void
 }
 
@@ -225,7 +228,7 @@ function formatYearMonth(ym: string, day: number, monthNames: string[]): string 
     return `${day} ${monthNames[m - 1]} ${y}`
 }
 
-function RecurringItem({ r, members, onDelete }: ItemProps) {
+function RecurringItem({ r, members, categories, onDelete }: ItemProps) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const isIncome = r.type === 'income'
@@ -255,14 +258,14 @@ function RecurringItem({ r, members, onDelete }: ItemProps) {
                 className="rec-item-icon"
                 style={{ background: isIncome ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)' }}
             >
-                {CATEGORY_ICONS[r.category]}
+                {getCatIcon(categories, r.category)}
             </div>
             <div className="rec-item-info">
                 <div className="rec-item-name">{r.description}</div>
                 <div className="rec-item-meta">
                     <span className="rec-item-who">{memberName}</span>
                     <span>·</span>
-                    <span>{t.categoryNames[r.category]}</span>
+                    <span>{getCatName(categories, r.category, t.locale)}</span>
                     <span className="rec-day-badge">{rangeLabel}</span>
                 </div>
             </div>

@@ -4,18 +4,19 @@ import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
-import type { Member, Transaction } from '../../types'
+import type { Category, Member, Transaction } from '../../types'
 
 interface Props {
     transactions: Transaction[]
     members: Member[]
+    categories: Category[]
     month: string
     currentUserId?: string
     onEdit: (tx: Transaction) => void
     onDelete: (tx: Transaction) => void
 }
 
-export function SummaryView({ transactions, members, month, currentUserId, onEdit, onDelete }: Props) {
+export function SummaryView({ transactions, members, categories, month, currentUserId, onEdit, onDelete }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
 
@@ -98,7 +99,7 @@ export function SummaryView({ transactions, members, month, currentUserId, onEdi
                     <div className="empty"><p>{t.noActivity}</p></div>
                 ) : (
                     recent.map((tx) => (
-                        <TxEntry key={tx.id} tx={tx} members={members} onEdit={onEdit} onDelete={onDelete} />
+                        <TxEntry key={tx.id} tx={tx} members={members} categories={categories} onEdit={onEdit} onDelete={onDelete} />
                     ))
                 )}
             </div>

@@ -2,15 +2,17 @@
 import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
+import { categoriesToOptions } from '../../utils/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
 import { AmountInput } from '../ui/AmountInput'
-import type { Member, Transaction, TransactionCategory, TransactionType } from '../../types'
+import type { Category, Member, Transaction, TransactionType } from '../../types'
 import './AddTransactionModal.css'
 
 interface Props {
     tx: Transaction
     members: Member[]
+    categories: Category[]
     onClose: () => void
     onSave: (id: string, changes: Partial<Transaction>) => Promise<void>
 }
@@ -19,12 +21,12 @@ interface FormState {
     type: TransactionType
     amount: string
     description: string
-    category: TransactionCategory
+    category: string
     memberId: string
     date: string
 }
 
-export function EditTransactionModal({ tx, members, onClose, onSave }: Props) {
+export function EditTransactionModal({ tx, members, categories, onClose, onSave }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [form, setForm] = useState<FormState>({
@@ -49,7 +51,7 @@ export function EditTransactionModal({ tx, members, onClose, onSave }: Props) {
         })
     }
 
-    const categoryOpts = Object.entries(t.categoryOptions).map(([k, v]) => ({ value: k, label: v }))
+    const categoryOpts = categoriesToOptions(categories, t.locale)
     const memberOpts = [
         { value: 'shared', label: t.shared },
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
@@ -92,7 +94,7 @@ export function EditTransactionModal({ tx, members, onClose, onSave }: Props) {
                     {/* Category */}
                     <div className="ap-form-row">
                         <label>{t.categoryLabel}</label>
-                        <CustomSelect options={categoryOpts} value={form.category} onChange={(v) => set('category', v as TransactionCategory)} />
+                        <CustomSelect options={categoryOpts} value={form.category} onChange={(v) => set('category', v)} />
                     </div>
 
                     {/* Who */}

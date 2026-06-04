@@ -2,7 +2,8 @@
 import { ref, push, set, remove, update, onValue, off, onDisconnect, get } from 'firebase/database'
 
 import { db } from './config'
-import type { Member, Transaction, RecurringCharge, LogEntry, HouseholdMeta, WebhookConfig } from '../types'
+import { DEFAULT_CATEGORY_SEEDS } from '../constants/categories'
+import type { Category, Member, Transaction, RecurringCharge, LogEntry, HouseholdMeta, WebhookConfig } from '../types'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const hRef = (householdId: string, path: string) =>
@@ -265,6 +266,37 @@ export const removeParticipant = async (householdId: string, uid: string): Promi
     await remove(ref(db, `households/${householdId}/participants/${uid}`))
     await remove(hRef(householdId, `presence/${uid}`)).catch(() => {})
 }
+
+// ─── Categories ──────────────────────────────────────────────────────────────
+
+export const seedCategories = async (householdId: string): Promise<void> => {
+    const updates: Record<string, Omit<Category, 'id'>> = {}
+    for (const { id, ...rest } of DEFAULT_CATEGORY_SEEDS) {
+        updates[`households/${householdId}/categories/${id}`] = rest
+    }
+    await update(ref(db), updates)
+}
+
+export const subscribeCategories = (householdId: string, cb: (cats: Category[]) => void) => {
+    const r = hRef(householdId, 'categories')
+    onValue(r, (snap) => {
+        if (!snap.exists()) { cb([]); return }
+        const cats: Category[] = Object.entries(snap.val() as Record<string, Omit<Category, 'id'>>)
+            .map(([id, val]) => ({ id, ...val }))
+            .sort((a, b) => a.order - b.order)
+        cb(cats)
+    })
+    return () => off(r)
+}
+
+export const addCategory = (householdId: string, cat: Omit<Category, 'id'>): Promise<string> =>
+    push(hRef(householdId, 'categories'), cat).then((r) => r.key!)
+
+export const updateCategory = (householdId: string, id: string, data: Partial<Omit<Category, 'id'>>) =>
+    update(hRef(householdId, `categories/${id}`), data)
+
+export const deleteCategory = (householdId: string, id: string) =>
+    remove(hRef(householdId, `categories/${id}`))
 
 // ─── Webhook Config ───────────────────────────────────────────────────────────
 export const saveWebhookConfig = async (

@@ -1,6 +1,4 @@
 // src/i18n/types.ts
-import type { TransactionCategory } from '../types'
-
 export type Lang = 'en' | 'he'
 
 export interface MockupTx {
@@ -91,8 +89,8 @@ export interface T {
     incomeLabel: string
     submitBtn: string
     deleteConfirm: string
-    categoryNames: Record<TransactionCategory, string>
-    categoryOptions: Record<TransactionCategory, string>
+    categoryNames: Record<string, string>
+    categoryOptions: Record<string, string>
 
     // ── Confirm dialogs ──────────────────────────────────
     confirmDeleteTxTitle: string
@@ -132,6 +130,18 @@ export interface T {
     exportTitle: string
     exportJsonBtn: string
     categoriesLabel: string
+    categoryAddBtn: string
+    categoryEditBtn: string
+    categoryDeleteBtn: string
+    categorySaveBtn: string
+    categoryCancelBtn: string
+    categoryNameLabel: string
+    categoryNameEnLabel: string
+    categoryNamePlaceholder: string
+    categoryNameEnPlaceholder: string
+    categoryIconLabel: string
+    categoryNameRequired: string
+    categoryNameEnRequired: string
     membersLabel: string
     memberNameLabel: string
     memberNameEnLabel: string

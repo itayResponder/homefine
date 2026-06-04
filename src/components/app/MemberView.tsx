@@ -4,19 +4,20 @@ import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { Money } from '../ui/Money'
 import { TxEntry } from './TxEntry'
-import type { Member, Transaction } from '../../types'
+import type { Category, Member, Transaction } from '../../types'
 
 interface Props {
     memberId: string
     transactions: Transaction[]
     members: Member[]
+    categories: Category[]
     month: string
     currentUserId?: string
     onEdit: (tx: Transaction) => void
     onDelete: (tx: Transaction) => void
 }
 
-export function MemberView({ memberId, transactions, members, month, currentUserId, onEdit, onDelete }: Props) {
+export function MemberView({ memberId, transactions, members, categories, month, currentUserId, onEdit, onDelete }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const member = members.find((m) => m.id === memberId)
@@ -81,7 +82,7 @@ export function MemberView({ memberId, transactions, members, month, currentUser
                     <div className="empty"><p>{t.noMemberExpenses(name)}</p></div>
                 ) : (
                     expenses.map((tx) => (
-                        <TxEntry key={tx.id} tx={tx} members={members} onEdit={onEdit} onDelete={onDelete} />
+                        <TxEntry key={tx.id} tx={tx} members={members} categories={categories} onEdit={onEdit} onDelete={onDelete} />
                     ))
                 )}
             </div>
@@ -94,7 +95,7 @@ export function MemberView({ memberId, transactions, members, month, currentUser
                     <div className="empty"><p>{t.noMemberIncome(name)}</p></div>
                 ) : (
                     income.map((tx) => (
-                        <TxEntry key={tx.id} tx={tx} members={members} onEdit={onEdit} onDelete={onDelete} />
+                        <TxEntry key={tx.id} tx={tx} members={members} categories={categories} onEdit={onEdit} onDelete={onDelete} />
                     ))
                 )}
             </div>

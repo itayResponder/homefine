@@ -8,6 +8,7 @@ import { usePresence } from '../hooks/usePresence'
 import { useUserColor } from '../hooks/useUserColor'
 import { useHouseholdMeta } from '../hooks/useHouseholdMeta'
 import { useJoinRequests } from '../hooks/useJoinRequests'
+import { useCategories } from '../hooks/useCategories'
 import { useI18n } from '../i18n/context'
 import { useConfirm } from '../contexts/ui'
 import { AppHeader } from '../components/app/AppHeader'
@@ -19,7 +20,7 @@ import {
     seedParticipant,
 } from '../firebase/db'
 import { buildColorVars } from '../utils/color'
-import type { AppUser, Member, HouseholdMeta, HouseholdSettings, JoinRequest } from '../types'
+import type { AppUser, Category, Member, HouseholdMeta, HouseholdSettings, JoinRequest } from '../types'
 import type { PresenceMap } from '../hooks/usePresence'
 import './AppPage.css'
 
@@ -42,6 +43,11 @@ export interface HouseholdContextType {
     toggleMemberIncome: (member: Member) => void
     addMember: (name: string, nameEn?: string, userId?: string) => void
     removeMember: (id: string) => void
+    categories: Category[]
+    categoriesReady: boolean
+    addCategory: (cat: Omit<Category, 'id'>) => Promise<string>
+    updateCategory: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
+    deleteCategory: (id: string) => Promise<void>
 }
 
 export const useHouseholdContext = () => useOutletContext<HouseholdContextType>()
@@ -52,6 +58,7 @@ export default function HouseholdLayout() {
     const { householdId = '' } = useParams<{ householdId: string }>()
     const { user, logout } = useAuth()
     const { members, ready: membersReady, add: addMember, remove: removeMember } = useMembers(householdId)
+    const { categories, categoriesReady, addCategory, updateCategory, deleteCategory } = useCategories(householdId)
     const online = usePresence(householdId, user)
     const { color: primaryColor, updateColor } = useUserColor(user?.uid)
     const { meta, isOwner, expensesOnly, updateSettings, renameMeta, toggleMemberIncome } = useHouseholdMeta(householdId, user?.uid)
@@ -138,6 +145,11 @@ export default function HouseholdLayout() {
         toggleMemberIncome,
         addMember,
         removeMember,
+        categories,
+        categoriesReady,
+        addCategory,
+        updateCategory,
+        deleteCategory,
     }
 
     return (

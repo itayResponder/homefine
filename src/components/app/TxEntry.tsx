@@ -1,19 +1,20 @@
 // src/components/app/TxEntry.tsx
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
-import { CATEGORY_ICONS } from '../../constants/categories'
 import { fmtDate } from '../../utils/format'
+import { getCatIcon, getCatName } from '../../utils/categories'
 import { Money } from '../ui/Money'
-import type { Member, Transaction } from '../../types'
+import type { Category, Member, Transaction } from '../../types'
 
 interface Props {
     tx: Transaction
     members: Member[]
+    categories: Category[]
     onEdit: (tx: Transaction) => void
     onDelete: (tx: Transaction) => void
 }
 
-export function TxEntry({ tx, members, onEdit, onDelete }: Props) {
+export function TxEntry({ tx, members, categories, onEdit, onDelete }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const isExpense = tx.type === 'expense'
@@ -32,14 +33,14 @@ export function TxEntry({ tx, members, onEdit, onDelete }: Props) {
                 className="eico"
                 style={{ background: isExpense ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)' }}
             >
-                {CATEGORY_ICONS[tx.category]}
+                {getCatIcon(categories, tx.category)}
             </div>
             <div className="einfo">
                 <div className="ename">{tx.description}</div>
                 <div className="emeta">
                     <span className="wtag" style={tagStyle}>{memberName}</span>
                     {tx.date && ` · ${fmtDate(tx.date)}`}
-                    {' · '}{t.categoryNames[tx.category]}
+                    {' · '}{getCatName(categories, tx.category, t.locale)}
                     {isRecurring && <span className="rec-badge">{t.recurringBadge}</span>}
                 </div>
             </div>

@@ -22,7 +22,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Real-time sync (Firebase onValue listeners)
 - ✅ Hebrew (RTL) + English (LTR) i18n
 - ✅ Per-user color theming
-- ✅ 19 transaction categories with icons
+- ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 19 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
 - ✅ Recurring charges (auto-apply monthly)
 - ✅ Audit logs with diff tracking
 - ✅ Online presence tracking (green/gray dots in AppHeader)

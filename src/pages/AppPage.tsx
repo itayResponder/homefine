@@ -40,6 +40,7 @@ export default function AppPage() {
         openModal, setOpenModal,
         updateSettings, renameMeta, toggleMemberIncome,
         addMember: ctxAddMember, removeMember: ctxRemoveMember,
+        categories, addCategory, updateCategory: updateCategoryCtx, deleteCategory,
     } = useHouseholdContext()
 
     const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions(householdId)
@@ -235,6 +236,7 @@ export default function AppPage() {
                     <SummaryView
                         transactions={transactions}
                         members={members}
+                        categories={categories}
                         month={month}
                         currentUserId={user?.uid}
                         onEdit={setEditingTx}
@@ -247,6 +249,7 @@ export default function AppPage() {
                         type="expense"
                         transactions={transactions}
                         members={members}
+                        categories={categories}
                         month={month}
                         currentUserId={user?.uid}
                         onAdd={handleAddTransaction}
@@ -260,6 +263,7 @@ export default function AppPage() {
                         type="income"
                         transactions={transactions}
                         members={members}
+                        categories={categories}
                         month={month}
                         currentUserId={user?.uid}
                         onAdd={handleAddTransaction}
@@ -273,6 +277,7 @@ export default function AppPage() {
                         memberId={view.slice(7)}
                         transactions={transactions}
                         members={members}
+                        categories={categories}
                         month={month}
                         currentUserId={user?.uid}
                         onEdit={setEditingTx}
@@ -284,6 +289,7 @@ export default function AppPage() {
                     <RecurringSection
                         recurringCharges={recurringCharges}
                         members={members}
+                        categories={categories}
                         currentUserId={user?.uid}
                         onAdd={handleAddRecurring}
                         onDelete={handleDeleteRecurring}
@@ -320,6 +326,10 @@ export default function AppPage() {
                                     participants={isOwner ? participants : undefined}
                                     onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
                                     onRenameMember={handleRenameMember}
+                                    categories={categories}
+                                    onAddCategory={addCategory}
+                                    onUpdateCategory={updateCategoryCtx}
+                                    onDeleteCategory={deleteCategory}
                                 />
                             )}
                             {openModal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}
@@ -340,6 +350,7 @@ export default function AppPage() {
                 <EditTransactionModal
                     tx={editingTx}
                     members={members}
+                    categories={categories}
                     onClose={() => setEditingTx(null)}
                     onSave={handleEditSave}
                 />

@@ -1,10 +1,10 @@
 // src/components/app/SettingsView.tsx
 import { useEffect, useState } from 'react'
 import { useI18n } from '../../i18n/context'
-import { CATEGORY_ICONS } from '../../constants/categories'
 import { EditMemberModal } from './EditMemberModal'
+import { CategoryManager } from './CategoryManager'
 import { saveWebhookConfig, deleteWebhookConfig, subscribeWebhookConfig } from '../../firebase/db'
-import type { HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, TransactionCategory, WebhookConfig } from '../../types'
+import type { Category, HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, WebhookConfig } from '../../types'
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
@@ -137,6 +137,11 @@ interface Props {
     participants?: Participant[]
     onRemoveParticipant?: (uid: string) => void
     onRenameMember: (id: string, name: string, nameEn?: string) => void
+    // Categories
+    categories: Category[]
+    onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
+    onUpdateCategory: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
+    onDeleteCategory: (id: string) => Promise<void>
 }
 
 const DEFAULT_COLOR = '#2563EB'
@@ -154,9 +159,9 @@ export function SettingsView({
     currentUserId, onToggleMemberIncome,
     participants, onRemoveParticipant,
     onRenameMember,
+    categories, onAddCategory, onUpdateCategory, onDeleteCategory,
 }: Props) {
     const { t } = useI18n()
-    const categories = Object.entries(t.categoryOptions) as [TransactionCategory, string][]
 
     const handleExport = () => {
         const data = { transactions, recurringCharges, members, logs }
@@ -409,14 +414,12 @@ export function SettingsView({
             {/* Categories */}
             <div className="fcard">
                 <div className="fttl">{t.categoriesLabel}</div>
-                <div className="catchips">
-                    {categories.map(([k]) => (
-                        <div key={k} className="catchip">
-                            <span>{CATEGORY_ICONS[k as TransactionCategory]}</span>
-                            {t.categoryNames[k as TransactionCategory]}
-                        </div>
-                    ))}
-                </div>
+                <CategoryManager
+                    categories={categories}
+                    onAdd={onAddCategory}
+                    onUpdate={onUpdateCategory}
+                    onDelete={onDeleteCategory}
+                />
             </div>
 
             {/* Color theme */}
