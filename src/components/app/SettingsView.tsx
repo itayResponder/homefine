@@ -8,6 +8,114 @@ import type { HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, R
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
+function generateMacroDroidFile(apiKey: string, webhookUrl: string): string {
+    const id = () => -(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1)
+    const now = Date.now()
+    return JSON.stringify({
+        exportFormat: 2,
+        exportAppVersion: 596300015,
+        timestamp: now,
+        variables: [],
+        cellTowerGroups: [],
+        stopWatches: [],
+        userIcons: [],
+        customDrawerConfigs: [],
+        macroList: [{
+            aiGenerated: 0,
+            breakpoints: [],
+            disabledTimestamp: 0,
+            exportedActionBlocks: [],
+            forceEvenIfNotEnabledTimestamp: 0,
+            isActionBlock: false,
+            isExtra: false,
+            isFavourite: false,
+            lastEditedTimestamp: now,
+            localVariables: [],
+            localVarsAlphabetical: true,
+            m_GUID: id(),
+            m_category: 'Uncategorized',
+            m_constraintList: [],
+            m_description: '',
+            m_descriptionOpen: false,
+            m_enabled: true,
+            m_excludeLog: false,
+            m_headingColor: 0,
+            m_isOrCondition: false,
+            m_name: 'Google Wallet → HomeFine',
+            m_triggerList: [{
+                disableLogging: false,
+                enableRegex: false,
+                ignoreCase: true,
+                m_applicationNameList: ['Google Wallet'],
+                m_classType: 'NotificationTrigger',
+                m_constraintList: [],
+                m_exactMatch: false,
+                m_excludeApps: false,
+                m_excludes: false,
+                m_ignoreOngoing: false,
+                m_isDisabled: false,
+                m_isOrCondition: false,
+                m_option: 0,
+                m_packageNameList: ['com.google.android.apps.walletnfcrel'],
+                m_SIGUID: id(),
+                m_soundOption: 0,
+                m_supressMultiples: true,
+                m_textContent: '',
+                matchOptionMessage: 0,
+                matchOptionTitle: 0,
+                separateTitleAndMessage: false,
+            }],
+            m_actionList: [{
+                disableLogging: false,
+                m_classType: 'HttpRequestAction',
+                m_constraintList: [],
+                m_isDisabled: false,
+                m_isOrCondition: false,
+                m_SIGUID: id(),
+                requestConfig: {
+                    allFilesAccessPath: '',
+                    allowAnyCertificate: false,
+                    basicAuthEnabled: false,
+                    basicAuthPassword: '',
+                    basicAuthUsername: '',
+                    blockNextAction: false,
+                    clientCertEnabled: false,
+                    clientCertKeyStoreDisplayName: '',
+                    clientCertKeyStoreUri: '',
+                    clientCertPassword: '',
+                    contentBodyDynamicFileName: '',
+                    contentBodyFileDisplayName: '',
+                    contentBodyFileUri: '',
+                    contentBodyFolderDisplayName: '',
+                    contentBodyFolderUri: '',
+                    contentBodySource: 0,
+                    contentBodyText: `{"title":"%%ntitle%%","body":"%%ntbody%%","apiKey":"${apiKey}"}`,
+                    contentType: 'application/json',
+                    followRedirects: true,
+                    headerParams: [],
+                    localFileUri: '',
+                    prettifyJson: false,
+                    queryParams: [],
+                    requestTimeOutSeconds: 30,
+                    requestType: 1,
+                    saveResponseAllFilesAccessPath: '',
+                    saveResponseFileName: '',
+                    saveResponseFolderPathDisplayName: '',
+                    saveResponseFolderPathUri: '',
+                    saveResponseType: 0,
+                    saveResponseUseAllFilesAccess: false,
+                    saveReturnCodeToVariable: false,
+                    saveReturnHeadersToVariable: false,
+                    urlToOpen: webhookUrl,
+                    useAllFilesAccess: false,
+                    useLocalFileUri: false,
+                    useStaticContentBodyFile: true,
+                },
+            }],
+        }],
+    })
+}
+
 interface Props {
     householdId: string
     transactions: Transaction[]
@@ -67,7 +175,6 @@ export function SettingsView({
     const [editingMember, setEditingMember] = useState<Member | null>(null)
     const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
     const [showKey, setShowKey] = useState(false)
-    const [showInstructions, setShowInstructions] = useState(false)
     const [webhookSaving, setWebhookSaving] = useState(false)
 
     const handleRename = (e: React.FormEvent) => {
@@ -83,6 +190,18 @@ export function SettingsView({
         if (!currentUserId) return
         return subscribeWebhookConfig(currentUserId, householdId, setWebhookConfig)
     }, [currentUserId, householdId])
+
+    const handleDownloadMacro = () => {
+        if (!webhookConfig) return
+        const json = generateMacroDroidFile(webhookConfig.apiKey, WEBHOOK_URL)
+        const blob = new Blob([json], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'HomeFine_Wallet.mdr'
+        a.click()
+        URL.revokeObjectURL(url)
+    }
 
     const handleGenerateKey = async () => {
         if (!currentUserId || !myMember) return
@@ -404,42 +523,18 @@ export function SettingsView({
                                 </button>
                             </div>
 
-                            {/* MacroDroid instructions */}
+                            {/* MacroDroid download */}
                             <button
-                                onClick={() => setShowInstructions(s => !s)}
-                                style={{ width: '100%', padding: '8px 12px', fontSize: 12, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: showInstructions ? 'var(--acl)' : 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left' }}
+                                onClick={handleDownloadMacro}
+                                style={{ width: '100%', padding: '9px 12px', fontSize: 12, fontWeight: 700, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--acl)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left' }}
                             >
-                                📱 {isRtl ? 'הוראות הגדרה — MacroDroid' : 'MacroDroid Setup Guide'} {showInstructions ? '▲' : '▼'}
+                                📥 {isRtl ? 'הורד קובץ הגדרה ל-MacroDroid' : 'Download MacroDroid Config'}
                             </button>
-
-                            {showInstructions && (
-                                <div style={{ marginTop: 10, fontSize: 12, color: '#334155', lineHeight: 1.7, background: '#F8FAFC', borderRadius: 8, padding: '12px 14px' }}>
-                                    {isRtl ? (
-                                        <ol style={{ margin: 0, paddingInlineStart: 18 }}>
-                                            <li>פתח MacroDroid ← לחץ <b>Add Macro</b></li>
-                                            <li>Triggers ← לחץ <b>+</b> ← חפש <b>notification</b> ← <b>Device Events → Notification → Notification Received</b> ← בחר <b>Google Wallet</b></li>
-                                            <li>Actions ← לחץ <b>+</b> ← <b>Web Interactions → HTTP Request</b></li>
-                                            <li>שנה Method ל-<b>POST</b> ← הכנס URL מלמעלה</li>
-                                            <li>לחץ טאב <b>Content Body</b> ← Content Type: <b>application/json</b></li>
-                                            <li>הדבק את ה-Body:</li>
-                                        </ol>
-                                    ) : (
-                                        <ol style={{ margin: 0, paddingInlineStart: 18 }}>
-                                            <li>Open MacroDroid → tap <b>Add Macro</b></li>
-                                            <li>Triggers → tap <b>+</b> → search <b>notification</b> → <b>Device Events → Notification → Notification Received</b> → select <b>Google Wallet</b></li>
-                                            <li>Actions → tap <b>+</b> → <b>Web Interactions → HTTP Request</b></li>
-                                            <li>Change Method to <b>POST</b> → enter URL above</li>
-                                            <li>Tap <b>Content Body</b> tab → Content Type: <b>application/json</b></li>
-                                            <li>Paste the Body:</li>
-                                        </ol>
-                                    )}
-                                    <pre style={{ marginTop: 8, background: '#1E293B', color: '#E2E8F0', borderRadius: 6, padding: '10px 12px', fontSize: 10, overflowX: 'auto', direction: 'ltr' }}>{`{
-  "title": "%%ntitle%%",
-  "body": "%%ntbody%%",
-  "apiKey": "${webhookConfig.apiKey}"
-}`}</pre>
-                                </div>
-                            )}
+                            <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.6 }}>
+                                {isRtl
+                                    ? 'פתח MacroDroid ← Export/Import ← Import ← בחר את הקובץ שהורדת. הכל מוגדר אוטומטית.'
+                                    : 'Open MacroDroid → Export/Import → Import → select the downloaded file. Everything is pre-configured.'}
+                            </div>
                         </>
                     ) : (
                         <button
