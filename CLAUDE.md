@@ -58,6 +58,7 @@ households/{householdId}/
   events/           ← CalendarEvent[] — member read/write
 userHouseholds/{uid}/{householdId} ← true
 userPrefs/{uid}/primaryColor ← hex string
+userPrefs/{uid}/webhookConfigs/{householdId} ← { apiKey, householdId, memberId, lastPingedAt? }
 ```
 
 **Presence behavior:** record is created on first connect, persists until user leaves/is removed from household. `online: true` on connect, `online: false` on disconnect (via `onDisconnect().update`) or React unmount. `leaveHousehold` and `removeParticipant` both call `remove(presence/{uid})`. AppHeader shows all household users with green dot (online) or gray dot (offline).
