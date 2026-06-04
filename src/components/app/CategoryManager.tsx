@@ -1,5 +1,5 @@
 // src/components/app/CategoryManager.tsx
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { EmojiPicker } from '../ui/EmojiPicker'
 import type { Category } from '../../types'
@@ -29,6 +29,9 @@ export function CategoryManager({ categories, onAdd, onUpdate, onDelete }: Props
     const { t } = useI18n()
     const isRtl = t.dir === 'rtl'
 
+    const triggerRef = useRef<HTMLButtonElement>(null)
+    const [pickerAnchor, setPickerAnchor] = useState<DOMRect | null>(null)
+
     const [editing, setEditing] = useState<EditingState>(null)
     const [form, setForm] = useState<FormState>(emptyForm())
     const [errors, setErrors] = useState<{ name?: string; nameEn?: string }>({})
@@ -51,6 +54,7 @@ export function CategoryManager({ categories, onAdd, onUpdate, onDelete }: Props
         setEditing(null)
         setErrors({})
         setShowPicker(false)
+        setPickerAnchor(null)
     }
 
     const setField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
@@ -121,12 +125,21 @@ export function CategoryManager({ categories, onAdd, onUpdate, onDelete }: Props
                     </div>
 
                     {/* Icon picker trigger */}
-                    <div className="cm-field" style={{ position: 'relative' }}>
+                    <div className="cm-field">
                         <label>{t.categoryIconLabel}</label>
                         <button
+                            ref={triggerRef}
                             type="button"
                             className="cm-icon-trigger"
-                            onClick={() => setShowPicker(v => !v)}
+                            onClick={() => {
+                                if (showPicker) {
+                                    setShowPicker(false)
+                                    setPickerAnchor(null)
+                                } else {
+                                    setPickerAnchor(triggerRef.current?.getBoundingClientRect() ?? null)
+                                    setShowPicker(true)
+                                }
+                            }}
                         >
                             <span className="cm-icon-preview">{form.icon}</span>
                             <span className="cm-icon-caret">▾</span>
@@ -134,8 +147,9 @@ export function CategoryManager({ categories, onAdd, onUpdate, onDelete }: Props
                         {showPicker && (
                             <EmojiPicker
                                 value={form.icon}
-                                onChange={emoji => { setField('icon', emoji); setShowPicker(false) }}
-                                onClose={() => setShowPicker(false)}
+                                anchorRect={pickerAnchor}
+                                onChange={emoji => { setField('icon', emoji); setShowPicker(false); setPickerAnchor(null) }}
+                                onClose={() => { setShowPicker(false); setPickerAnchor(null) }}
                             />
                         )}
                     </div>

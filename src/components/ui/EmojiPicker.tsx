@@ -1,5 +1,6 @@
 // src/components/ui/EmojiPicker.tsx
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { EMOJI_GROUPS } from '../../constants/categories'
 import './EmojiPicker.css'
 
@@ -7,9 +8,10 @@ interface Props {
     value: string
     onChange: (emoji: string) => void
     onClose: () => void
+    anchorRect: DOMRect | null
 }
 
-export function EmojiPicker({ value, onChange, onClose }: Props) {
+export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
     const [search, setSearch] = useState('')
 
     const allEmojis = EMOJI_GROUPS.flatMap(g => g.emojis)
@@ -17,9 +19,22 @@ export function EmojiPicker({ value, onChange, onClose }: Props) {
         ? allEmojis.filter(e => e.includes(search.trim()))
         : null
 
-    return (
-        <div className="ep-backdrop" onClick={onClose}>
-            <div className="ep-panel" onClick={e => e.stopPropagation()}>
+    const isRtl = document.documentElement.dir === 'rtl'
+    const panelStyle: React.CSSProperties = anchorRect
+        ? {
+            position: 'fixed',
+            top: anchorRect.bottom + 6,
+            zIndex: 9999,
+            ...(isRtl
+                ? { right: window.innerWidth - anchorRect.right }
+                : { left: anchorRect.left }),
+          }
+        : { position: 'fixed', top: 120, left: 120, zIndex: 9999 }
+
+    return createPortal(
+        <>
+            <div className="ep-backdrop" onClick={onClose} />
+            <div className="ep-panel" style={panelStyle} onClick={e => e.stopPropagation()}>
                 <input
                     className="ep-search"
                     placeholder="חפש אמוג'י..."
@@ -62,6 +77,7 @@ export function EmojiPicker({ value, onChange, onClose }: Props) {
                     )}
                 </div>
             </div>
-        </div>
+        </>,
+        document.body
     )
 }
