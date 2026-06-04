@@ -19,6 +19,6 @@ export const CATEGORY_ICONS: Record<TransactionCategory, string> = {
     loan: '💳',
     salary: '💼',
     bills: '🧾',
-    nela: '🐾',
+    pet: '🐾',
     other: '💰',
 }

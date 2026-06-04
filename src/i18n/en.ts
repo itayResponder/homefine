@@ -78,14 +78,14 @@ export const en: T = {
         internet: 'Internet', mobile: 'Mobile', property_tax: 'Property Tax',
         food: 'Food', entertainment: 'Entertainment', health: 'Health', clothing: 'Clothing',
         transport: 'Transport', education: 'Education', baby: 'Baby', loan: 'Loan',
-        salary: 'Salary', bills: 'Bills', nela: 'Nela', other: 'Other',
+        salary: 'Salary', bills: 'Bills', pet: 'Pet', other: 'Other',
     },
     categoryOptions: {
         rent: '🏠 Rent', electricity: '⚡ Electricity', water: '💧 Water', gas: '🔥 Gas',
         internet: '📶 Internet', mobile: '📱 Mobile', property_tax: '🏛️ Property Tax',
         food: '🛒 Food', entertainment: '🎉 Entertainment', health: '❤️ Health', clothing: '👗 Clothing',
         transport: '🚗 Transport', education: '📚 Education', baby: '🍼 Baby', loan: '💳 Loan',
-        salary: '💼 Salary', bills: '🧾 Bills', nela: '🐾 Nela', other: '💰 Other',
+        salary: '💼 Salary', bills: '🧾 Bills', pet: '🐾 Pet', other: '💰 Other',
     },
 
     confirmDeleteTxTitle: 'Delete Transaction',

@@ -78,14 +78,14 @@ export const he: T = {
         internet: 'אינטרנט', mobile: 'סלולר', property_tax: 'ארנונה',
         food: 'מזון', entertainment: 'בילויים', health: 'בריאות', clothing: 'ביגוד',
         transport: 'תחבורה', education: 'חינוך', baby: 'ריף', loan: 'הלוואה',
-        salary: 'משכורת', bills: 'חשבונות', nela: 'נלה', other: 'אחר',
+        salary: 'משכורת', bills: 'חשבונות', pet: 'חיית מחמד', other: 'אחר',
     },
     categoryOptions: {
         rent: '🏠 שכר דירה', electricity: '⚡ חשמל', water: '💧 מים', gas: '🔥 גז',
         internet: '📶 אינטרנט', mobile: '📱 סלולר', property_tax: '🏛️ ארנונה',
         food: '🛒 מזון', entertainment: '🎉 בילויים', health: '❤️ בריאות', clothing: '👗 ביגוד',
         transport: '🚗 תחבורה', education: '📚 חינוך', baby: '🍼 ריף', loan: '💳 הלוואה',
-        salary: '💼 משכורת', bills: '🧾 חשבונות', nela: '🐾 נלה', other: '💰 אחר',
+        salary: '💼 משכורת', bills: '🧾 חשבונות', pet: '🐾 חיית מחמד', other: '💰 אחר',
     },
 
     confirmDeleteTxTitle: 'מחיקת עסקה',
