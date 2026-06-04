@@ -174,7 +174,6 @@ export function SettingsView({
     const [newHouseName, setNewHouseName] = useState(meta?.name ?? '')
     const [editingMember, setEditingMember] = useState<Member | null>(null)
     const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
-    const [showKey, setShowKey] = useState(false)
     const [webhookSaving, setWebhookSaving] = useState(false)
     const [webhookTestStatus, setWebhookTestStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
     const [webhookTestError, setWebhookTestError] = useState('')
@@ -242,14 +241,12 @@ export function SettingsView({
             { apiKey, householdId, memberId: myMember.id },
             webhookConfig?.apiKey,
         )
-        setShowKey(true)
         setWebhookSaving(false)
     }
 
     const handleDeleteConfig = async () => {
         if (!currentUserId || !webhookConfig) return
         await deleteWebhookConfig(currentUserId, householdId, webhookConfig.apiKey)
-        setShowKey(false)
     }
 
     return (
@@ -493,65 +490,6 @@ export function SettingsView({
 
                     {webhookConfig ? (
                         <>
-                            {/* Webhook URL */}
-                            <div style={{ marginBottom: 10 }}>
-                                <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 4 }}>
-                                    Webhook URL
-                                </div>
-                                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                                    <code style={{ fontSize: 10, background: '#F1F5F9', padding: '6px 8px', borderRadius: 6, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', direction: 'ltr', display: 'block' }}>
-                                        {WEBHOOK_URL}
-                                    </code>
-                                    <button
-                                        onClick={() => navigator.clipboard.writeText(WEBHOOK_URL)}
-                                        style={{ padding: '6px 10px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0 }}
-                                    >
-                                        {isRtl ? 'העתק' : 'Copy'}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* API Key */}
-                            <div style={{ marginBottom: 14 }}>
-                                <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 4 }}>
-                                    API Key
-                                </div>
-                                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                                    <code style={{ fontSize: 10, background: '#F1F5F9', padding: '6px 8px', borderRadius: 6, flex: 1, fontFamily: 'monospace', direction: 'ltr', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        {showKey ? webhookConfig.apiKey : '••••••••-••••-••••-••••-••••••••••••'}
-                                    </code>
-                                    <button
-                                        onClick={() => setShowKey(s => !s)}
-                                        style={{ padding: '6px 8px', fontSize: 13, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', cursor: 'pointer', flexShrink: 0 }}
-                                    >
-                                        {showKey ? '🙈' : '👁'}
-                                    </button>
-                                    <button
-                                        onClick={() => navigator.clipboard.writeText(webhookConfig.apiKey)}
-                                        style={{ padding: '6px 10px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0 }}
-                                    >
-                                        {isRtl ? 'העתק' : 'Copy'}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Actions */}
-                            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                                <button
-                                    onClick={handleGenerateKey}
-                                    disabled={webhookSaving}
-                                    style={{ padding: '7px 12px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit' }}
-                                >
-                                    {isRtl ? '🔄 צור מפתח חדש' : '🔄 Regenerate Key'}
-                                </button>
-                                <button
-                                    onClick={handleDeleteConfig}
-                                    style={{ padding: '7px 12px', fontSize: 11, fontWeight: 600, borderRadius: 'var(--rs)', border: '1.5px solid #FECDD3', background: '#FFF1F2', color: '#E11D48', cursor: 'pointer', fontFamily: 'inherit' }}
-                                >
-                                    {isRtl ? 'מחק' : 'Delete'}
-                                </button>
-                            </div>
-
                             {/* Connection status */}
                             <div style={{ fontSize: 11, padding: '7px 10px', borderRadius: 6, background: webhookConfig.lastPingedAt ? '#F0FDF4' : '#F8FAFC', color: webhookConfig.lastPingedAt ? '#16A34A' : '#94A3B8' }}>
                                 {webhookConfig.lastPingedAt
@@ -590,6 +528,16 @@ export function SettingsView({
                                     ❌ {webhookTestError}
                                 </div>
                             )}
+
+                            {/* Disable automation */}
+                            <div style={{ textAlign: 'center', marginTop: 4 }}>
+                                <button
+                                    onClick={handleDeleteConfig}
+                                    style={{ fontSize: 11, color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}
+                                >
+                                    {isRtl ? 'כבה אוטומציה' : 'Disable automation'}
+                                </button>
+                            </div>
                         </>
                     ) : (
                         <button
