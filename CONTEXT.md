@@ -43,8 +43,11 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Cloudflare Worker webhook (`worker/`) — receives Google Wallet push notifications via MacroDroid and writes transactions to Firebase
 - ✅ Parser (`worker/src/parser.ts`) — parses Google Wallet notification format: title `"MERCHANT  D/M/YY"` + body `"₪amount with CardName ••1289"`
 - ✅ `webhookKeys/{apiKey}` Firebase path — reverse lookup (uid, householdId, memberId). No client-read.
-- ✅ `userPrefs/{uid}/webhookConfig` — user's active config (apiKey, householdId, memberId)
-- ✅ Automation UI in SettingsView — generate key, copy, regenerate, delete, MacroDroid setup guide with exact JSON body
+- ✅ `userPrefs/{uid}/webhookConfigs/{householdId}` — **per-household** config (apiKey, householdId, memberId, lastPingedAt)
+- ✅ Automation UI in SettingsView — generate key, copy, regenerate, delete, connection status, test button, MacroDroid config download
+- ✅ `.mdr` download — generates pre-configured MacroDroid macro file with household name in filename and macro name
+- ✅ `lastPingedAt` — worker writes timestamp on every valid request; UI shows 🟢/⚪ connection status
+- ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-webhook.homefine.workers.dev`
 
 ### Deploying the Worker
