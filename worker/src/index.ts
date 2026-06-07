@@ -57,6 +57,12 @@ export default {
     // ── Parse notification ────────────────────────────────────────────────────
     const parsed = parseWalletNotification(title, notifBody)
     if (!parsed) {
+      // Write raw data to Firebase so it's visible for debugging
+      fetch(`${env.FIREBASE_DB_URL}/households/${householdId}/webhookDebug.json`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, body: notifBody, ts: Date.now(), error: 'parse_failed' }),
+      })
       return json({ ok: false, error: 'Could not parse notification', raw: { title, body: notifBody } }, 422)
     }
 
