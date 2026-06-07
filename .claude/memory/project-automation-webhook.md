@@ -91,8 +91,14 @@ Service account from: Firebase Console → Project Settings → Service Accounts
 
 **Debug checklist after a purchase:**
 1. MacroDroid System Log → did macro fire? what response code?
-2. Firebase → `webhookDebug` → `status: received/parse_failed/ok`?
+2. Firebase → `webhookDebug` → `status: received/parse_failed/ok`? + `logStatus` (HTTP code of log write)
 3. Firebase → `transactions` → was transaction written?
+4. App → Logs modal → "⚡ אוטומציה" entry should appear
+
+**CRITICAL — Cloudflare Worker fire-and-forget:**
+- The log write MUST be awaited (`const logResp = await fetch(...)`) — fire-and-forget is NOT guaranteed to complete in Cloudflare Workers
+- webhookDebug writes use `writeDebug()` (fire-and-forget) and DO work because they are called before the response is sent and the Worker keeps them alive
+- `who` field in log entries = `'⚡ אוטומציה'` (not the user UID)
 
 **Current deployment status (2026-06-07) — FULLY WORKING ✅:**
 - Worker at `https://homefine-webhook.homefine.workers.dev` ✅

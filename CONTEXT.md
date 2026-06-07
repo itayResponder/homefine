@@ -50,7 +50,8 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ `lastPingedAt` — worker writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-webhook.homefine.workers.dev`
-- ✅ `webhookDebug` Firebase path — worker writes to this path on **every authenticated request** (not just failures). Status values: `received` (key valid, before parse), `parse_failed` (422), `ok` + transactionId (success). Check here after any purchase to see exactly what happened.
+- ✅ `webhookDebug` Firebase path — worker writes to this path on every authenticated request. Status values: `parse_failed` (422), `ok` + transactionId + logStatus (success). Check here after any purchase to see exactly what happened.
+- ✅ Log write is **awaited** in the Worker (not fire-and-forget) — fire-and-forget was not guaranteed to complete in Cloudflare Workers. Log entries appear in the Logs modal with `who: '⚡ אוטומציה'`.
 - ✅ Parser regex — accepts any non-digit separator before card last-4 (handles both `••` and `..` and other variants)
 - ✅ MacroDroid variable format — must use `{not_title}` and `{notification}` (inserted via `...` button), NOT `%%ntitle%%`/`%%ntbody%%` (those are not substituted in HTTP body)
 

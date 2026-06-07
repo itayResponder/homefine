@@ -90,16 +90,14 @@ export default {
     if (!txResp.ok) return json({ ok: false, error: 'DB write failed' }, 500)
     const { name: transactionId } = (await txResp.json()) as { name: string }
 
-    writeDebug({ status: 'ok', transactionId })
-
-    // ── Write log (fire and forget) ───────────────────────────────────────────
-    fetch(`${env.FIREBASE_DB_URL}/households/${householdId}/logs.json`, {
+    // ── Write log ────────────────────────────────────────────────────────────
+    const logResp = await fetch(`${env.FIREBASE_DB_URL}/households/${householdId}/logs.json`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         action: 'add',
         entityType: 'transaction',
-        who: uid,
+        who: '⚡ אוטומציה',
         ts: now,
         description: parsed.merchant,
         amount: parsed.amount,
@@ -108,6 +106,8 @@ export default {
         source: 'webhook',
       }),
     })
+
+    writeDebug({ status: 'ok', transactionId, logStatus: logResp.status })
 
     return json({ ok: true, transactionId })
   },

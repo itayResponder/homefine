@@ -42,7 +42,7 @@ export function WebhookLogModal({ householdId, isRtl, onClose }: Props) {
     }
 
     return (
-        <div className="ap-modal-backdrop" onClick={onClose}>
+        <div className="ap-modal-overlay" onClick={onClose}>
             <div className="ap-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
                 <div className="ap-modal-header">
                     <span>{isRtl ? 'לוג אוטומציה' : 'Automation Log'}</span>
