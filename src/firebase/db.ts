@@ -289,6 +289,9 @@ export const subscribeCategories = (householdId: string, cb: (cats: Category[]) 
     return () => off(r)
 }
 
+export const seedSingleCategory = (householdId: string, id: string, data: Omit<Category, 'id'>) =>
+    set(hRef(householdId, `categories/${id}`), data)
+
 export const addCategory = (householdId: string, cat: Omit<Category, 'id'>): Promise<string> =>
     push(hRef(householdId, 'categories'), cat).then((r) => r.key!)
 

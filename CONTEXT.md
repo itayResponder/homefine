@@ -22,7 +22,11 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Real-time sync (Firebase onValue listeners)
 - ✅ Hebrew (RTL) + English (LTR) i18n
 - ✅ Per-user color theming
-- ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 19 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
+- ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 20 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
+  - `automation` (⚡, order 19) added as default — used automatically for Google Wallet webhook transactions
+  - `electricity` icon changed from ⚡ to 💡
+  - `useCategories` auto-patches existing households: adds `automation` if missing, fixes electricity icon if still ⚡
+  - Legacy `categoryNames`/`categoryOptions` removed from i18n files (were unused)
 - ✅ Recurring charges (auto-apply monthly)
 - ✅ Audit logs with diff tracking
 - ✅ Online presence tracking (green/gray dots in AppHeader)
@@ -46,6 +50,8 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ `webhookKeys/{apiKey}` Firebase path — reverse lookup (uid, householdId, memberId). No client-read.
 - ✅ `userPrefs/{uid}/webhookConfigs/{householdId}` — **per-household** config (apiKey, householdId, memberId, lastPingedAt)
 - ✅ Automation UI in SettingsView — connection status (🟢/⚪), `.mdr` download, test button, subtle "כבה אוטומציה" link. No URL/key display (baked into .mdr). Android only.
+- ✅ "לוג רכישות" in ⚙️ dropdown menu (AppHeader) — WebhookLogModal with two tabs: הצליחו (ok) / כשלו (parse_failed). Delete individual entries or clear tab. Rendered from HouseholdLayout.
+- ✅ Webhook transactions appear in Logs modal with `who: '⚡ אוטומציה'` — log write is awaited in Worker (fire-and-forget was silently dropped).
 - ✅ `.mdr` download — generates a **single** MacroDroid macro with one trigger + one HTTP action per configured household. Fetches all `userPrefs/{uid}/webhookConfigs` at download time — no matter which household you download from, you always get the complete multi-household macro (`HomeFine_Wallet.mdr`). Re-import replaces the old macro.
 - ✅ `lastPingedAt` — worker writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app

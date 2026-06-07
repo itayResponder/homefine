@@ -79,7 +79,7 @@ export default {
         type: 'expense',
         amount: parsed.amount,
         description: parsed.merchant,
-        category: 'other',
+        category: 'automation',
         memberId,
         date: parsed.date,
         createdAt: now,

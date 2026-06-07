@@ -73,20 +73,6 @@ export const he: T = {
     incomeLabel: 'הכנסה',
     submitBtn: 'הוסף עסקה',
     deleteConfirm: 'למחוק את העסקה?',
-    categoryNames: {
-        rent: 'שכר דירה', electricity: 'חשמל', water: 'מים', gas: 'גז',
-        internet: 'אינטרנט', mobile: 'סלולר', property_tax: 'ארנונה',
-        food: 'מזון', entertainment: 'בילויים', health: 'בריאות', clothing: 'ביגוד',
-        transport: 'תחבורה', education: 'חינוך', baby: 'תינוק', loan: 'הלוואה',
-        salary: 'משכורת', bills: 'חשבונות', pet: 'חיית מחמד', other: 'אחר',
-    },
-    categoryOptions: {
-        rent: '🏠 שכר דירה', electricity: '⚡ חשמל', water: '💧 מים', gas: '🔥 גז',
-        internet: '📶 אינטרנט', mobile: '📱 סלולר', property_tax: '🏛️ ארנונה',
-        food: '🛒 מזון', entertainment: '🎉 בילויים', health: '❤️ בריאות', clothing: '👗 ביגוד',
-        transport: '🚗 תחבורה', education: '📚 חינוך', baby: '🍼 תינוק', loan: '💳 הלוואה',
-        salary: '💼 משכורת', bills: '🧾 חשבונות', pet: '🐾 חיית מחמד', other: '💰 אחר',
-    },
 
     confirmDeleteTxTitle: 'מחיקת עסקה',
     confirmDeleteTxSub: (name, amount) => `למחוק את "${name}" (${amount})?`,

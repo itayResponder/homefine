@@ -89,9 +89,6 @@ export interface T {
     incomeLabel: string
     submitBtn: string
     deleteConfirm: string
-    categoryNames: Record<string, string>
-    categoryOptions: Record<string, string>
-
     // ── Confirm dialogs ──────────────────────────────────
     confirmDeleteTxTitle: string
     confirmDeleteTxSub: (name: string, amount: string) => string

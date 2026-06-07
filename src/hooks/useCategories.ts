@@ -1,6 +1,6 @@
 // src/hooks/useCategories.ts
 import { useEffect, useState } from 'react'
-import { subscribeCategories, seedCategories, addCategory, updateCategory, deleteCategory } from '../firebase/db'
+import { subscribeCategories, seedCategories, seedSingleCategory, addCategory, updateCategory, deleteCategory } from '../firebase/db'
 import type { Category } from '../types'
 
 export function useCategories(householdId: string) {
@@ -17,9 +17,16 @@ export function useCategories(householdId: string) {
                 setSeeding(true)
                 await seedCategories(householdId)
                 setSeeding(false)
-                // onValue will fire again after seeding
                 return
             }
+            // Patch existing households: add missing defaults + fix changed icons
+            const byId = Object.fromEntries(cats.map(c => [c.id, c]))
+            const patches: Promise<unknown>[] = []
+            if (!byId['automation'])
+                patches.push(seedSingleCategory(householdId, 'automation', { name: 'אוטומציה', nameEn: 'Automation', icon: '⚡', order: 19 }))
+            if (byId['electricity']?.icon === '⚡')
+                patches.push(updateCategory(householdId, 'electricity', { icon: '💡' }))
+            if (patches.length > 0) { await Promise.all(patches); return }
             setCategories(cats)
             setCategoriesReady(true)
         })

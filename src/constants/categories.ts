@@ -4,7 +4,7 @@ import type { Category } from '../types'
 // Static fallback icons — used during initial load before Firebase data arrives
 export const CATEGORY_ICONS: Record<string, string> = {
     rent: '🏠',
-    electricity: '⚡',
+    electricity: '💡',
     water: '💧',
     gas: '🔥',
     internet: '📶',
@@ -22,12 +22,13 @@ export const CATEGORY_ICONS: Record<string, string> = {
     bills: '🧾',
     pet: '🐾',
     other: '💰',
+    automation: '⚡',
 }
 
 // Default categories seeded into Firebase for new households (same IDs as hardcoded originals)
 export const DEFAULT_CATEGORY_SEEDS: Category[] = [
     { id: 'rent', name: 'שכר דירה', nameEn: 'Rent', icon: '🏠', order: 0 },
-    { id: 'electricity', name: 'חשמל', nameEn: 'Electricity', icon: '⚡', order: 1 },
+    { id: 'electricity', name: 'חשמל', nameEn: 'Electricity', icon: '💡', order: 1 },
     { id: 'water', name: 'מים', nameEn: 'Water', icon: '💧', order: 2 },
     { id: 'gas', name: 'גז', nameEn: 'Gas', icon: '🔥', order: 3 },
     { id: 'internet', name: 'אינטרנט', nameEn: 'Internet', icon: '📶', order: 4 },
@@ -45,6 +46,7 @@ export const DEFAULT_CATEGORY_SEEDS: Category[] = [
     { id: 'bills', name: 'חשבונות', nameEn: 'Bills', icon: '🧾', order: 16 },
     { id: 'pet', name: 'חיית מחמד', nameEn: 'Pet', icon: '🐾', order: 17 },
     { id: 'other', name: 'אחר', nameEn: 'Other', icon: '💰', order: 18 },
+    { id: 'automation', name: 'אוטומציה', nameEn: 'Automation', icon: '⚡', order: 19 },
 ]
 
 // Curated emoji list for the picker — grouped by theme
@@ -61,5 +63,5 @@ export const EMOJI_GROUPS: { label: string; emojis: string[] }[] = [
     { label: 'בית', emojis: ['🧹', '🧺', '🪴', '🛁', '🚿', '🔧', '🪛', '🧰'] },
     { label: 'ביגוד', emojis: ['👗', '👕', '👟', '🧥', '👜', '🧣'] },
     { label: 'חיות', emojis: ['🐾', '🐕', '🐈', '🐇', '🐠'] },
-    { label: 'שונות', emojis: ['🎁', '📱', '📶', '🏛️', '⭐', '🌟', '🔒', '📦'] },
+    { label: 'שונות', emojis: ['🎁', '📱', '📶', '🏛️', '⭐', '🌟', '🔒', '📦', '⚡'] },
 ]

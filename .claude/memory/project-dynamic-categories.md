@@ -9,7 +9,9 @@ Categories are per-household and fully dynamic.
 
 **Firebase path:** `households/{id}/categories/{catId}` → `{ name, nameEn, icon, order }`
 
-**Seeding:** `useCategories(householdId)` auto-seeds the 19 defaults on first load if the path is empty. Default IDs match the old hardcoded union (`rent`, `electricity`, etc.) so existing transactions display correctly.
+**Seeding:** `useCategories(householdId)` auto-seeds the 20 defaults on first load if the path is empty. Also patches existing households: adds `automation` if missing, changes `electricity` icon from ⚡ to 💡 if stale. Uses `seedSingleCategory` + `updateCategory` from `db.ts`.
+
+**Special category — `automation`:** id=`automation`, icon=⚡, name=אוטומציה/Automation, order=19. Used automatically for all Google Wallet webhook transactions. `electricity` now uses 💡 (was ⚡).
 
 **CRUD:** `addCategory`, `updateCategory`, `deleteCategory` exported from `src/firebase/db.ts`. Hook: `src/hooks/useCategories.ts`. All exposed via `HouseholdContextType`.
 

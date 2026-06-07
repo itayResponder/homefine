@@ -14,4 +14,4 @@ After EVERY completed feature or bug fix, immediately update:
 
 **Why:** User asked multiple times and is frustrated that it keeps not happening. "אני רוצה להפסיק להזכיר לך" — he wants to stop reminding me. The Stop hook reminds about file changes, but the ACTUAL update must be done by Claude.
 
-**How to apply:** After the LAST edit in any feature — immediately write to CONTEXT.md and memory in the SAME response turn. No exceptions, no deferral. The reminder hook is a safety net; the update itself is my responsibility and must be proactive.
+**How to apply:** After the LAST edit in any feature — immediately write to CONTEXT.md and memory in the SAME response turn. No exceptions, no deferral, no need for the user to ask. This has been a repeated failure — user has to remind me EVERY time. The update must be proactive and automatic.

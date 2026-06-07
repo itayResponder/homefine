@@ -73,20 +73,6 @@ export const en: T = {
     incomeLabel: 'Income',
     submitBtn: 'Add Transaction',
     deleteConfirm: 'Delete this transaction?',
-    categoryNames: {
-        rent: 'Rent', electricity: 'Electricity', water: 'Water', gas: 'Gas',
-        internet: 'Internet', mobile: 'Mobile', property_tax: 'Property Tax',
-        food: 'Food', entertainment: 'Entertainment', health: 'Health', clothing: 'Clothing',
-        transport: 'Transport', education: 'Education', baby: 'Baby', loan: 'Loan',
-        salary: 'Salary', bills: 'Bills', pet: 'Pet', other: 'Other',
-    },
-    categoryOptions: {
-        rent: '🏠 Rent', electricity: '⚡ Electricity', water: '💧 Water', gas: '🔥 Gas',
-        internet: '📶 Internet', mobile: '📱 Mobile', property_tax: '🏛️ Property Tax',
-        food: '🛒 Food', entertainment: '🎉 Entertainment', health: '❤️ Health', clothing: '👗 Clothing',
-        transport: '🚗 Transport', education: '📚 Education', baby: '🍼 Baby', loan: '💳 Loan',
-        salary: '💼 Salary', bills: '🧾 Bills', pet: '🐾 Pet', other: '💰 Other',
-    },
 
     confirmDeleteTxTitle: 'Delete Transaction',
     confirmDeleteTxSub: (name, amount) => `Delete "${name}" (${amount})?`,
