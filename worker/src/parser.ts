@@ -15,7 +15,7 @@ export function parseWalletNotification(
   title: string,
   body: string
 ): ParsedTransaction | null {
-  const bodyMatch = body.match(/[₪﹩]?\s*([\d,]+\.?\d*)\s+with\s+(.+?)\s+••(\d{4})/i)
+  const bodyMatch = body.match(/[₪﹩]?\s*([\d,]+\.?\d*)\s+with\s+(.+?)\s+[^\d\s]{1,4}(\d{4})/i)
   if (!bodyMatch) return null
 
   const amount = parseFloat(bodyMatch[1].replace(',', ''))
