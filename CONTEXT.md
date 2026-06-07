@@ -46,10 +46,13 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ `webhookKeys/{apiKey}` Firebase path — reverse lookup (uid, householdId, memberId). No client-read.
 - ✅ `userPrefs/{uid}/webhookConfigs/{householdId}` — **per-household** config (apiKey, householdId, memberId, lastPingedAt)
 - ✅ Automation UI in SettingsView — connection status (🟢/⚪), `.mdr` download, test button, subtle "כבה אוטומציה" link. No URL/key display (baked into .mdr). Android only.
-- ✅ `.mdr` download — generates pre-configured MacroDroid macro file with household name in filename and macro name
+- ✅ `.mdr` download — generates a **single** MacroDroid macro with one trigger + one HTTP action per configured household. Fetches all `userPrefs/{uid}/webhookConfigs` at download time — no matter which household you download from, you always get the complete multi-household macro (`HomeFine_Wallet.mdr`). Re-import replaces the old macro.
 - ✅ `lastPingedAt` — worker writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-webhook.homefine.workers.dev`
+- ✅ `webhookDebug` Firebase path — worker writes `{title, body, ts, error}` on parse failure; owner-readable; useful for diagnosing 422 errors without terminal
+- ✅ Parser regex — accepts any non-digit separator before card last-4 (handles both `••` and `..` and other variants)
+- ✅ MacroDroid variable format — must use `{not_title}` and `{notification}` (inserted via `...` button), NOT `%%ntitle%%`/`%%ntbody%%` (those are not substituted in HTTP body)
 
 ### Deploying the Worker
 ```bash
