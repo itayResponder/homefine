@@ -89,7 +89,7 @@ function generateMacroDroidFile(apiKey: string, webhookUrl: string, householdNam
                     contentBodyFolderDisplayName: '',
                     contentBodyFolderUri: '',
                     contentBodySource: 0,
-                    contentBodyText: `{"title":"%%ntitle%%","body":"%%ntbody%%","apiKey":"${apiKey}"}`,
+                    contentBodyText: `{"title":"{not_title}","body":"{notification}","apiKey":"${apiKey}"}`,
                     contentType: 'application/json',
                     followRedirects: true,
                     headerParams: [],
