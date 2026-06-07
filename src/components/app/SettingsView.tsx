@@ -3,14 +3,62 @@ import { useEffect, useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { EditMemberModal } from './EditMemberModal'
 import { CategoryManager } from './CategoryManager'
-import { saveWebhookConfig, deleteWebhookConfig, subscribeWebhookConfig } from '../../firebase/db'
+import { saveWebhookConfig, deleteWebhookConfig, subscribeWebhookConfig, getAllWebhookConfigs, getHouseholdName } from '../../firebase/db'
 import type { Category, HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, WebhookConfig } from '../../types'
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
-function generateMacroDroidFile(apiKey: string, webhookUrl: string, householdName: string): string {
+function generateMacroDroidFile(configs: Array<{ apiKey: string; householdName: string }>, webhookUrl: string): string {
     const id = () => -(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1)
     const now = Date.now()
+    const makeHttpAction = (apiKey: string) => ({
+        disableLogging: false,
+        m_classType: 'HttpRequestAction',
+        m_constraintList: [],
+        m_isDisabled: false,
+        m_isOrCondition: false,
+        m_SIGUID: id(),
+        requestConfig: {
+            allFilesAccessPath: '',
+            allowAnyCertificate: false,
+            basicAuthEnabled: false,
+            basicAuthPassword: '',
+            basicAuthUsername: '',
+            blockNextAction: false,
+            clientCertEnabled: false,
+            clientCertKeyStoreDisplayName: '',
+            clientCertKeyStoreUri: '',
+            clientCertPassword: '',
+            contentBodyDynamicFileName: '',
+            contentBodyFileDisplayName: '',
+            contentBodyFileUri: '',
+            contentBodyFolderDisplayName: '',
+            contentBodyFolderUri: '',
+            contentBodySource: 0,
+            contentBodyText: `{"title":"{not_title}","body":"{notification}","apiKey":"${apiKey}"}`,
+            contentType: 'application/json',
+            followRedirects: true,
+            headerParams: [],
+            localFileUri: '',
+            prettifyJson: false,
+            queryParams: [],
+            requestTimeOutSeconds: 30,
+            requestType: 1,
+            saveResponseAllFilesAccessPath: '',
+            saveResponseFileName: '',
+            saveResponseFolderPathDisplayName: '',
+            saveResponseFolderPathUri: '',
+            saveResponseType: 0,
+            saveResponseUseAllFilesAccess: false,
+            saveReturnCodeToVariable: false,
+            saveReturnHeadersToVariable: false,
+            urlToOpen: webhookUrl,
+            useAllFilesAccess: false,
+            useLocalFileUri: false,
+            useStaticContentBodyFile: true,
+        },
+    })
+    const names = configs.map(c => c.householdName).join(', ')
     return JSON.stringify({
         exportFormat: 2,
         exportAppVersion: 596300015,
@@ -41,7 +89,7 @@ function generateMacroDroidFile(apiKey: string, webhookUrl: string, householdNam
             m_excludeLog: false,
             m_headingColor: 0,
             m_isOrCondition: false,
-            m_name: `Google Wallet → ${householdName}`,
+            m_name: `Google Wallet → HomeFine (${names})`,
             m_triggerList: [{
                 disableLogging: false,
                 enableRegex: false,
@@ -65,53 +113,7 @@ function generateMacroDroidFile(apiKey: string, webhookUrl: string, householdNam
                 matchOptionTitle: 0,
                 separateTitleAndMessage: false,
             }],
-            m_actionList: [{
-                disableLogging: false,
-                m_classType: 'HttpRequestAction',
-                m_constraintList: [],
-                m_isDisabled: false,
-                m_isOrCondition: false,
-                m_SIGUID: id(),
-                requestConfig: {
-                    allFilesAccessPath: '',
-                    allowAnyCertificate: false,
-                    basicAuthEnabled: false,
-                    basicAuthPassword: '',
-                    basicAuthUsername: '',
-                    blockNextAction: false,
-                    clientCertEnabled: false,
-                    clientCertKeyStoreDisplayName: '',
-                    clientCertKeyStoreUri: '',
-                    clientCertPassword: '',
-                    contentBodyDynamicFileName: '',
-                    contentBodyFileDisplayName: '',
-                    contentBodyFileUri: '',
-                    contentBodyFolderDisplayName: '',
-                    contentBodyFolderUri: '',
-                    contentBodySource: 0,
-                    contentBodyText: `{"title":"{not_title}","body":"{notification}","apiKey":"${apiKey}"}`,
-                    contentType: 'application/json',
-                    followRedirects: true,
-                    headerParams: [],
-                    localFileUri: '',
-                    prettifyJson: false,
-                    queryParams: [],
-                    requestTimeOutSeconds: 30,
-                    requestType: 1,
-                    saveResponseAllFilesAccessPath: '',
-                    saveResponseFileName: '',
-                    saveResponseFolderPathDisplayName: '',
-                    saveResponseFolderPathUri: '',
-                    saveResponseType: 0,
-                    saveResponseUseAllFilesAccess: false,
-                    saveReturnCodeToVariable: false,
-                    saveReturnHeadersToVariable: false,
-                    urlToOpen: webhookUrl,
-                    useAllFilesAccess: false,
-                    useLocalFileUri: false,
-                    useStaticContentBodyFile: true,
-                },
-            }],
+            m_actionList: configs.map(c => makeHttpAction(c.apiKey)),
         }],
     })
 }
@@ -197,16 +199,21 @@ export function SettingsView({
         return subscribeWebhookConfig(currentUserId, householdId, setWebhookConfig)
     }, [currentUserId, householdId])
 
-    const handleDownloadMacro = () => {
-        if (!webhookConfig) return
-        const name = meta?.name ?? 'HomeFine'
-        const safeName = name.replace(/[^\w֐-׿\s-]/g, '').trim()
-        const json = generateMacroDroidFile(webhookConfig.apiKey, WEBHOOK_URL, name)
+    const handleDownloadMacro = async () => {
+        if (!webhookConfig || !currentUserId) return
+        const allConfigs = await getAllWebhookConfigs(currentUserId)
+        const entries = await Promise.all(
+            Object.entries(allConfigs).map(async ([hId, cfg]) => ({
+                apiKey: cfg.apiKey,
+                householdName: await getHouseholdName(hId),
+            }))
+        )
+        const json = generateMacroDroidFile(entries, WEBHOOK_URL)
         const blob = new Blob([json], { type: 'application/octet-stream' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `HomeFine_${safeName}.mdr`
+        a.download = 'HomeFine_Wallet.mdr'
         a.click()
         URL.revokeObjectURL(url)
     }

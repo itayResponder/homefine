@@ -320,3 +320,13 @@ export const subscribeWebhookConfig = (uid: string, householdId: string, cb: (co
     onValue(r, (snap) => cb(snap.val() ?? null))
     return () => off(r)
 }
+
+export const getAllWebhookConfigs = async (uid: string): Promise<Record<string, WebhookConfig>> => {
+    const snap = await get(ref(db, `userPrefs/${uid}/webhookConfigs`))
+    return snap.val() ?? {}
+}
+
+export const getHouseholdName = async (householdId: string): Promise<string> => {
+    const snap = await get(ref(db, `households/${householdId}/meta/name`))
+    return snap.val() ?? householdId
+}
