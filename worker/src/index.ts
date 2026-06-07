@@ -45,6 +45,17 @@ export default {
 
     const { uid, householdId, memberId } = keyData
 
+    // ── Debug log: write raw incoming data so it's always visible ─────────────
+    const debugBase = { title, body: notifBody, ts: Date.now(), isTest: isTest ?? false }
+    const writeDebug = (extra: Record<string, unknown>) =>
+      fetch(`${env.FIREBASE_DB_URL}/households/${householdId}/webhookDebug.json`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...debugBase, ...extra }),
+      })
+
+    writeDebug({ status: 'received' })
+
     // ── Update lastPingedAt only for real MacroDroid pings ────────────────────
     if (!isTest) {
       fetch(`${env.FIREBASE_DB_URL}/userPrefs/${uid}/webhookConfigs/${householdId}.json`, {
@@ -57,12 +68,7 @@ export default {
     // ── Parse notification ────────────────────────────────────────────────────
     const parsed = parseWalletNotification(title, notifBody)
     if (!parsed) {
-      // Write raw data to Firebase so it's visible for debugging
-      fetch(`${env.FIREBASE_DB_URL}/households/${householdId}/webhookDebug.json`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, body: notifBody, ts: Date.now(), error: 'parse_failed' }),
-      })
+      writeDebug({ status: 'parse_failed' })
       return json({ ok: false, error: 'Could not parse notification', raw: { title, body: notifBody } }, 422)
     }
 
@@ -85,6 +91,8 @@ export default {
     })
     if (!txResp.ok) return json({ ok: false, error: 'DB write failed' }, 500)
     const { name: transactionId } = (await txResp.json()) as { name: string }
+
+    writeDebug({ status: 'ok', transactionId })
 
     // ── Write log (fire and forget) ───────────────────────────────────────────
     fetch(`${env.FIREBASE_DB_URL}/households/${householdId}/logs.json`, {

@@ -81,11 +81,18 @@ Service account from: Firebase Console → Project Settings → Service Accounts
 - Accepts any non-digit separator before card last-4 (handles `••`, `..`, or other variants)
 - Title: splits on 2+ spaces; first part = merchant, second = date (D/M/YY) or time (falls back to today)
 
-**Debugging 422 errors:**
-- Worker writes raw `{title, body, ts}` to `households/{id}/webhookDebug/` on parse failure
-- View in Firebase Console → households → {id} → webhookDebug
+**Debugging — webhookDebug path:**
+- Worker writes to `households/{id}/webhookDebug/` on **every authenticated request** (not just failures)
+- Status values: `received` (key valid, before parse) | `parse_failed` (422) | `ok` + transactionId (success)
+- If nothing appears in webhookDebug → MacroDroid didn't fire OR apiKey invalid (400/401)
 - 422 from MacroDroid "Test Trigger" is ALWAYS expected (test sends dummy values)
 - To test without real purchase: PowerShell `Invoke-RestMethod` with `[char]0x2022` for bullet chars + UTF-8 bytes encoding
+- **WhatsApp as test:** gives 400 (Invalid JSON) because WhatsApp notification content can contain `"` chars that break the JSON body. Not representative of Google Wallet behavior.
+
+**Debug checklist after a purchase:**
+1. MacroDroid System Log → did macro fire? what response code?
+2. Firebase → `webhookDebug` → `status: received/parse_failed/ok`?
+3. Firebase → `transactions` → was transaction written?
 
 **Current deployment status (2026-06-07) — FULLY WORKING ✅:**
 - Worker at `https://homefine-webhook.homefine.workers.dev` ✅
