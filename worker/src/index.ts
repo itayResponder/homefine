@@ -54,8 +54,6 @@ export default {
         body: JSON.stringify({ ...debugBase, ...extra }),
       })
 
-    writeDebug({ status: 'received' })
-
     // ── Update lastPingedAt only for real MacroDroid pings ────────────────────
     if (!isTest) {
       fetch(`${env.FIREBASE_DB_URL}/userPrefs/${uid}/webhookConfigs/${householdId}.json`, {

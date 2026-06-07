@@ -321,6 +321,35 @@ export const subscribeWebhookConfig = (uid: string, householdId: string, cb: (co
     return () => off(r)
 }
 
+// ─── Webhook Debug Log ────────────────────────────────────────────────────────
+export type WebhookDebugEntry = {
+    id: string
+    title: string
+    body: string
+    ts: number
+    status: 'received' | 'parse_failed' | 'ok'
+    transactionId?: string
+    isTest?: boolean
+}
+
+export const subscribeWebhookDebug = (householdId: string, cb: (entries: WebhookDebugEntry[]) => void) => {
+    const r = hRef(householdId, 'webhookDebug')
+    onValue(r, (snap) => {
+        if (!snap.exists()) { cb([]); return }
+        const entries: WebhookDebugEntry[] = Object.entries(snap.val() as Record<string, Omit<WebhookDebugEntry, 'id'>>)
+            .map(([id, val]) => ({ id, ...val }))
+            .sort((a, b) => b.ts - a.ts)
+        cb(entries)
+    })
+    return () => off(r)
+}
+
+export const deleteWebhookDebugEntry = (householdId: string, id: string) =>
+    remove(hRef(householdId, `webhookDebug/${id}`))
+
+export const deleteWebhookDebugEntries = (householdId: string, ids: string[]) =>
+    Promise.all(ids.map(id => remove(hRef(householdId, `webhookDebug/${id}`))))
+
 export const getAllWebhookConfigs = async (uid: string): Promise<Record<string, WebhookConfig>> => {
     const snap = await get(ref(db, `userPrefs/${uid}/webhookConfigs`))
     return snap.val() ?? {}
