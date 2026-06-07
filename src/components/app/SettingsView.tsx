@@ -4,7 +4,6 @@ import { useI18n } from '../../i18n/context'
 import { EditMemberModal } from './EditMemberModal'
 import { CategoryManager } from './CategoryManager'
 import { saveWebhookConfig, deleteWebhookConfig, subscribeWebhookConfig, getAllWebhookConfigs, getHouseholdName } from '../../firebase/db'
-import { WebhookLogModal } from './WebhookLogModal'
 import type { Category, HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction, WebhookConfig } from '../../types'
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
@@ -185,7 +184,6 @@ export function SettingsView({
     const [webhookSaving, setWebhookSaving] = useState(false)
     const [webhookTestStatus, setWebhookTestStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
     const [webhookTestError, setWebhookTestError] = useState('')
-    const [showWebhookLog, setShowWebhookLog] = useState(false)
 
     const handleRename = (e: React.FormEvent) => {
         e.preventDefault()
@@ -541,14 +539,6 @@ export function SettingsView({
                                 </div>
                             )}
 
-                            {/* Webhook log */}
-                            <button
-                                onClick={() => setShowWebhookLog(true)}
-                                style={{ width: '100%', padding: '9px 12px', fontSize: 12, fontWeight: 700, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left' }}
-                            >
-                                📋 {isRtl ? 'לוג רכישות' : 'Purchase Log'}
-                            </button>
-
                             {/* Disable automation */}
                             <div style={{ textAlign: 'center', marginTop: 4 }}>
                                 <button
@@ -591,13 +581,6 @@ export function SettingsView({
                     {t.exportJsonBtn}
                 </button>
             </div>
-            {showWebhookLog && (
-                <WebhookLogModal
-                    householdId={householdId}
-                    isRtl={isRtl}
-                    onClose={() => setShowWebhookLog(false)}
-                />
-            )}
             {editingMember && (
                 <EditMemberModal
                     member={editingMember}

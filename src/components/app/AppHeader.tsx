@@ -15,6 +15,7 @@ interface Props {
     onLogout: () => void
     onOpenSettings?: () => void
     onOpenLogs?: () => void
+    onOpenWebhookLog?: () => void
     onDashboard: () => void
     joinRequests?: JoinRequest[]
     onApproveJoin?: (householdId: string, uid: string) => void
@@ -30,7 +31,7 @@ function nameToColor(name: string): string {
 }
 
 export function AppHeader({
-    householdId, onLogout, onOpenSettings, onOpenLogs, onDashboard,
+    householdId, onLogout, onOpenSettings, onOpenLogs, onOpenWebhookLog, onDashboard,
     joinRequests = [], onApproveJoin, onDenyJoin, onLeave, online = {},
 }: Props) {
     const { t } = useI18n()
@@ -158,6 +159,9 @@ export function AppHeader({
                             )}
                             {onOpenLogs && (
                                 <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
+                            )}
+                            {onOpenWebhookLog && (
+                                <button onClick={() => pick(onOpenWebhookLog)}>{t.dir === 'rtl' ? 'לוג רכישות' : 'Purchase Log'}</button>
                             )}
                             {onLeave && (
                                 <button className="ap-settings-dropdown-logout" onClick={() => pick(onLeave)}>

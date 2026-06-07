@@ -12,6 +12,7 @@ import { useCategories } from '../hooks/useCategories'
 import { useI18n } from '../i18n/context'
 import { useConfirm } from '../contexts/ui'
 import { AppHeader } from '../components/app/AppHeader'
+import { WebhookLogModal } from '../components/app/WebhookLogModal'
 import {
     approveJoinRequest,
     denyJoinRequest,
@@ -65,6 +66,7 @@ export default function HouseholdLayout() {
     const { t } = useI18n()
     const { showConfirm } = useConfirm()
     const [openModal, setOpenModal] = useState<'settings' | 'logs' | null>(null)
+    const [showWebhookLog, setShowWebhookLog] = useState(false)
 
     const ownedEntry = isOwner && meta ? [{ id: householdId, name: meta.name }] : []
     const joinRequests = useJoinRequests(ownedEntry)
@@ -160,6 +162,7 @@ export default function HouseholdLayout() {
                 onLogout={handleLogout}
                 onOpenSettings={isFinanceTab ? () => setOpenModal('settings') : undefined}
                 onOpenLogs={isFinanceTab ? () => setOpenModal('logs') : undefined}
+                onOpenWebhookLog={() => setShowWebhookLog(true)}
                 onDashboard={() => navigate('/dashboard')}
                 joinRequests={isOwner ? joinRequests : []}
                 onApproveJoin={isOwner ? handleApproveJoin : undefined}
@@ -168,6 +171,13 @@ export default function HouseholdLayout() {
                 online={online}
             />
             <Outlet context={ctx} />
+            {showWebhookLog && (
+                <WebhookLogModal
+                    householdId={householdId}
+                    isRtl={t.dir === 'rtl'}
+                    onClose={() => setShowWebhookLog(false)}
+                />
+            )}
         </div>
     )
 }
