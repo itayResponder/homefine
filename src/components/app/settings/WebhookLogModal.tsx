@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { subscribeWebhookDebug, deleteWebhookDebugEntry, deleteWebhookDebugEntries } from '../../firebase/db'
-import type { WebhookDebugEntry } from '../../firebase/db'
+import { subscribeWebhookDebug, deleteWebhookDebugEntry, deleteWebhookDebugEntries } from '../../../firebase/db'
+import type { WebhookDebugEntry } from '../../../firebase/db'
 
 interface Props {
     householdId: string
@@ -90,7 +90,7 @@ export function WebhookLogModal({ householdId, isRtl, onClose }: Props) {
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     {tab === 'ok' ? (
                                         <>
-                                            <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--clr-dark)', display: 'flex', alignItems: 'center', gap: 6 }}>
                                                 {extractMerchant(entry.title)}
                                                 {entry.isTest && (
                                                     <span style={{ fontSize: 10, fontWeight: 700, color: '#F59E0B', background: '#FFFBEB', padding: '1px 6px', borderRadius: 10 }}>
@@ -104,7 +104,7 @@ export function WebhookLogModal({ householdId, isRtl, onClose }: Props) {
                                         </>
                                     ) : (
                                         <>
-                                            <div style={{ fontSize: 12, fontWeight: 600, color: '#1a1a2e', wordBreak: 'break-all' }}>
+                                            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--clr-dark)', wordBreak: 'break-all' }}>
                                                 {entry.title}
                                             </div>
                                             <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, wordBreak: 'break-all' }}>

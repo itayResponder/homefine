@@ -1,16 +1,16 @@
-// src/components/app/RecurringSection.tsx
+// src/components/app/recurring/RecurringSection.tsx
 import { useState } from 'react'
-import { useI18n } from '../../i18n/context'
-import { useMemberName } from '../../hooks/useMemberName'
-import { todayISO } from '../../utils/date'
-import { getDefaultMemberId } from '../../utils/members'
-import { computeStartYearMonth } from '../../utils/recurring'
-import { getCatIcon, getCatName, categoriesToOptions } from '../../utils/categories'
-import { CustomSelect } from '../ui/CustomSelect'
-import { CustomDatePicker } from '../ui/CustomDatePicker'
-import { AmountInput } from '../ui/AmountInput'
-import { Money } from '../ui/Money'
-import type { Category, Member, RecurringCharge, TransactionCategory, TransactionType } from '../../types'
+import { useI18n } from '../../../i18n/context'
+import { useMemberName } from '../../../hooks/useMemberName'
+import { todayISO } from '../../../utils/date'
+import { getDefaultMemberId } from '../../../utils/members'
+import { computeStartYearMonth } from '../../../utils/recurring'
+import { getCatIcon, getCatName, categoriesToOptions } from '../../../utils/categories'
+import { CustomSelect } from '../../ui/CustomSelect'
+import { CustomDatePicker } from '../../ui/CustomDatePicker'
+import { AmountInput } from '../../ui/AmountInput'
+import { Money } from '../../ui/Money'
+import type { Category, Member, RecurringCharge, TransactionCategory, TransactionType } from '../../../types'
 import './RecurringSection.css'
 
 interface Props {
@@ -57,12 +57,12 @@ export function RecurringSection({ recurringCharges, members, categories, curren
         e.preventDefault()
         const amount = parseFloat(form.amount)
         const monthCount = parseInt(form.monthCount)
-        const mc = !form.monthCount.trim() || isNaN(monthCount) || monthCount < 1 || monthCount > 60
+        const monthCountError = !form.monthCount.trim() || isNaN(monthCount) || monthCount < 1 || monthCount > 60
         const newErrors = {
             description: !form.description.trim() ? t.fieldRequired : undefined,
             amount: (!form.amount || !amount || amount <= 0) ? t.amountRequired : undefined,
             category: !form.category ? t.categoryRequired : undefined,
-            monthCount: mc ? t.monthCountInvalid : undefined,
+            monthCount: monthCountError ? t.monthCountInvalid : undefined,
         }
         if (newErrors.description || newErrors.amount || newErrors.category || newErrors.monthCount) {
             setErrors(newErrors)

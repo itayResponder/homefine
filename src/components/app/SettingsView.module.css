@@ -9,7 +9,7 @@
 .sectionLabel {
   font-size: 11px;
   font-weight: 700;
-  color: #9490CC;
+  color: var(--clr-purple);
   text-transform: uppercase;
   letter-spacing: .05em;
   margin-bottom: 6px;
@@ -51,7 +51,7 @@
 .householdName {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--clr-dark);
 }
 
 .renameBtn {
@@ -75,12 +75,12 @@
 .toggleTitle {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--clr-dark);
 }
 
 .toggleSubtitle {
   font-size: 11px;
-  color: #9490CC;
+  color: var(--clr-purple);
   margin-top: 2px;
 }
 
@@ -157,7 +157,7 @@
 .participantName {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--clr-dark);
   display: flex;
   align-items: center;
   gap: 6px;

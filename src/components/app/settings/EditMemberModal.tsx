@@ -1,7 +1,7 @@
-// src/components/app/EditMemberModal.tsx
+// src/components/app/settings/EditMemberModal.tsx
 import { useState } from 'react'
-import { useI18n } from '../../i18n/context'
-import type { Member } from '../../types'
+import { useI18n } from '../../../i18n/context'
+import type { Member } from '../../../types'
 
 interface Props {
     member: Member

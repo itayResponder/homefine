@@ -1,8 +1,8 @@
-// src/components/app/CategoryManager.tsx
+// src/components/app/settings/CategoryManager.tsx
 import { useRef, useState } from 'react'
-import { useI18n } from '../../i18n/context'
-import { EmojiPicker } from '../ui/EmojiPicker'
-import type { Category } from '../../types'
+import { useI18n } from '../../../i18n/context'
+import { EmojiPicker } from '../../ui/EmojiPicker'
+import type { Category } from '../../../types'
 import './CategoryManager.css'
 
 interface Props {

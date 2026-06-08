@@ -1,10 +1,10 @@
-// src/components/app/MemberView.tsx
+// src/components/app/finance/MemberView.tsx
 import { useMemo } from 'react'
-import { useI18n } from '../../i18n/context'
-import { useMemberName } from '../../hooks/useMemberName'
-import { Money } from '../ui/Money'
+import { useI18n } from '../../../i18n/context'
+import { useMemberName } from '../../../hooks/useMemberName'
+import { Money } from '../../ui/Money'
 import { TxEntry } from './TxEntry'
-import type { Category, Member, Transaction } from '../../types'
+import type { Category, Member, Transaction } from '../../../types'
 
 interface Props {
     memberId: string

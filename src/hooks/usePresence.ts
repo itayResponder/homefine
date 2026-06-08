@@ -1,8 +1,7 @@
 // src/hooks/usePresence.ts
 import { useEffect, useState } from 'react'
 import { setPresence, setupDisconnectCleanup, subscribePresence } from '../firebase/db'
-import type { PresenceRecord } from '../firebase/db'
-import type { AppUser } from '../types'
+import type { AppUser, PresenceRecord } from '../types'
 
 export type PresenceMap = Record<string, PresenceRecord>
 

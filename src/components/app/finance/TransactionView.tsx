@@ -1,16 +1,16 @@
-// src/components/app/TransactionView.tsx
+// src/components/app/finance/TransactionView.tsx
 import { useState, useMemo } from 'react'
-import { useI18n } from '../../i18n/context'
-import { useMemberName } from '../../hooks/useMemberName'
-import { todayISO } from '../../utils/date'
-import { getDefaultMemberId } from '../../utils/members'
-import { categoriesToOptions } from '../../utils/categories'
-import { CustomSelect } from '../ui/CustomSelect'
-import { CustomDatePicker } from '../ui/CustomDatePicker'
-import { AmountInput } from '../ui/AmountInput'
-import { Money } from '../ui/Money'
+import { useI18n } from '../../../i18n/context'
+import { useMemberName } from '../../../hooks/useMemberName'
+import { todayISO } from '../../../utils/date'
+import { getDefaultMemberId } from '../../../utils/members'
+import { categoriesToOptions } from '../../../utils/categories'
+import { CustomSelect } from '../../ui/CustomSelect'
+import { CustomDatePicker } from '../../ui/CustomDatePicker'
+import { AmountInput } from '../../ui/AmountInput'
+import { Money } from '../../ui/Money'
 import { TxEntry } from './TxEntry'
-import type { Category, Member, Transaction } from '../../types'
+import type { Category, Member, Transaction } from '../../../types'
 
 interface Props {
     type: 'expense' | 'income'

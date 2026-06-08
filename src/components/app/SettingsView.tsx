@@ -1,6 +1,7 @@
 // src/components/app/SettingsView.tsx
 import { useI18n } from '../../i18n/context'
-import { CategoryManager } from './CategoryManager'
+import { useHouseholdContext } from '../../pages/HouseholdLayout'
+import { CategoryManager } from './settings/CategoryManager'
 import { AutomationSection } from './settings/AutomationSection'
 import { ColorThemeSection } from './settings/ColorThemeSection'
 import { ExportSection } from './settings/ExportSection'
@@ -8,47 +9,30 @@ import { IncomePrivacySection } from './settings/IncomePrivacySection'
 import { MembersSection } from './settings/MembersSection'
 import { OwnerSettingsSection } from './settings/OwnerSettingsSection'
 import { ParticipantsSection } from './settings/ParticipantsSection'
-import type { Category, HouseholdMeta, HouseholdSettings, LogEntry, Member, Participant, RecurringCharge, Transaction } from '../../types'
+import type { LogEntry, Member, Participant, RecurringCharge, Transaction } from '../../types'
 
-interface Props {
-    householdId: string
+interface SettingsViewProps {
     transactions: Transaction[]
     recurringCharges: RecurringCharge[]
-    members: Member[]
     logs: LogEntry[]
     onRemoveMember: (id: string) => void
-    primaryColor: string
-    onColorChange: (color: string) => void
-    // Owner controls
-    isOwner: boolean
-    meta: HouseholdMeta | null
-    onUpdateSettings: (s: Partial<HouseholdSettings>) => void
-    onRename: (name: string) => void
-    // Income privacy
-    currentUserId?: string
-    onToggleMemberIncome: (member: Member) => void
-    // Participants (owner only)
     participants?: Participant[]
     onRemoveParticipant?: (uid: string) => void
     onRenameMember: (id: string, name: string, nameEn?: string) => void
-    // Categories
-    categories: Category[]
-    onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
-    onUpdateCategory: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
-    onDeleteCategory: (id: string) => Promise<void>
 }
 
 export function SettingsView({
-    householdId,
-    transactions, recurringCharges, members, logs,
-    onRemoveMember, primaryColor, onColorChange,
-    isOwner, meta, onUpdateSettings, onRename,
-    currentUserId, onToggleMemberIncome,
-    participants, onRemoveParticipant,
-    onRenameMember,
-    categories, onAddCategory, onUpdateCategory, onDeleteCategory,
-}: Props) {
+    transactions, recurringCharges, logs,
+    onRemoveMember, participants, onRemoveParticipant, onRenameMember,
+}: SettingsViewProps) {
     const { t } = useI18n()
+    const {
+        householdId, user, members, isOwner, meta,
+        primaryColor, updateColor,
+        updateSettings, renameMeta, toggleMemberIncome,
+        categories, addCategory, updateCategory, deleteCategory,
+    } = useHouseholdContext()
+    const currentUserId = user?.uid
     const myMember = members.find(m => m.userId === currentUserId)
 
     return (
@@ -57,8 +41,8 @@ export function SettingsView({
             {isOwner && (
                 <OwnerSettingsSection
                     meta={meta}
-                    onUpdateSettings={onUpdateSettings}
-                    onRename={onRename}
+                    onUpdateSettings={updateSettings}
+                    onRename={renameMeta}
                 />
             )}
 
@@ -73,7 +57,7 @@ export function SettingsView({
 
             {/* ── My income privacy ─────────────────────────────── */}
             {myMember && (
-                <IncomePrivacySection myMember={myMember} onToggleMemberIncome={onToggleMemberIncome} />
+                <IncomePrivacySection myMember={myMember} onToggleMemberIncome={toggleMemberIncome} />
             )}
 
             <MembersSection
@@ -88,13 +72,13 @@ export function SettingsView({
                 <div className="fttl">{t.categoriesLabel}</div>
                 <CategoryManager
                     categories={categories}
-                    onAdd={onAddCategory}
-                    onUpdate={onUpdateCategory}
-                    onDelete={onDeleteCategory}
+                    onAdd={addCategory}
+                    onUpdate={updateCategory}
+                    onDelete={deleteCategory}
                 />
             </div>
 
-            <ColorThemeSection primaryColor={primaryColor} onColorChange={onColorChange} />
+            <ColorThemeSection primaryColor={primaryColor} onColorChange={updateColor} />
 
             {currentUserId && myMember && (
                 <AutomationSection

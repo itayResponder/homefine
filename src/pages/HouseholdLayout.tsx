@@ -12,7 +12,7 @@ import { useCategories } from '../hooks/useCategories'
 import { useI18n } from '../i18n/context'
 import { useConfirm } from '../contexts/ui'
 import { AppHeader } from '../components/app/AppHeader'
-import { WebhookLogModal } from '../components/app/WebhookLogModal'
+import { WebhookLogModal } from '../components/app/settings/WebhookLogModal'
 import {
     approveJoinRequest,
     denyJoinRequest,

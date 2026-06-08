@@ -1,7 +1,7 @@
 import { ref, push, set, remove, update, onValue, off, get } from 'firebase/database'
 import { db } from './config'
 import { DEFAULT_CATEGORY_SEEDS } from '../constants/categories'
-import type { Category, HouseholdMeta } from '../types'
+import type { Category, HouseholdMeta, JoinRequest, Participant } from '../types'
 
 const hRef = (householdId: string, path: string) =>
     ref(db, `households/${householdId}/${path}`)
@@ -69,7 +69,7 @@ export const subscribeConnectionState = (cb: (connected: boolean) => void) => {
 }
 
 // ─── Join Requests ────────────────────────────────────────────────────────────
-type JoinRequestData = { name: string; email: string; photoURL?: string; ts: number; nameHe?: string; nameEn?: string }
+type JoinRequestData = Omit<JoinRequest, 'uid' | 'householdId' | 'householdName'>
 
 export const createJoinRequest = (householdId: string, uid: string, data: JoinRequestData) =>
     set(ref(db, `households/${householdId}/joinRequests/${uid}`), data)
@@ -112,7 +112,7 @@ export const subscribeJoinRequests = (
 }
 
 // ─── Participants ─────────────────────────────────────────────────────────────
-type ParticipantData = { name: string; email: string; photoURL?: string; joinedAt: number }
+type ParticipantData = Omit<Participant, 'uid'>
 
 export const subscribeUserMembership = (
     householdId: string,

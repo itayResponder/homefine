@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useI18n } from '../../../i18n/context'
 import type { Member } from '../../../types'
-import { EditMemberModal } from '../EditMemberModal'
+import { EditMemberModal } from './EditMemberModal'
 import styles from '../SettingsView.module.css'
 
 interface Props {

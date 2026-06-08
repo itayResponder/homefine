@@ -108,6 +108,8 @@ export interface Participant {
     joinedAt: number
 }
 
+export type PresenceRecord = { name: string; photoURL?: string; ts: number; online: boolean }
+
 export interface WebhookConfig {
     apiKey: string
     householdId: string

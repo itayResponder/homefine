@@ -1,9 +1,9 @@
-// src/components/app/HeroCard.tsx
+// src/components/app/finance/HeroCard.tsx
 import { useState } from 'react'
-import { useI18n } from '../../i18n/context'
-import { useMemberName } from '../../hooks/useMemberName'
-import { Money } from '../ui/Money'
-import type { Member, Transaction } from '../../types'
+import { useI18n } from '../../../i18n/context'
+import { useMemberName } from '../../../hooks/useMemberName'
+import { Money } from '../../ui/Money'
+import type { Member, Transaction } from '../../../types'
 
 interface Props {
     members: Member[]
@@ -18,7 +18,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
     const { t } = useI18n()
     const getMemberName = useMemberName()
 
-    const [year, monthIdx0] = month.split('-').map((n, i) => i === 1 ? Number(n) - 1 : Number(n))
+    const [year, monthIndex] = month.split('-').map((n, i) => i === 1 ? Number(n) - 1 : Number(n))
     const [open, setOpen] = useState(false)
     const [navYear, setNavYear] = useState(year)
 
@@ -76,7 +76,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                 {/* Month picker */}
                 <div className="mpw">
                     <button className="mp-trig" onClick={handleTriggerClick}>
-                        📅 {t.monthNamesShort[monthIdx0]} {year} {open ? '▲' : '▼'}
+                        📅 {t.monthNamesShort[monthIndex]} {year} {open ? '▲' : '▼'}
                     </button>
 
                     {open && (
@@ -101,7 +101,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                                     <button
                                         key={i}
                                         type="button"
-                                        className={`mp-m${navYear === year && i === monthIdx0 ? ' cur' : ''}`}
+                                        className={`mp-m${navYear === year && i === monthIndex ? ' cur' : ''}`}
                                         onClick={(e) => { e.stopPropagation(); pickMonth(i) }}
                                     >
                                         {name}

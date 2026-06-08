@@ -1,10 +1,10 @@
-// src/components/app/TxEntry.tsx
-import { useI18n } from '../../i18n/context'
-import { useMemberName } from '../../hooks/useMemberName'
-import { fmtDate } from '../../utils/format'
-import { getCatIcon, getCatName } from '../../utils/categories'
-import { Money } from '../ui/Money'
-import type { Category, Member, Transaction } from '../../types'
+// src/components/app/finance/TxEntry.tsx
+import { useI18n } from '../../../i18n/context'
+import { useMemberName } from '../../../hooks/useMemberName'
+import { fmtDate } from '../../../utils/format'
+import { getCatIcon, getCatName } from '../../../utils/categories'
+import { Money } from '../../ui/Money'
+import type { Category, Member, Transaction } from '../../../types'
 
 interface Props {
     tx: Transaction

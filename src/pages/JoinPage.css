@@ -122,7 +122,7 @@
 .jp-field label {
     font-size: 10px;
     font-weight: 700;
-    color: #9490CC;
+    color: var(--clr-purple);
     text-transform: uppercase;
     letter-spacing: .05em;
 }

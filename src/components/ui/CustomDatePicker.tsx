@@ -90,7 +90,7 @@ export function CustomDatePicker({ value, onChange, placeholder, openUp }: Props
                 className={`cd-trig${open ? ' open' : ''}${!hasValue ? ' cs-placeholder' : ''}`}
                 onClick={handleOpen}
             >
-                <span style={{ fontSize: 14, color: '#9490CC' }}>📅</span>
+                <span style={{ fontSize: 14, color: 'var(--clr-purple)' }}>📅</span>
                 <span>{hasValue ? fmtDisplay(value, t.locale) : (placeholder ?? '')}</span>
                 <span className="arr">{open ? '▲' : '▼'}</span>
             </div>

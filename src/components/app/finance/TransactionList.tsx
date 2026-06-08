@@ -1,8 +1,8 @@
-// src/components/app/TransactionList.tsx
-import { useI18n } from '../../i18n/context'
-import { getCatIcon, getCatName } from '../../utils/categories'
-import { Money } from '../ui/Money'
-import type { Category, Transaction } from '../../types'
+// src/components/app/finance/TransactionList.tsx
+import { useI18n } from '../../../i18n/context'
+import { getCatIcon, getCatName } from '../../../utils/categories'
+import { Money } from '../../ui/Money'
+import type { Category, Transaction } from '../../../types'
 import './TransactionList.css'
 
 interface ListProps {

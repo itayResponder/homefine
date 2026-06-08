@@ -42,7 +42,7 @@
     background: #F0EFFF;
     border-bottom: 1px solid #E8E6FF;
     font-size: 11px;
-    color: #9490CC;
+    color: var(--clr-purple);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 

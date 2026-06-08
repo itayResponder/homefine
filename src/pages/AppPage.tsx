@@ -8,11 +8,11 @@ import { useI18n } from '../i18n/context'
 import { useToast } from '../contexts/ui'
 import { useConfirm } from '../contexts/ui'
 import { AppNav } from '../components/app/AppNav'
-import { HeroCard } from '../components/app/HeroCard'
-import { SummaryView } from '../components/app/SummaryView'
-import { TransactionView } from '../components/app/TransactionView'
-import { MemberView } from '../components/app/MemberView'
-import { RecurringSection } from '../components/app/RecurringSection'
+import { HeroCard } from '../components/app/finance/HeroCard'
+import { SummaryView } from '../components/app/finance/SummaryView'
+import { TransactionView } from '../components/app/finance/TransactionView'
+import { MemberView } from '../components/app/finance/MemberView'
+import { RecurringSection } from '../components/app/recurring/RecurringSection'
 import { LogsSection } from '../components/app/LogsSection'
 import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
@@ -36,11 +36,9 @@ export default function AppPage() {
     const {
         householdId, user, members, membersReady,
         isOwner, expensesOnly, meta,
-        primaryColor, updateColor,
         openModal, setOpenModal,
-        updateSettings, renameMeta, toggleMemberIncome,
         addMember: ctxAddMember, removeMember: ctxRemoveMember,
-        categories, addCategory, updateCategory: updateCategoryCtx, deleteCategory,
+        categories,
     } = useHouseholdContext()
 
     const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions(householdId)
@@ -66,13 +64,13 @@ export default function AppPage() {
     // ── Auto-apply recurring charges ──────────────────────────────────────────
     useRecurringAutoApply(householdId, recurringCharges, transactions, month)
 
-    const who = user?.displayName ?? '?'
+    const currentUserName = user?.displayName ?? '?'
 
     // ── Handlers — transactions ───────────────────────────────────────────────
     const handleAddTransaction = async (tx: Omit<Transaction, 'id'>) => {
         await addTransaction(tx)
         addLog({
-            action: 'add', entityType: 'transaction', who, ts: Date.now(),
+            action: 'add', entityType: 'transaction', who: currentUserName, ts: Date.now(),
             description: tx.description, amount: tx.amount,
             memberId: tx.memberId, txType: tx.type,
         })
@@ -88,7 +86,7 @@ export default function AppPage() {
         if (!confirmed) return
         await removeTransaction(tx.id)
         addLog({
-            action: 'delete', entityType: 'transaction', who, ts: Date.now(),
+            action: 'delete', entityType: 'transaction', who: currentUserName, ts: Date.now(),
             description: tx.description, amount: tx.amount,
             memberId: tx.memberId, txType: tx.type,
         })
@@ -101,7 +99,7 @@ export default function AppPage() {
         const diffs = computeDiffs(before, changes)
         await updateTransaction(id, changes)
         addLog({
-            action: 'edit', entityType: 'transaction', who, ts: Date.now(),
+            action: 'edit', entityType: 'transaction', who: currentUserName, ts: Date.now(),
             description: changes.description ?? before.description,
             amount: changes.amount ?? before.amount,
             memberId: changes.memberId ?? before.memberId,
@@ -116,7 +114,7 @@ export default function AppPage() {
     const handleAddRecurring = async (charge: Omit<RecurringCharge, 'id'>) => {
         await addRecurring(charge)
         addLog({
-            action: 'add', entityType: 'recurring', who, ts: Date.now(),
+            action: 'add', entityType: 'recurring', who: currentUserName, ts: Date.now(),
             description: charge.description, amount: charge.amount,
             memberId: charge.memberId, txType: charge.type,
         })
@@ -134,7 +132,7 @@ export default function AppPage() {
         await Promise.all(relatedIds.map((id) => removeTransaction(id)))
         await removeRecurring(r.id)
         addLog({
-            action: 'delete', entityType: 'recurring', who, ts: Date.now(),
+            action: 'delete', entityType: 'recurring', who: currentUserName, ts: Date.now(),
             description: r.description, amount: r.amount, memberId: r.memberId,
         })
         showToast(t.toastRecDeleted)
@@ -296,27 +294,13 @@ export default function AppPage() {
                         <div className="ap-modal-body">
                             {openModal === 'settings' && (
                                 <SettingsView
-                                    householdId={householdId}
                                     transactions={transactions}
                                     recurringCharges={recurringCharges}
-                                    members={members}
                                     logs={logs}
                                     onRemoveMember={handleRemoveMember}
-                                    primaryColor={primaryColor}
-                                    onColorChange={updateColor}
-                                    isOwner={isOwner}
-                                    meta={meta}
-                                    onUpdateSettings={updateSettings}
-                                    onRename={renameMeta}
-                                    currentUserId={user?.uid}
-                                    onToggleMemberIncome={toggleMemberIncome}
                                     participants={isOwner ? participants : undefined}
                                     onRemoveParticipant={isOwner ? handleRemoveParticipant : undefined}
                                     onRenameMember={handleRenameMember}
-                                    categories={categories}
-                                    onAddCategory={addCategory}
-                                    onUpdateCategory={updateCategoryCtx}
-                                    onDeleteCategory={deleteCategory}
                                 />
                             )}
                             {openModal === 'logs' && <LogsSection logs={logs} onDelete={removeLog} onClear={clearLogs} />}

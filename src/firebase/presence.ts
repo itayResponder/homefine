@@ -1,7 +1,8 @@
 import { ref, set, remove, update, onValue, off, onDisconnect } from 'firebase/database'
 import { db } from './config'
+import type { PresenceRecord } from '../types'
 
-export type PresenceRecord = { name: string; photoURL?: string; ts: number; online: boolean }
+export type { PresenceRecord }
 
 const hRef = (householdId: string, path: string) =>
     ref(db, `households/${householdId}/${path}`)
