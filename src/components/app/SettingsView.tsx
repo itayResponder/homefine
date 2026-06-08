@@ -9,7 +9,7 @@ import { IncomePrivacySection } from './settings/IncomePrivacySection'
 import { MembersSection } from './settings/MembersSection'
 import { OwnerSettingsSection } from './settings/OwnerSettingsSection'
 import { ParticipantsSection } from './settings/ParticipantsSection'
-import type { LogEntry, Member, Participant, RecurringCharge, Transaction } from '../../types'
+import type { LogEntry, Participant, RecurringCharge, Transaction } from '../../types'
 
 interface SettingsViewProps {
     transactions: Transaction[]
