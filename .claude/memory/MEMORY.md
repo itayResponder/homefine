@@ -12,3 +12,4 @@
 - [Automation Webhook](project-automation-webhook.md) — Google Wallet→HomeFine via Cloudflare Worker; deploy steps + future Blaze migration path
 - [Form Validation Pattern](project-form-validation.md) — noValidate + errors state + .inp--error/.field-error; all forms must follow this; no browser popups
 - [Dynamic Categories](project-dynamic-categories.md) — Per-household categories in Firebase; seeded from 19 defaults; CategoryManager + EmojiPicker in Settings
+- [Component Structure](project-component-structure.md) — finance/, recurring/, settings/ subdirs in components/app/ after June 2026 refactor

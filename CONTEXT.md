@@ -82,6 +82,54 @@ Steps when ready:
 4. Rebuild + redeploy frontend
 5. Can delete `worker/` after confirming
 
+## Component Structure (post-refactor)
+
+```
+src/
+├── components/
+│   ├── app/
+│   │   ├── finance/          ← HeroCard, SummaryView, TransactionView, MemberView, TxEntry, TransactionList
+│   │   ├── recurring/        ← RecurringSection
+│   │   ├── settings/         ← 9 sub-components: AutomationSection, CategoryManager, ColorThemeSection,
+│   │   │                        EditMemberModal, ExportSection, IncomePrivacySection, MembersSection,
+│   │   │                        OwnerSettingsSection, ParticipantsSection, WebhookLogModal
+│   │   ├── AppHeader, AppNav, AddMemberModal, AddTransactionModal
+│   │   ├── EditTransactionModal, LogsSection, SettingsView, SyncOnlineBar
+│   ├── calendar/             ← CalendarDay, CalendarGrid, CalendarHeader, EventModal
+│   ├── home/                 ← HomeView, tasks/*, shopping/*
+│   └── ui/                   ← AmountInput, CustomDatePicker, CustomSelect, EmojiPicker,
+│                                LanguageToggle, Money, NotificationPanel
+├── firebase/
+│   ├── db.ts                 ← barrel re-export (backwards compat)
+│   ├── households.ts, members.ts, transactions.ts, presence.ts, webhooks.ts
+│   ├── calendarDb.ts, homeDb.ts, config.ts
+├── hooks/
+│   ├── useRecurringAutoApply ← debounced auto-apply logic (extracted from AppPage)
+│   ├── useClickOutside       ← shared outside-click handler
+│   ├── useWebhookAutomation  ← webhook download/test/keygen logic
+│   └── ... (useAuth, useMembers, usePresence, useTransactions, useRecurring, useLogs,
+│            useCategories, useHouseholdMeta, useHouseholds, useJoinRequests,
+│            useMemberName, useSyncStatus, useUserColor, useShoppingList, useTasks,
+│            useCalendarEvents)
+├── i18n/                     ← he.ts, en.ts, types.ts, context.tsx (all strings here, no inline i18n)
+├── types/
+│   ├── index.ts              ← all main types incl. PresenceRecord (moved from firebase/)
+│   └── home.ts               ← home/tasks types
+├── utils/
+│   ├── macroDroid.ts         ← MacroDroid file generator (extracted from SettingsView)
+│   ├── members.ts            ← getDefaultMemberId (shared across 3 components)
+│   └── categories.ts, color.ts, date.ts, format.ts, recurring.ts, taskUrgency.ts
+└── pages/                    ← AppPage, HouseholdLayout, DashboardPage, LandingPage, JoinPage,
+                                 CalendarPage, HouseholdPage
+```
+
+## CSS Design System
+- **Global variables** (`src/index.css`): `--brand` (#2563EB), `--clr-dark` (#1a1a2e), `--clr-purple` (#9490CC)
+- **Per-user theme** (`buildColorVars`): `--ac`, `--acd`, `--acl`, `--ib`, `--ibg`, `--bg`
+- **Logo colors**: `Home` = #0F172A, `Fine` = #2563EB — always hardcoded, never `var(--ac)`
+- Shared design-system classes live in `AppPage.css`; component-specific CSS in per-component files
+- `SettingsView.module.css` — CSS Modules for settings sub-components
+
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel
 - ❌ Viewer role (read-only member)

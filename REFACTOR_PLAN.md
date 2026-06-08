@@ -251,36 +251,36 @@ isRtl ? 'גישה לבית' : 'Household Access'
 
 ### 🔴 עדיפות גבוהה — משפיע על יכולת תחזוקה מיידית
 
-| # | בעיה | קבצים | מאמץ |
-|---|------|--------|------|
-| 1 | **SettingsView.tsx — inline styles → קובץ CSS** | `SettingsView.tsx` → `SettingsView.css` | גבוה |
-| 2 | **SettingsView.tsx — פיצול לקומפוננטות** | 7 sections → 7 קבצים | גבוה |
-| 3 | **generateMacroDroidFile → utils** | `SettingsView.tsx` → `utils/macroDroid.ts` | נמוך |
-| 4 | **useWebhookAutomation hook** | לוגיקת Webhook מ-SettingsView | בינוני |
-| 5 | **פיצול firebase/db.ts** | → 5 קבצים | בינוני |
+| # | בעיה | קבצים | מאמץ | סטטוס |
+|---|------|--------|------|--------|
+| 1 | **SettingsView.tsx — inline styles → קובץ CSS** | `SettingsView.tsx` → `SettingsView.module.css` | גבוה | ✅ הושלם |
+| 2 | **SettingsView.tsx — פיצול לקומפוננטות** | 7 sections → 7 קבצים ב-`settings/` | גבוה | ✅ הושלם |
+| 3 | **generateMacroDroidFile → utils** | `SettingsView.tsx` → `utils/macroDroid.ts` | נמוך | ✅ הושלם |
+| 4 | **useWebhookAutomation hook** | לוגיקת Webhook מ-SettingsView | בינוני | ✅ הושלם |
+| 5 | **פיצול firebase/db.ts** | → 5 קבצים (`households`, `members`, `transactions`, `presence`, `webhooks`) | בינוני | ✅ הושלם |
 
 ### 🟡 עדיפות בינונית — בעיות חזרתיות ומבנה
 
-| # | בעיה | קבצים | מאמץ |
-|---|------|--------|------|
-| 6 | **useClickOutside hook** | DashboardPage + AppHeader | נמוך |
-| 7 | **defaultMemberId → hook/util** | 3 קומפוננטות | נמוך |
-| 8 | **Inline i18n → he.ts / en.ts** | SettingsView, LogsSection | בינוני |
-| 9 | **AppPage.tsx — auto-recurring → hook** | `useRecurringAutoApply` | נמוך |
-| 10 | **ביטול כפילות CSS** | SyncBar + SyncOnlineBar, OnlineBar | נמוך |
-| 11 | **בדיקת orphan components** | UserBar, SummaryCards | נמוך |
-| 12 | **הזזת LanguageToggle → ui/** | `components/LanguageToggle.tsx` | נמוך |
+| # | בעיה | קבצים | מאמץ | סטטוס |
+|---|------|--------|------|--------|
+| 6 | **useClickOutside hook** | DashboardPage + AppHeader | נמוך | ✅ הושלם |
+| 7 | **defaultMemberId → hook/util** | 3 קומפוננטות → `utils/members.ts` | נמוך | ✅ הושלם |
+| 8 | **Inline i18n → he.ts / en.ts** | SettingsView, LogsSection | בינוני | ✅ הושלם |
+| 9 | **AppPage.tsx — auto-recurring → hook** | `useRecurringAutoApply` | נמוך | ✅ הושלם |
+| 10 | **ביטול כפילות CSS** | מחיקת `SyncBar.tsx/css` + `OnlineBar.tsx/css` | נמוך | ✅ הושלם |
+| 11 | **בדיקת orphan components** | מחיקת `UserBar`, `SummaryCards` | נמוך | ✅ הושלם |
+| 12 | **הזזת LanguageToggle → ui/** | `components/ui/LanguageToggle.tsx` | נמוך | ✅ הושלם |
 
 ### 🟢 עדיפות נמוכה — שיפורים, שמות, TypeScript
 
-| # | בעיה | קבצים | מאמץ |
-|---|------|--------|------|
-| 13 | **שמות משתנים** | AppPage, RecurringSection, utils | נמוך |
-| 14 | **Types מ-firebase/db.ts → types/** | `JoinRequestData`, `ParticipantData`, `PresenceRecord` | נמוך |
-| 15 | **Props חלקי SettingsView → Context** | HouseholdLayout, AppPage, SettingsView | בינוני |
-| 16 | **חלוקה מחדש של תיקיות** | components/app/settings/, components/app/finance/ | בינוני |
-| 17 | **CSS variable לצבעים hardcoded** | פרויקט כולו (`#1a1a2e`, `#9490CC`) | בינוני |
-| 18 | **מחיקת OLD_BAYIT_SHELANU.html** | שורש פרויקט | נמוך |
+| # | בעיה | קבצים | מאמץ | סטטוס |
+|---|------|--------|------|--------|
+| 13 | **שמות משתנים** | `who`→`currentUserName`, `mc`→`monthCountError`, `monthIdx0`→`monthIndex`, `txRef`→`transactionsRef` | נמוך | ✅ הושלם |
+| 14 | **Types מ-firebase/db.ts → types/** | `PresenceRecord` → `types/index.ts`; `JoinRequestData`/`ParticipantData` → `Omit<>` | נמוך | ✅ הושלם |
+| 15 | **Props חלקי SettingsView → Context** | 21 props → 7 props; שאר מ-`useHouseholdContext()` | בינוני | ✅ הושלם |
+| 16 | **חלוקה מחדש של תיקיות** | `finance/`, `recurring/`, `settings/` נוצרו; 10 קבצים הועברו | בינוני | ✅ הושלם |
+| 17 | **CSS variable לצבעים hardcoded** | `--clr-dark` + `--clr-purple` ב-`index.css`; הוחלפו ב-6 קבצי CSS + 2 inline | בינוני | ✅ הושלם |
+| 18 | **מחיקת OLD_BAYIT_SHELANU.html** | שורש פרויקט | נמוך | ⏭ דחוי (לא קריטי) |
 
 ---
 

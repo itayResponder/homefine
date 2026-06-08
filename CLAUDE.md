@@ -103,7 +103,7 @@ Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir,
 Categories are **per-household and dynamic** — stored at `households/{id}/categories/{catId}` → `{ name, nameEn, icon, order }`. `TransactionCategory` is now `string`. On first load, `useCategories` auto-seeds the 19 defaults (same IDs: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, pet, other) so existing transactions display correctly. Members can add/edit/delete categories from the Settings modal via `CategoryManager`. Icon selection via `EmojiPicker` (~70 curated emojis from `EMOJI_GROUPS` in `src/constants/categories.ts`). Helpers in `src/utils/categories.ts`: `getCatIcon(categories, id)`, `getCatName(categories, id, locale)`, `categoriesToOptions(cats, locale)`. `categories` + CRUD actions live in `HouseholdContextType` (loaded in `HouseholdLayout`), passed as prop to all consumers (TransactionView, RecurringSection, TxEntry, etc.).
 
 ### Recurring Charges
-`RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via debounced `useEffect` (600ms) in `AppPage`.
+`RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via `useRecurringAutoApply(householdId, recurringCharges, transactions, month)` hook (debounce 600ms, lives in `src/hooks/useRecurringAutoApply.ts`).
 
 ### Navigation (AppNav pills)
 Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] → [member pills with × to delete] → ＋ → חיובים קבועים. Logs and Settings are opened via modals from AppHeader (not pills). Member pills dynamically generated from `members[]`. Clicking × triggers `handleRemoveMember` (deletes member + all their transactions/recurring). Clicking ＋ opens `AddMemberModal`.
@@ -111,13 +111,39 @@ Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] →
 ### Member Name Localization
 `useMemberName()` hook returns a function `(member) => string` — uses `member.nameEn` when locale is English, `member.name` (Hebrew) otherwise. Members have both `name` (Hebrew) and optional `nameEn` (English) fields.
 
+### Component Directory Structure
+```
+src/components/
+├── ui/               ← CustomSelect, CustomDatePicker, AmountInput, Money,
+│                        EmojiPicker, LanguageToggle, NotificationPanel
+├── app/
+│   ├── finance/      ← HeroCard, SummaryView, TransactionView, MemberView, TxEntry, TransactionList
+│   ├── recurring/    ← RecurringSection
+│   ├── settings/     ← OwnerSettingsSection, ParticipantsSection, IncomePrivacySection,
+│   │                    MembersSection, CategoryManager, ColorThemeSection,
+│   │                    AutomationSection, ExportSection, EditMemberModal, WebhookLogModal
+│   └── (root)        ← AppHeader, AppNav, AddMemberModal, AddTransactionModal,
+│                        EditTransactionModal, LogsSection, SettingsView, SyncOnlineBar
+├── calendar/         ← CalendarGrid, CalendarHeader, CalendarDay, EventModal
+└── home/             ← HomeView, tasks/*, shopping/*
+```
+
 ### Shared UI Components
 - `src/components/ui/CustomSelect.tsx` — styled dropdown (cs-* classes); accepts `error?: boolean` → applies `.cs-trig--error`
 - `src/components/ui/CustomDatePicker.tsx` — styled calendar (cd-* classes)
 - `src/components/ui/Money.tsx` — currency display
 - `src/components/ui/NotificationPanel.tsx` — join request panel + BellSVG export
+- `src/components/ui/LanguageToggle.tsx` — EN/עב toggle (moved from `components/`)
 - `src/components/app/AddMemberModal.tsx` — modal for adding a member (name HE + EN + duplicate check), opened via AppNav ＋ pill
-- `src/components/app/TransactionView.tsx` — unified expense/income form + list; accepts `type: 'expense' | 'income'`
+- `src/components/app/finance/TransactionView.tsx` — unified expense/income form + list; accepts `type: 'expense' | 'income'`
+
+### Firebase Module Structure
+`src/firebase/db.ts` is a barrel re-export for backwards compatibility. Import directly from sub-modules for new code:
+- `households.ts` — household CRUD, join requests, participants
+- `members.ts` — member CRUD
+- `transactions.ts` — transaction CRUD + logs
+- `presence.ts` — online presence
+- `webhooks.ts` — webhook config + debug log
 
 ### Form Validation Pattern
 All forms use custom validation — no browser-native popups. Pattern:
@@ -136,10 +162,17 @@ Shared CSS classes (all in `AppPage.css`): `.inp--error`, `.cs-trig--error`, `.f
 RecurringSection uses `.ap-input--error` (defined in `AddTransactionModal.css`) instead of `.inp--error`.
 
 ### CSS Conventions
+- **Global design tokens** in `src/index.css` `:root`: `--brand` (#2563EB), `--clr-dark` (#1a1a2e), `--clr-purple` (#9490CC)
+- **Per-user theme** variables: `--ac`, `--acd`, `--acl`, `--ib`, `--ibg`, `--bg` (derived by `buildColorVars`)
 - All shared design-system classes in `src/pages/AppPage.css` (`.ap-root`, `.wrap`, `.hero`, `.pills`, `.pill`, `.fcard`, `.inp`, `.sbtn`, etc.)
 - Use `inset-inline-end` / `inset-inline-start` for RTL/LTR positioning
 - Per-component CSS files for component-specific styles
-- Do NOT use Tailwind or CSS modules
+- `SettingsView.module.css` uses CSS Modules (exception); all other files use plain CSS classes
+- Do NOT use Tailwind; avoid new CSS Modules unless in settings/ sub-components
+- Never hardcode `#1a1a2e` or `#9490CC` — use `var(--clr-dark)` / `var(--clr-purple)`
 
 ### CSS Consistency Rule
 Before adding new CSS, check if a class already exists in AppPage.css or NotificationPanel.css. Never duplicate visual styles between Dashboard and App — use shared components.
+
+### SettingsView Architecture
+`SettingsView` (7 props only) calls `useHouseholdContext()` directly for all shared data. Props passed from AppPage: `transactions`, `recurringCharges`, `logs`, `onRemoveMember`, `participants`, `onRemoveParticipant`, `onRenameMember`. Everything else (householdId, members, meta, isOwner, categories, colors, etc.) comes from context.
