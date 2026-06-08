@@ -1,6 +1,7 @@
 // src/components/app/SettingsView.tsx
 import { useEffect, useState } from 'react'
 import { useI18n } from '../../i18n/context'
+import styles from './SettingsView.module.css'
 import { EditMemberModal } from './EditMemberModal'
 import { CategoryManager } from './CategoryManager'
 import { saveWebhookConfig, deleteWebhookConfig, subscribeWebhookConfig, getAllWebhookConfigs, getHouseholdName } from '../../firebase/db'
@@ -265,24 +266,24 @@ export function SettingsView({
         <div>
             {/* ── Owner controls ─────────────────────────────────── */}
             {isOwner && (
-                <div className="fcard" style={{ borderColor: 'var(--ac)', background: 'var(--acl)' }}>
+                <div className={`fcard ${styles.ownerCard}`}>
                     <div className="fttl">👑 {isRtl ? 'הגדרות בעלים' : 'Owner Settings'}</div>
 
                     {/* Rename */}
-                    <div style={{ marginBottom: 14 }}>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: '#9490CC', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 6 }}>
+                    <div className={styles.renameSection}>
+                        <div className={styles.sectionLabel}>
                             {isRtl ? 'שם הבית' : 'Household name'}
                         </div>
                         {renaming ? (
-                            <form onSubmit={handleRename} style={{ display: 'flex', gap: 8 }}>
-                                <input className="inp" value={newHouseName} onChange={e => setNewHouseName(e.target.value)} autoFocus required style={{ flex: 1 }} />
-                                <button type="submit" className="sbtn" style={{ width: 'auto', padding: '10px 16px' }}>✓</button>
-                                <button type="button" onClick={() => setRenaming(false)} style={{ padding: '10px 12px', border: '1.5px solid var(--ib)', borderRadius: 'var(--rs)', background: 'var(--ibg)', cursor: 'pointer', fontFamily: 'inherit' }}>✕</button>
+                            <form onSubmit={handleRename} className={styles.renameForm}>
+                                <input className={`inp ${styles.renameInput}`} value={newHouseName} onChange={e => setNewHouseName(e.target.value)} autoFocus required />
+                                <button type="submit" className={`sbtn ${styles.renameSubmitBtn}`}>✓</button>
+                                <button type="button" onClick={() => setRenaming(false)} className={styles.renameCancelBtn}>✕</button>
                             </form>
                         ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                <span style={{ fontSize: 14, fontWeight: 600, color: '#1a1a2e' }}>{meta?.name}</span>
-                                <button onClick={() => { setNewHouseName(meta?.name ?? ''); setRenaming(true) }} style={{ fontSize: 11, padding: '4px 10px', border: '1.5px solid var(--ib)', borderRadius: 20, background: '#fff', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit' }}>
+                            <div className={styles.renameDisplay}>
+                                <span className={styles.householdName}>{meta?.name}</span>
+                                <button onClick={() => { setNewHouseName(meta?.name ?? ''); setRenaming(true) }} className={styles.renameBtn}>
                                     {isRtl ? 'שנה שם' : 'Rename'}
                                 </button>
                             </div>
@@ -290,28 +291,20 @@ export function SettingsView({
                     </div>
 
                     {/* Expenses-only toggle */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className={styles.toggleRow}>
                         <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e' }}>
+                            <div className={styles.toggleTitle}>
                                 {isRtl ? 'מצב הוצאות בלבד' : 'Expenses-only mode'}
                             </div>
-                            <div style={{ fontSize: 11, color: '#9490CC', marginTop: 2 }}>
+                            <div className={styles.toggleSubtitle}>
                                 {isRtl ? 'מסתיר את לשונית ההכנסות מכל חברי הבית' : 'Hides the income tab for all members'}
                             </div>
                         </div>
                         <button
                             onClick={() => onUpdateSettings({ expensesOnly: !meta?.settings?.expensesOnly })}
-                            style={{
-                                width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
-                                background: meta?.settings?.expensesOnly ? 'var(--ac)' : '#E2E8F0',
-                                transition: 'background .2s', flexShrink: 0, position: 'relative',
-                            }}
+                            className={`${styles.toggle} ${meta?.settings?.expensesOnly ? styles.toggleOn : ''}`}
                         >
-                            <span style={{
-                                position: 'absolute', top: 3, width: 18, height: 18, borderRadius: '50%', background: '#fff',
-                                transition: 'inset-inline-start .2s',
-                                insetInlineStart: meta?.settings?.expensesOnly ? 23 : 3,
-                            }} />
+                            <span className={`${styles.toggleKnob} ${meta?.settings?.expensesOnly ? styles.toggleKnobOn : ''}`} />
                         </button>
                     </div>
                 </div>
@@ -321,40 +314,31 @@ export function SettingsView({
             {isOwner && participants && participants.length > 0 && (
                 <div className="fcard">
                     <div className="fttl">🔑 {isRtl ? 'גישה לבית' : 'Household Access'}</div>
-                    {participants.map((p, i) => (
-                        <div key={p.uid} style={{
-                            display: 'flex', alignItems: 'center', gap: 10,
-                            padding: '10px 0',
-                            borderBottom: i < participants.length - 1 ? '1px solid #F1F5F9' : 'none',
-                        }}>
+                    {participants.map((p) => (
+                        <div key={p.uid} className={styles.participantRow}>
                             {p.photoURL ? (
-                                <img src={p.photoURL} alt={p.name} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                                <img src={p.photoURL} alt={p.name} className={styles.participantAvatar} />
                             ) : (
-                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--acl)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, color: 'var(--ac)', flexShrink: 0 }}>
+                                <div className={styles.participantAvatarPlaceholder}>
                                     {p.name[0]?.toUpperCase()}
                                 </div>
                             )}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <div className={styles.participantInfo}>
+                                <div className={styles.participantName}>
                                     {p.name}
                                     {p.uid === currentUserId && (
-                                        <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--ac)', background: 'var(--acl)', padding: '2px 6px', borderRadius: 20 }}>
+                                        <span className={styles.ownerBadge}>
                                             {isRtl ? 'בעלים' : 'Owner'}
                                         </span>
                                     )}
                                 </div>
-                                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>{p.email}</div>
-                                <div style={{ fontSize: 10, color: '#CBD5E1', marginTop: 1 }}>{isRtl ? 'הצטרף' : 'Joined'} {fmtJoinDate(p.joinedAt)}</div>
+                                <div className={styles.participantEmail}>{p.email}</div>
+                                <div className={styles.participantJoinDate}>{isRtl ? 'הצטרף' : 'Joined'} {fmtJoinDate(p.joinedAt)}</div>
                             </div>
                             {p.uid !== currentUserId && onRemoveParticipant && (
                                 <button
                                     onClick={() => onRemoveParticipant(p.uid)}
-                                    style={{
-                                        padding: '5px 10px', fontSize: 11, fontWeight: 600,
-                                        borderRadius: 'var(--rs)', border: '1.5px solid #FECDD3',
-                                        background: '#FFF1F2', color: '#E11D48',
-                                        cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0,
-                                    }}
+                                    className={styles.removeParticipantBtn}
                                 >
                                     {isRtl ? 'הסר' : 'Remove'}
                                 </button>
@@ -368,28 +352,20 @@ export function SettingsView({
             {myMember && (
                 <div className="fcard">
                     <div className="fttl">🔒 {isRtl ? 'פרטיות הכנסות' : 'Income Privacy'}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className={styles.toggleRow}>
                         <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e' }}>
+                            <div className={styles.toggleTitle}>
                                 {isRtl ? 'הסתר את ההכנסות שלי' : 'Hide my income'}
                             </div>
-                            <div style={{ fontSize: 11, color: '#9490CC', marginTop: 2 }}>
+                            <div className={styles.toggleSubtitle}>
                                 {isRtl ? 'רק אני אראה את ההכנסות שלי' : 'Only I can see my income'}
                             </div>
                         </div>
                         <button
                             onClick={() => onToggleMemberIncome(myMember)}
-                            style={{
-                                width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
-                                background: myMember.privateIncome ? 'var(--ac)' : '#E2E8F0',
-                                transition: 'background .2s', flexShrink: 0, position: 'relative',
-                            }}
+                            className={`${styles.toggle} ${myMember.privateIncome ? styles.toggleOn : ''}`}
                         >
-                            <span style={{
-                                position: 'absolute', top: 3, width: 18, height: 18, borderRadius: '50%', background: '#fff',
-                                transition: 'inset-inline-start .2s',
-                                insetInlineStart: myMember.privateIncome ? 23 : 3,
-                            }} />
+                            <span className={`${styles.toggleKnob} ${myMember.privateIncome ? styles.toggleKnobOn : ''}`} />
                         </button>
                     </div>
                 </div>
@@ -399,16 +375,16 @@ export function SettingsView({
             <div className="fcard">
                 <div className="fttl">👥 {t.membersLabel}</div>
                 {members.length > 0 && (
-                    <div className="catchips" style={{ marginBottom: 12 }}>
+                    <div className={`catchips ${styles.memberChips}`}>
                         {members.map((m) => (
                             <div key={m.id} className="catchip" style={{ border: `1.5px solid ${m.color}40`, color: m.color, background: m.color + '15' }}>
-                                <span style={{ width: 8, height: 8, borderRadius: '50%', background: m.color, display: 'inline-block', flexShrink: 0 }} />
+                                <span className={styles.memberColorDot} style={{ background: m.color }} />
                                 {m.name}
                                 {m.userId === currentUserId && (
                                     <button
                                         onClick={() => setEditingMember(m)}
                                         title={isRtl ? 'שנה שם' : 'Edit name'}
-                                        style={{ fontSize: 11, lineHeight: 1, opacity: 0.7 }}
+                                        className={styles.memberEditBtn}
                                     >✏️</button>
                                 )}
                                 <button onClick={() => onRemoveMember(m.id)} title="מחק חבר">×</button>
@@ -432,55 +408,26 @@ export function SettingsView({
             {/* Color theme */}
             <div className="fcard">
                 <div className="fttl">🎨 {t.dir === 'rtl' ? 'צבע ראשי' : 'Primary Color'}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
-                    <div style={{ position: 'relative', width: 44, height: 44 }}>
+                <div className={styles.colorRow}>
+                    <div className={styles.colorPickerWrapper}>
                         <input
                             type="color"
                             value={primaryColor}
                             onChange={(e) => onColorChange(e.target.value)}
-                            style={{
-                                position: 'absolute',
-                                inset: 0,
-                                width: '100%',
-                                height: '100%',
-                                opacity: 0,
-                                cursor: 'pointer',
-                                border: 'none',
-                                padding: 0,
-                            }}
+                            className={styles.colorInput}
                         />
-                        <div style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: 12,
-                            background: primaryColor,
-                            border: '2px solid rgba(0,0,0,0.1)',
-                            pointerEvents: 'none',
-                        }} />
+                        <div className={styles.colorSwatch} style={{ background: primaryColor }} />
                     </div>
                     <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ac)', marginBottom: 2 }}>
-                            {primaryColor.toUpperCase()}
-                        </div>
-                        <div style={{ fontSize: 11, color: '#94A3B8' }}>
+                        <div className={styles.colorHex}>{primaryColor.toUpperCase()}</div>
+                        <div className={styles.colorHint}>
                             {t.dir === 'rtl' ? 'לחץ לשינוי הצבע' : 'Click to change color'}
                         </div>
                     </div>
                     {primaryColor !== DEFAULT_COLOR && (
                         <button
                             onClick={() => onColorChange(DEFAULT_COLOR)}
-                            style={{
-                                marginRight: 'auto',
-                                padding: '6px 12px',
-                                fontSize: 11,
-                                fontWeight: 600,
-                                borderRadius: 'var(--rs)',
-                                border: '1.5px solid var(--ib)',
-                                background: 'var(--ibg)',
-                                color: 'var(--ac)',
-                                cursor: 'pointer',
-                                fontFamily: 'inherit',
-                            }}
+                            className={styles.colorResetBtn}
                         >
                             {t.dir === 'rtl' ? 'איפוס' : 'Reset'}
                         </button>
@@ -492,7 +439,7 @@ export function SettingsView({
             {currentUserId && myMember && (
                 <div className="fcard">
                     <div className="fttl">⚡ {isRtl ? 'אוטומציה — Google Wallet' : 'Automation — Google Wallet'}</div>
-                    <div style={{ fontSize: 12, color: '#64748B', marginBottom: 14, lineHeight: 1.5 }}>
+                    <div className={styles.automationDesc}>
                         {isRtl
                             ? 'חבר את MacroDroid כדי שכל רכישה ב-Google Wallet תיכנס אוטומטית לאפליקציה.'
                             : 'Connect MacroDroid so every Google Wallet purchase is added automatically.'}
@@ -501,7 +448,7 @@ export function SettingsView({
                     {webhookConfig ? (
                         <>
                             {/* Connection status */}
-                            <div style={{ fontSize: 11, padding: '7px 10px', borderRadius: 6, background: webhookConfig.lastPingedAt ? '#F0FDF4' : '#F8FAFC', color: webhookConfig.lastPingedAt ? '#16A34A' : '#94A3B8' }}>
+                            <div className={`${styles.connectionStatus} ${webhookConfig.lastPingedAt ? styles.connectionStatusConnected : styles.connectionStatusDisconnected}`}>
                                 {webhookConfig.lastPingedAt
                                     ? `🟢 ${isRtl ? 'מחובר — פעיל לאחרונה' : 'Connected — last active'} ${new Date(webhookConfig.lastPingedAt).toLocaleString(isRtl ? 'he-IL' : 'en-GB', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}`
                                     : `⚪ ${isRtl ? 'טרם חובר — הורד את קובץ ההגדרה וייבא ל-MacroDroid' : 'Not connected yet — download config and import to MacroDroid'}`}
@@ -510,11 +457,11 @@ export function SettingsView({
                             {/* MacroDroid download */}
                             <button
                                 onClick={handleDownloadMacro}
-                                style={{ width: '100%', padding: '9px 12px', fontSize: 12, fontWeight: 700, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--acl)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left' }}
+                                className={`${styles.automationBtn} ${styles.downloadBtn}`}
                             >
                                 📥 {isRtl ? 'הורד קובץ הגדרה ל-MacroDroid' : 'Download MacroDroid Config'}
                             </button>
-                            <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.6 }}>
+                            <div className={styles.automationInstructions}>
                                 {isRtl
                                     ? 'פתח MacroDroid ← Export/Import ← Import ← בחר את הקובץ שהורדת. הכל מוגדר אוטומטית.'
                                     : 'Open MacroDroid → Export/Import → Import → select the downloaded file. Everything is pre-configured.'}
@@ -524,27 +471,24 @@ export function SettingsView({
                             <button
                                 onClick={handleTestWebhook}
                                 disabled={webhookTestStatus === 'loading'}
-                                style={{ width: '100%', padding: '9px 12px', fontSize: 12, fontWeight: 700, borderRadius: 'var(--rs)', border: '1.5px solid var(--ib)', background: 'var(--ibg)', color: 'var(--ac)', cursor: 'pointer', fontFamily: 'inherit', textAlign: isRtl ? 'right' : 'left', opacity: webhookTestStatus === 'loading' ? 0.6 : 1 }}
+                                className={`${styles.automationBtn} ${styles.testBtn} ${webhookTestStatus === 'loading' ? styles.testBtnLoading : ''}`}
                             >
                                 {webhookTestStatus === 'loading' ? '⏳' : '🔌'} {isRtl ? 'בדוק חיבור' : 'Test Connection'}
                             </button>
                             {webhookTestStatus === 'ok' && (
-                                <div style={{ fontSize: 11, color: '#16A34A', background: '#F0FDF4', borderRadius: 6, padding: '7px 10px' }}>
+                                <div className={styles.testSuccess}>
                                     ✅ {isRtl ? 'עסקת בדיקה נוצרה! תוכל למחוק אותה מרשימת ההוצאות.' : 'Test transaction created! You can delete it from expenses.'}
                                 </div>
                             )}
                             {webhookTestStatus === 'error' && (
-                                <div style={{ fontSize: 11, color: '#E11D48', background: '#FFF1F2', borderRadius: 6, padding: '7px 10px' }}>
+                                <div className={styles.testError}>
                                     ❌ {webhookTestError}
                                 </div>
                             )}
 
                             {/* Disable automation */}
-                            <div style={{ textAlign: 'center', marginTop: 4 }}>
-                                <button
-                                    onClick={handleDeleteConfig}
-                                    style={{ fontSize: 11, color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}
-                                >
+                            <div className={styles.disableRow}>
+                                <button onClick={handleDeleteConfig} className={styles.disableBtn}>
                                     {isRtl ? 'כבה אוטומציה' : 'Disable automation'}
                                 </button>
                             </div>
@@ -553,7 +497,7 @@ export function SettingsView({
                         <button
                             onClick={handleGenerateKey}
                             disabled={webhookSaving}
-                            style={{ padding: '10px 18px', fontSize: 13, fontWeight: 700, borderRadius: 'var(--rs)', border: 'none', background: 'var(--ac)', color: '#fff', cursor: 'pointer', fontFamily: 'inherit' }}
+                            className={styles.enableBtn}
                         >
                             {webhookSaving ? '...' : (isRtl ? '⚡ הפעל אוטומציה' : '⚡ Enable Automation')}
                         </button>
@@ -564,20 +508,7 @@ export function SettingsView({
             {/* Export */}
             <div className="fcard">
                 <div className="fttl">{t.exportTitle}</div>
-                <button
-                    onClick={handleExport}
-                    style={{
-                        padding: '9px 16px',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        borderRadius: 'var(--rs)',
-                        border: '1.5px solid var(--ib)',
-                        background: 'var(--ibg)',
-                        color: 'var(--ac)',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
-                    }}
-                >
+                <button onClick={handleExport} className={styles.exportBtn}>
                     {t.exportJsonBtn}
                 </button>
             </div>
