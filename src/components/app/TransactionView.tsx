@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { todayISO } from '../../utils/date'
+import { getDefaultMemberId } from '../../utils/members'
 import { categoriesToOptions } from '../../utils/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
@@ -35,7 +36,7 @@ export function TransactionView({ type, transactions, members, categories, month
 
     const isExpense = type === 'expense'
 
-    const defaultMemberId = members.find((m) => m.userId === currentUserId)?.id ?? 'shared'
+    const defaultMemberId = getDefaultMemberId(members, currentUserId)
     const effectiveMemberId = memberId ?? defaultMemberId
 
     const monthTxs = useMemo(

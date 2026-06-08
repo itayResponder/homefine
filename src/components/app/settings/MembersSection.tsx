@@ -13,7 +13,6 @@ interface Props {
 
 export function MembersSection({ members, currentUserId, onRemoveMember, onRenameMember }: Props) {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
     const [editingMember, setEditingMember] = useState<Member | null>(null)
 
     return (
@@ -29,7 +28,7 @@ export function MembersSection({ members, currentUserId, onRemoveMember, onRenam
                                 {m.userId === currentUserId && (
                                     <button
                                         onClick={() => setEditingMember(m)}
-                                        title={isRtl ? 'שנה שם' : 'Edit name'}
+                                        title={t.settings.editNameTitle}
                                         className={styles.memberEditBtn}
                                     >✏️</button>
                                 )}

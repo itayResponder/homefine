@@ -122,6 +122,11 @@ export interface T {
     logDelete: string
     logTransaction: string
     logRecurring: string
+    logClearAll: string
+    logDeleteEntry: string
+    logWhoLabel: string
+    logTimeLabel: string
+    logChangesLabel: string
 
     // ── Settings ─────────────────────────────────────────
     exportTitle: string
@@ -150,6 +155,40 @@ export interface T {
     memberNameEnInvalidFormat: string
     memberNameDuplicate: string
     memberNameEnDuplicate: string
+
+    // ── Settings panel ───────────────────────────────────
+    settings: {
+        // Owner
+        ownerSettingsTitle: string
+        householdNameLabel: string
+        renameBtn: string
+        editNameTitle: string
+        expensesOnlyLabel: string
+        expensesOnlyDesc: string
+        // Access / Participants
+        accessTitle: string
+        ownerBadge: string
+        joinedLabel: string
+        removeBtn: string
+        // Income Privacy
+        incomePrivacyTitle: string
+        hideMyIncomeLabel: string
+        hideMyIncomeDesc: string
+        // Automation
+        automationTitle: string
+        automationDesc: string
+        automationConnected: string
+        automationNotConnected: string
+        automationDownloadBtn: string
+        automationInstructions: string
+        automationTestBtn: string
+        automationTestOk: string
+        automationDisableBtn: string
+        automationEnableBtn: string
+        automationInvalidKey: string
+        automationUnknownError: string
+        automationServerError: string
+    }
 
     // ── Presence / Sync ──────────────────────────────────
     onlineNow: string

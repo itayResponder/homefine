@@ -15,11 +15,9 @@ interface Props {
 
 export function ParticipantsSection({ participants, currentUserId, onRemoveParticipant }: Props) {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
-
     return (
         <div className="fcard">
-            <div className="fttl">🔑 {isRtl ? 'גישה לבית' : 'Household Access'}</div>
+            <div className="fttl">🔑 {t.settings.accessTitle}</div>
             {participants.map((p) => (
                 <div key={p.uid} className={styles.participantRow}>
                     {p.photoURL ? (
@@ -34,13 +32,13 @@ export function ParticipantsSection({ participants, currentUserId, onRemoveParti
                             {p.name}
                             {p.uid === currentUserId && (
                                 <span className={styles.ownerBadge}>
-                                    {isRtl ? 'בעלים' : 'Owner'}
+                                    {t.settings.ownerBadge}
                                 </span>
                             )}
                         </div>
                         <div className={styles.participantEmail}>{p.email}</div>
                         <div className={styles.participantJoinDate}>
-                            {isRtl ? 'הצטרף' : 'Joined'} {fmtJoinDate(p.joinedAt)}
+                            {t.settings.joinedLabel} {fmtJoinDate(p.joinedAt)}
                         </div>
                     </div>
                     {p.uid !== currentUserId && onRemoveParticipant && (
@@ -48,7 +46,7 @@ export function ParticipantsSection({ participants, currentUserId, onRemoveParti
                             onClick={() => onRemoveParticipant(p.uid)}
                             className={styles.removeParticipantBtn}
                         >
-                            {isRtl ? 'הסר' : 'Remove'}
+                            {t.settings.removeBtn}
                         </button>
                     )}
                 </div>

@@ -14,7 +14,7 @@ interface Props {
 export function LogsSection({ logs, onDelete, onClear }: Props) {
     const { t } = useI18n()
     const [selected, setSelected] = useState<LogEntry | null>(null)
-    const clearLabel = t.dir === 'rtl' ? 'מחק הכל' : 'Clear all'
+    const clearLabel = t.logClearAll
 
     return (
         <div className="logs-section">
@@ -98,7 +98,7 @@ function LogDetailModal({ log, onClose, onDelete }: {
     const ts = new Date(log.ts)
     const timeStr = `${String(ts.getDate()).padStart(2, '0')}/${String(ts.getMonth() + 1).padStart(2, '0')}/${ts.getFullYear()} ${String(ts.getHours()).padStart(2, '0')}:${String(ts.getMinutes()).padStart(2, '0')}`
     const sign = log.txType === 'income' ? '+' : '−'
-    const deleteLabel = t.dir === 'rtl' ? 'מחק לוג' : 'Delete log'
+    const deleteLabel = t.logDeleteEntry
 
     return (
         <div className="log-modal-overlay" onClick={onClose}>
@@ -110,32 +110,32 @@ function LogDetailModal({ log, onClose, onDelete }: {
 
                 <div className="log-modal-rows">
                     <div className="log-modal-row">
-                        <span className="log-modal-label">{t.dir === 'rtl' ? 'מי' : 'Who'}</span>
+                        <span className="log-modal-label">{t.logWhoLabel}</span>
                         <span className="log-modal-val">{log.who}</span>
                     </div>
                     <div className="log-modal-row">
-                        <span className="log-modal-label">{t.dir === 'rtl' ? 'תיאור' : 'Description'}</span>
+                        <span className="log-modal-label">{t.descriptionLabel}</span>
                         <span className="log-modal-val">{log.description}</span>
                     </div>
                     <div className="log-modal-row">
-                        <span className="log-modal-label">{t.dir === 'rtl' ? 'סכום' : 'Amount'}</span>
+                        <span className="log-modal-label">{t.amountLabel}</span>
                         <span className="log-modal-val" dir="ltr">{formatCurrency(log.amount, t.dir, sign)}</span>
                     </div>
                     {log.txType && (
                         <div className="log-modal-row">
-                            <span className="log-modal-label">{t.dir === 'rtl' ? 'סוג' : 'Type'}</span>
-                            <span className="log-modal-val">{log.txType === 'income' ? (t.dir === 'rtl' ? 'הכנסה' : 'Income') : (t.dir === 'rtl' ? 'הוצאה' : 'Expense')}</span>
+                            <span className="log-modal-label">{t.typeLabel}</span>
+                            <span className="log-modal-val">{log.txType === 'income' ? t.incomeLabel : t.expenseLabel}</span>
                         </div>
                     )}
                     <div className="log-modal-row">
-                        <span className="log-modal-label">{t.dir === 'rtl' ? 'זמן' : 'Time'}</span>
+                        <span className="log-modal-label">{t.logTimeLabel}</span>
                         <span className="log-modal-val">{timeStr}</span>
                     </div>
                 </div>
 
                 {log.diffs && log.diffs.length > 0 && (
                     <div className="log-modal-diffs">
-                        <div className="log-modal-diffs-title">{t.dir === 'rtl' ? 'שינויים' : 'Changes'}</div>
+                        <div className="log-modal-diffs-title">{t.logChangesLabel}</div>
                         {log.diffs.map((d, i) => (
                             <div key={i} className="log-diff-row">
                                 <span className="log-diff-field">{d.field}:</span>

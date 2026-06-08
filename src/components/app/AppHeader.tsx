@@ -1,10 +1,11 @@
 // src/components/app/AppHeader.tsx
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useI18n } from '../../i18n/context'
 import { LanguageToggle } from '../LanguageToggle'
 import { BellSVG, NotificationPanel } from '../ui/NotificationPanel'
 import '../ui/NotificationPanel.css'
+import { useClickOutside } from '../../hooks/useClickOutside'
 import type { AppUser, JoinRequest } from '../../types'
 import type { PresenceMap } from '../../hooks/usePresence'
 import './AppHeader.css'
@@ -46,14 +47,8 @@ export function AppHeader({
     const isCalendarActive = pathname === `/app/${householdId}/calendar`
     const isFinanceActive = !isHomeActive && !isCalendarActive
 
-    useEffect(() => {
-        const close = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false)
-            if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false)
-        }
-        document.addEventListener('mousedown', close)
-        return () => document.removeEventListener('mousedown', close)
-    }, [])
+    useClickOutside(menuRef, () => setMenuOpen(false))
+    useClickOutside(notifRef, () => setNotifOpen(false))
 
     const pick = (action: () => void) => { setMenuOpen(false); action() }
     const isOwner = onApproveJoin !== undefined

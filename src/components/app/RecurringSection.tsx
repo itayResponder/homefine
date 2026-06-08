@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
 import { todayISO } from '../../utils/date'
+import { getDefaultMemberId } from '../../utils/members'
 import { computeStartYearMonth } from '../../utils/recurring'
 import { getCatIcon, getCatName, categoriesToOptions } from '../../utils/categories'
 import { CustomSelect } from '../ui/CustomSelect'
@@ -34,15 +35,12 @@ interface FormState {
 export function RecurringSection({ recurringCharges, members, categories, currentUserId, onAdd, onDelete }: Props) {
     const { t } = useI18n()
 
-    const defaultMemberId = () =>
-        members.find((m) => m.userId === currentUserId)?.id ?? 'shared'
-
     const emptyForm = (): FormState => ({
         type: 'expense',
         description: '',
         amount: '',
         category: '' as TransactionCategory,
-        memberId: defaultMemberId(),
+        memberId: getDefaultMemberId(members, currentUserId),
         startDate: todayISO(),
         monthCount: '',
     })

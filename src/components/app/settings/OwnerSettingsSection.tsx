@@ -11,7 +11,6 @@ interface Props {
 
 export function OwnerSettingsSection({ meta, onUpdateSettings, onRename }: Props) {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
     const [renaming, setRenaming] = useState(false)
     const [newHouseName, setNewHouseName] = useState(meta?.name ?? '')
 
@@ -24,12 +23,12 @@ export function OwnerSettingsSection({ meta, onUpdateSettings, onRename }: Props
 
     return (
         <div className={`fcard ${styles.ownerCard}`}>
-            <div className="fttl">👑 {isRtl ? 'הגדרות בעלים' : 'Owner Settings'}</div>
+            <div className="fttl">👑 {t.settings.ownerSettingsTitle}</div>
 
             {/* Rename */}
             <div className={styles.renameSection}>
                 <div className={styles.sectionLabel}>
-                    {isRtl ? 'שם הבית' : 'Household name'}
+                    {t.settings.householdNameLabel}
                 </div>
                 {renaming ? (
                     <form onSubmit={handleRename} className={styles.renameForm}>
@@ -41,7 +40,7 @@ export function OwnerSettingsSection({ meta, onUpdateSettings, onRename }: Props
                     <div className={styles.renameDisplay}>
                         <span className={styles.householdName}>{meta?.name}</span>
                         <button onClick={() => { setNewHouseName(meta?.name ?? ''); setRenaming(true) }} className={styles.renameBtn}>
-                            {isRtl ? 'שנה שם' : 'Rename'}
+                            {t.settings.renameBtn}
                         </button>
                     </div>
                 )}
@@ -51,10 +50,10 @@ export function OwnerSettingsSection({ meta, onUpdateSettings, onRename }: Props
             <div className={styles.toggleRow}>
                 <div>
                     <div className={styles.toggleTitle}>
-                        {isRtl ? 'מצב הוצאות בלבד' : 'Expenses-only mode'}
+                        {t.settings.expensesOnlyLabel}
                     </div>
                     <div className={styles.toggleSubtitle}>
-                        {isRtl ? 'מסתיר את לשונית ההכנסות מכל חברי הבית' : 'Hides the income tab for all members'}
+                        {t.settings.expensesOnlyDesc}
                     </div>
                 </div>
                 <button

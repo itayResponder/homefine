@@ -11,7 +11,6 @@ interface Props {
 
 export function AutomationSection({ householdId, currentUserId, myMember }: Props) {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
 
     const {
         webhookConfig,
@@ -26,43 +25,35 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
 
     return (
         <div className="fcard">
-            <div className="fttl">⚡ {isRtl ? 'אוטומציה — Google Wallet' : 'Automation — Google Wallet'}</div>
-            <div className={styles.automationDesc}>
-                {isRtl
-                    ? 'חבר את MacroDroid כדי שכל רכישה ב-Google Wallet תיכנס אוטומטית לאפליקציה.'
-                    : 'Connect MacroDroid so every Google Wallet purchase is added automatically.'}
-            </div>
+            <div className="fttl">⚡ {t.settings.automationTitle}</div>
+            <div className={styles.automationDesc}>{t.settings.automationDesc}</div>
 
             {webhookConfig ? (
                 <>
                     <div className={`${styles.connectionStatus} ${webhookConfig.lastPingedAt ? styles.connectionStatusConnected : styles.connectionStatusDisconnected}`}>
                         {webhookConfig.lastPingedAt
-                            ? `🟢 ${isRtl ? 'מחובר — פעיל לאחרונה' : 'Connected — last active'} ${new Date(webhookConfig.lastPingedAt).toLocaleString(isRtl ? 'he-IL' : 'en-GB', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}`
-                            : `⚪ ${isRtl ? 'טרם חובר — הורד את קובץ ההגדרה וייבא ל-MacroDroid' : 'Not connected yet — download config and import to MacroDroid'}`}
+                            ? `🟢 ${t.settings.automationConnected} ${new Date(webhookConfig.lastPingedAt).toLocaleString(t.locale, { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}`
+                            : `⚪ ${t.settings.automationNotConnected}`}
                     </div>
 
                     <button
                         onClick={handleDownloadMacro}
                         className={`${styles.automationBtn} ${styles.downloadBtn}`}
                     >
-                        📥 {isRtl ? 'הורד קובץ הגדרה ל-MacroDroid' : 'Download MacroDroid Config'}
+                        📥 {t.settings.automationDownloadBtn}
                     </button>
-                    <div className={styles.automationInstructions}>
-                        {isRtl
-                            ? 'פתח MacroDroid ← Export/Import ← Import ← בחר את הקובץ שהורדת. הכל מוגדר אוטומטית.'
-                            : 'Open MacroDroid → Export/Import → Import → select the downloaded file. Everything is pre-configured.'}
-                    </div>
+                    <div className={styles.automationInstructions}>{t.settings.automationInstructions}</div>
 
                     <button
                         onClick={handleTestWebhook}
                         disabled={webhookTestStatus === 'loading'}
                         className={`${styles.automationBtn} ${styles.testBtn} ${webhookTestStatus === 'loading' ? styles.testBtnLoading : ''}`}
                     >
-                        {webhookTestStatus === 'loading' ? '⏳' : '🔌'} {isRtl ? 'בדוק חיבור' : 'Test Connection'}
+                        {webhookTestStatus === 'loading' ? '⏳' : '🔌'} {t.settings.automationTestBtn}
                     </button>
                     {webhookTestStatus === 'ok' && (
                         <div className={styles.testSuccess}>
-                            ✅ {isRtl ? 'עסקת בדיקה נוצרה! תוכל למחוק אותה מרשימת ההוצאות.' : 'Test transaction created! You can delete it from expenses.'}
+                            ✅ {t.settings.automationTestOk}
                         </div>
                     )}
                     {webhookTestStatus === 'error' && (
@@ -73,7 +64,7 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
 
                     <div className={styles.disableRow}>
                         <button onClick={handleDeleteConfig} className={styles.disableBtn}>
-                            {isRtl ? 'כבה אוטומציה' : 'Disable automation'}
+                            {t.settings.automationDisableBtn}
                         </button>
                     </div>
                 </>
@@ -83,7 +74,7 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
                     disabled={webhookSaving}
                     className={styles.enableBtn}
                 >
-                    {webhookSaving ? '...' : (isRtl ? '⚡ הפעל אוטומציה' : '⚡ Enable Automation')}
+                    {webhookSaving ? '...' : t.settings.automationEnableBtn}
                 </button>
             )}
         </div>

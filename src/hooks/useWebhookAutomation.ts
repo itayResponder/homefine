@@ -33,7 +33,6 @@ interface UseWebhookAutomationResult {
 
 export function useWebhookAutomation({ householdId, currentUserId, memberId }: Options): UseWebhookAutomationResult {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
 
     const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
     const [webhookSaving, setWebhookSaving] = useState(false)
@@ -82,13 +81,13 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
                 setWebhookTestStatus('error')
                 setWebhookTestError(
                     data.error === 'Invalid API key'
-                        ? (isRtl ? 'מפתח לא תקין — צור מפתח חדש' : 'Invalid API key — regenerate')
-                        : (data.error ?? (isRtl ? 'שגיאה לא ידועה' : 'Unknown error'))
+                        ? t.settings.automationInvalidKey
+                        : (data.error ?? t.settings.automationUnknownError)
                 )
             }
         } catch {
             setWebhookTestStatus('error')
-            setWebhookTestError(isRtl ? 'השרת לא זמין — נסה שוב' : 'Server unavailable — try again')
+            setWebhookTestError(t.settings.automationServerError)
         }
     }
 

@@ -9,18 +9,17 @@ interface Props {
 
 export function IncomePrivacySection({ myMember, onToggleMemberIncome }: Props) {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
 
     return (
         <div className="fcard">
-            <div className="fttl">🔒 {isRtl ? 'פרטיות הכנסות' : 'Income Privacy'}</div>
+            <div className="fttl">🔒 {t.settings.incomePrivacyTitle}</div>
             <div className={styles.toggleRow}>
                 <div>
                     <div className={styles.toggleTitle}>
-                        {isRtl ? 'הסתר את ההכנסות שלי' : 'Hide my income'}
+                        {t.settings.hideMyIncomeLabel}
                     </div>
                     <div className={styles.toggleSubtitle}>
-                        {isRtl ? 'רק אני אראה את ההכנסות שלי' : 'Only I can see my income'}
+                        {t.settings.hideMyIncomeDesc}
                     </div>
                 </div>
                 <button

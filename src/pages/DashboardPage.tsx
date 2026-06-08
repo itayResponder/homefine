@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.tsx
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useHouseholds } from '../hooks/useHouseholds'
@@ -8,6 +8,7 @@ import { useUserColor } from '../hooks/useUserColor'
 import { buildColorVars } from '../utils/color'
 import { approveJoinRequest, denyJoinRequest, deleteHousehold, addMember } from '../firebase/db'
 import { useConfirm } from '../contexts/ui'
+import { useClickOutside } from '../hooks/useClickOutside'
 import { BellSVG, NotificationPanel } from '../components/ui/NotificationPanel'
 import '../components/ui/NotificationPanel.css'
 import { LanguageToggle } from '../components/LanguageToggle'
@@ -40,15 +41,8 @@ export default function DashboardPage() {
         .map((h) => ({ id: h.id, name: h.meta.name }))
     const joinRequests = useJoinRequests(ownedHouseholds)
 
-    // Close dropdowns on outside click
-    useEffect(() => {
-        const handler = (e: MouseEvent) => {
-            if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) setSettingsOpen(false)
-            if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false)
-        }
-        document.addEventListener('mousedown', handler)
-        return () => document.removeEventListener('mousedown', handler)
-    }, [])
+    useClickOutside(settingsRef, () => setSettingsOpen(false))
+    useClickOutside(notifRef, () => setNotifOpen(false))
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault()
