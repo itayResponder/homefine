@@ -1,6 +1,6 @@
-// src/components/LanguageToggle.tsx
-import { useI18n } from '../i18n/context'
-import type { Lang } from '../i18n/types'
+// src/components/ui/LanguageToggle.tsx
+import { useI18n } from '../../i18n/context'
+import type { Lang } from '../../i18n/types'
 import './LanguageToggle.css'
 
 export function LanguageToggle() {

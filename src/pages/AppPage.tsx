@@ -1,5 +1,5 @@
 // src/pages/AppPage.tsx
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHouseholdContext } from './HouseholdLayout'
 import { useTransactions } from '../hooks/useTransactions'
 import { useRecurring } from '../hooks/useRecurring'
@@ -18,7 +18,7 @@ import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { AddMemberModal } from '../components/app/AddMemberModal'
 import { currentMonth } from '../utils/date'
-import { applyRecurring } from '../utils/recurring'
+import { useRecurringAutoApply } from '../hooks/useRecurringAutoApply'
 import { subscribeParticipants, removeParticipant, updateMember } from '../firebase/db'
 import type { Participant } from '../types'
 import { formatCurrency } from '../utils/format'
@@ -64,20 +64,7 @@ export default function AppPage() {
     const [showAddMember, setShowAddMember] = useState(false)
 
     // ── Auto-apply recurring charges ──────────────────────────────────────────
-    const txRef = useRef(transactions)
-    useEffect(() => { txRef.current = transactions }, [transactions])
-
-    const applyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-    useEffect(() => {
-        if (applyTimerRef.current) clearTimeout(applyTimerRef.current)
-        applyTimerRef.current = setTimeout(() => {
-            const [year, m] = month.split('-').map(Number)
-            applyRecurring(householdId, recurringCharges, txRef.current, year, m - 1)
-        }, 600)
-        return () => {
-            if (applyTimerRef.current) clearTimeout(applyTimerRef.current)
-        }
-    }, [month, recurringCharges])
+    useRecurringAutoApply(householdId, recurringCharges, transactions, month)
 
     const who = user?.displayName ?? '?'
 

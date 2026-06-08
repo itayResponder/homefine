@@ -11,7 +11,7 @@ import { useConfirm } from '../contexts/ui'
 import { useClickOutside } from '../hooks/useClickOutside'
 import { BellSVG, NotificationPanel } from '../components/ui/NotificationPanel'
 import '../components/ui/NotificationPanel.css'
-import { LanguageToggle } from '../components/LanguageToggle'
+import { LanguageToggle } from '../components/ui/LanguageToggle'
 import { useI18n } from '../i18n/context'
 import './DashboardPage.css'
 

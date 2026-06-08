@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useI18n } from '../../i18n/context'
-import { LanguageToggle } from '../LanguageToggle'
+import { LanguageToggle } from '../ui/LanguageToggle'
 import { BellSVG, NotificationPanel } from '../ui/NotificationPanel'
 import '../ui/NotificationPanel.css'
 import { useClickOutside } from '../../hooks/useClickOutside'

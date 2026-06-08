@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useI18n } from '../i18n/context'
-import { LanguageToggle } from '../components/LanguageToggle'
+import { LanguageToggle } from '../components/ui/LanguageToggle'
 import './LandingPage.css'
 
 export default function LandingPage() {
