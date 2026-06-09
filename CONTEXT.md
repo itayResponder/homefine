@@ -93,7 +93,7 @@ src/
 │   │   ├── settings/         ← 9 sub-components: AutomationSection, CategoryManager, ColorThemeSection,
 │   │   │                        EditMemberModal, ExportSection, IncomePrivacySection, MembersSection,
 │   │   │                        OwnerSettingsSection, ParticipantsSection, WebhookLogModal
-│   │   ├── AppHeader, AppNav, AddMemberModal, AddTransactionModal
+│   │   ├── AppHeader, AppNav, AddMemberModal
 │   │   ├── EditTransactionModal, LogsSection, SettingsView, SyncOnlineBar
 │   ├── calendar/             ← CalendarDay, CalendarGrid, CalendarHeader, EventModal
 │   ├── home/                 ← HomeView, tasks/*, shopping/*
@@ -112,12 +112,14 @@ src/
 │            useMemberName, useSyncStatus, useUserColor, useShoppingList, useTasks,
 │            useCalendarEvents)
 ├── i18n/                     ← he.ts, en.ts, types.ts, context.tsx (all strings here, no inline i18n)
+│   │                            includes: dashboard keys, removeMember/removeParticipant, colorTheme (settings.*)
 ├── types/
 │   ├── index.ts              ← all main types incl. PresenceRecord (moved from firebase/)
 │   └── home.ts               ← home/tasks types
 ├── utils/
 │   ├── macroDroid.ts         ← MacroDroid file generator (extracted from SettingsView)
 │   ├── members.ts            ← getDefaultMemberId (shared across 3 components)
+│   ├── transactions.ts       ← computeDiffs (extracted from AppPage)
 │   └── categories.ts, color.ts, date.ts, format.ts, recurring.ts, taskUrgency.ts
 └── pages/                    ← AppPage, HouseholdLayout, DashboardPage, LandingPage, JoinPage,
                                  CalendarPage, HouseholdPage

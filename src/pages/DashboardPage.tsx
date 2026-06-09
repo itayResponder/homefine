@@ -92,8 +92,8 @@ export default function DashboardPage() {
     const handleDeleteHousehold = async (e: React.MouseEvent, householdId: string, name: string) => {
         e.stopPropagation()
         const confirmed = await showConfirm({
-            title: isRtl ? `מחיקת "${name}"` : `Delete "${name}"`,
-            sub: isRtl ? 'כל הנתונים יימחקו לצמיתות וכל החברים יאבדו גישה.' : 'All data will be deleted and all members will lose access.',
+            title: t.dashboardDeleteTitle(name),
+            sub: t.dashboardDeleteSub,
             danger: true,
         })
         if (!confirmed) return
@@ -170,10 +170,10 @@ export default function DashboardPage() {
 
             <main className="db-main">
                 <div className="db-greeting">
-                    {isRtl ? `שלום, ${user?.displayName?.split(' ')[0]} 👋` : `Hey, ${user?.displayName?.split(' ')[0]} 👋`}
+                    {t.dashboardGreeting(user?.displayName?.split(' ')[0] ?? '')}
                 </div>
                 <div className="db-subtitle">
-                    {isRtl ? 'הבתים שלך' : 'Your households'}
+                    {t.dashboardSubtitle}
                 </div>
 
                 <div className="db-grid">
@@ -185,7 +185,7 @@ export default function DashboardPage() {
                         >
                             <button
                                 className="db-card-link"
-                                title={isRtl ? 'העתק קישור הצטרפות' : 'Copy invite link'}
+                                title={t.dashboardCopyInvite}
                                 onClick={(e) => handleCopyLink(e, h.id)}
                             >
                                 {copied === h.id ? '✓' : (
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                             {h.meta.ownerId === user?.uid && (
                                 <button
                                     className="db-card-delete"
-                                    title={isRtl ? 'מחק בית' : 'Delete household'}
+                                    title={t.dashboardDeleteHousehold}
                                     onClick={(e) => handleDeleteHousehold(e, h.id, h.meta.name)}
                                 >
                                     ✕
@@ -207,14 +207,14 @@ export default function DashboardPage() {
                             <div className="db-card-icon">🏠</div>
                             <div className="db-card-name">{h.meta.name}</div>
                             {h.meta.ownerId === user?.uid && (
-                                <div className="db-card-owner">{isRtl ? 'בעלים' : 'Owner'}</div>
+                                <div className="db-card-owner">{t.dashboardOwnerLabel}</div>
                             )}
                         </div>
                     ))}
 
                     <div className="db-card db-card--add" onClick={() => setShowCreate(true)}>
                         <div className="db-card-icon">＋</div>
-                        <div className="db-card-name">{isRtl ? 'בית חדש' : 'New household'}</div>
+                        <div className="db-card-name">{t.dashboardNewHousehold}</div>
                     </div>
                 </div>
 
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                 <div className="db-modal-overlay" onClick={handleCancelCreate}>
                     <div className="db-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="db-modal-header">
-                            <span className="db-modal-title">🏠 {isRtl ? 'צור בית חדש' : 'Create New Household'}</span>
+                            <span className="db-modal-title">🏠 {t.dashboardCreateTitle}</span>
                             <button className="db-modal-close" onClick={handleCancelCreate}>✕</button>
                         </div>
                         <form onSubmit={handleCreate}>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                                 required
                             />
                             <div className="db-section-label">
-                                {isRtl ? 'שמך בבית' : 'Your name in this household'}
+                                {t.dashboardYourNameLabel}
                             </div>
                             <div className="db-fields-row">
                                 <div className="db-field">
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                             </div>
                             <div className="db-form-actions">
                                 <button type="submit" className="db-btn-primary" disabled={loading}>
-                                    {loading ? '...' : (isRtl ? 'צור' : 'Create')}
+                                    {loading ? '...' : t.dashboardCreateBtn}
                                 </button>
                                 <button type="button" className="db-btn-ghost" onClick={handleCancelCreate}>
                                     {t.cancel}

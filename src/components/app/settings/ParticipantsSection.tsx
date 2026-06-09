@@ -1,11 +1,7 @@
 import { useI18n } from '../../../i18n/context'
 import type { Participant } from '../../../types'
 import styles from '../SettingsView.module.css'
-
-function fmtJoinDate(ts: number): string {
-    const d = new Date(ts)
-    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
-}
+import { fmtJoinDate } from '../../../utils/date'
 
 interface Props {
     participants: Participant[]

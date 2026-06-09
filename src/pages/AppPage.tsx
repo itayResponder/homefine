@@ -5,8 +5,7 @@ import { useTransactions } from '../hooks/useTransactions'
 import { useRecurring } from '../hooks/useRecurring'
 import { useLogs } from '../hooks/useLogs'
 import { useI18n } from '../i18n/context'
-import { useToast } from '../contexts/ui'
-import { useConfirm } from '../contexts/ui'
+import { useToast, useConfirm } from '../contexts/ui'
 import { AppNav } from '../components/app/AppNav'
 import { HeroCard } from '../components/app/finance/HeroCard'
 import { SummaryView } from '../components/app/finance/SummaryView'
@@ -18,19 +17,13 @@ import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { AddMemberModal } from '../components/app/AddMemberModal'
 import { currentMonth } from '../utils/date'
+import { computeDiffs } from '../utils/transactions'
 import { useRecurringAutoApply } from '../hooks/useRecurringAutoApply'
 import { subscribeParticipants, removeParticipant, updateMember } from '../firebase/db'
 import type { Participant } from '../types'
 import { formatCurrency } from '../utils/format'
-import type { LogDiff, RecurringCharge, Transaction } from '../types'
+import type { RecurringCharge, Transaction } from '../types'
 import './AppPage.css'
-
-function computeDiffs(before: Transaction, after: Partial<Transaction>): LogDiff[] {
-    const fields = ['description', 'amount', 'category', 'memberId', 'date'] as const
-    return fields
-        .filter((k) => after[k] !== undefined && String(before[k]) !== String(after[k]))
-        .map((k) => ({ field: k, before: String(before[k]), after: String(after[k]!) }))
-}
 
 export default function AppPage() {
     const {
@@ -146,15 +139,16 @@ export default function AppPage() {
         if (!m) return
         const txCount = transactions.filter((tx) => tx.memberId === id).length
         const recCount = recurringCharges.filter((r) => r.memberId === id).length
+        const joinSep = t.dir === 'rtl' ? ' ו-' : ' and '
         const details = [
-            txCount > 0 ? `${txCount} עסקאות` : '',
-            recCount > 0 ? `${recCount} חיובים קבועים` : '',
-        ].filter(Boolean).join(' ו-')
+            txCount > 0 ? t.removeMemberTxCount(txCount) : '',
+            recCount > 0 ? t.removeMemberRecCount(recCount) : '',
+        ].filter(Boolean).join(joinSep)
         const confirmed = await showConfirm({
-            title: `מחיקת ${m.name}`,
+            title: t.removeMemberTitle(m.name),
             sub: details
-                ? `למחוק את ${m.name} יחד עם ${details} שמשויכים אליו?`
-                : `למחוק את ${m.name}?`,
+                ? t.removeMemberSub(m.name, details)
+                : t.removeMemberSubSimple(m.name),
             danger: true,
         })
         if (!confirmed) return
@@ -176,8 +170,8 @@ export default function AppPage() {
         const p = participants.find((p) => p.uid === uid)
         if (!p) return
         const confirmed = await showConfirm({
-            title: `הסרת ${p.name}`,
-            sub: `להסיר את ${p.name} מהגישה לבית? הנתונים שלהם יישמרו.`,
+            title: t.removeParticipantTitle(p.name),
+            sub: t.removeParticipantSub(p.name),
             danger: true,
         })
         if (!confirmed) return

@@ -13,7 +13,7 @@ export function ColorThemeSection({ primaryColor, onColorChange }: Props) {
 
     return (
         <div className="fcard">
-            <div className="fttl">🎨 {t.dir === 'rtl' ? 'צבע ראשי' : 'Primary Color'}</div>
+            <div className="fttl">🎨 {t.settings.colorThemeTitle}</div>
             <div className={styles.colorRow}>
                 <div className={styles.colorPickerWrapper}>
                     <input
@@ -26,16 +26,14 @@ export function ColorThemeSection({ primaryColor, onColorChange }: Props) {
                 </div>
                 <div>
                     <div className={styles.colorHex}>{primaryColor.toUpperCase()}</div>
-                    <div className={styles.colorHint}>
-                        {t.dir === 'rtl' ? 'לחץ לשינוי הצבע' : 'Click to change color'}
-                    </div>
+                    <div className={styles.colorHint}>{t.settings.colorThemeHint}</div>
                 </div>
                 {primaryColor !== DEFAULT_COLOR && (
                     <button
                         onClick={() => onColorChange(DEFAULT_COLOR)}
                         className={styles.colorResetBtn}
                     >
-                        {t.dir === 'rtl' ? 'איפוס' : 'Reset'}
+                        {t.settings.colorThemeReset}
                     </button>
                 )}
             </div>

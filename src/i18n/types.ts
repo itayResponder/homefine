@@ -94,6 +94,13 @@ export interface T {
     confirmDeleteTxSub: (name: string, amount: string) => string
     confirmDeleteRecurringTitle: string
     confirmDeleteRecurringSub: (name: string) => string
+    removeMemberTitle: (name: string) => string
+    removeMemberSub: (name: string, details: string) => string
+    removeMemberSubSimple: (name: string) => string
+    removeMemberTxCount: (n: number) => string
+    removeMemberRecCount: (n: number) => string
+    removeParticipantTitle: (name: string) => string
+    removeParticipantSub: (name: string) => string
 
     // ── Toasts ──────────────────────────────────────────
     toastTxAdded: string
@@ -188,7 +195,24 @@ export interface T {
         automationInvalidKey: string
         automationUnknownError: string
         automationServerError: string
+        // Color theme
+        colorThemeTitle: string
+        colorThemeHint: string
+        colorThemeReset: string
     }
+
+    // ── Dashboard ────────────────────────────────────────
+    dashboardGreeting: (name: string) => string
+    dashboardSubtitle: string
+    dashboardNewHousehold: string
+    dashboardOwnerLabel: string
+    dashboardYourNameLabel: string
+    dashboardCreateTitle: string
+    dashboardCreateBtn: string
+    dashboardCopyInvite: string
+    dashboardDeleteHousehold: string
+    dashboardDeleteTitle: (name: string) => string
+    dashboardDeleteSub: string
 
     // ── Presence / Sync ──────────────────────────────────
     onlineNow: string
