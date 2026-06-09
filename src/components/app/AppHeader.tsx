@@ -156,11 +156,11 @@ export function AppHeader({
                                 <button onClick={() => pick(onOpenLogs)}>{t.navLogs}</button>
                             )}
                             {onOpenWebhookLog && (
-                                <button onClick={() => pick(onOpenWebhookLog)}>{t.dir === 'rtl' ? 'לוג רכישות' : 'Purchase Log'}</button>
+                                <button onClick={() => pick(onOpenWebhookLog)}>{t.purchaseLog}</button>
                             )}
                             {onLeave && (
                                 <button className="ap-settings-dropdown-logout" onClick={() => pick(onLeave)}>
-                                    {t.dir === 'rtl' ? 'עזוב בית' : 'Leave household'}
+                                    {t.leaveHouseholdBtn}
                                 </button>
                             )}
                             <button className="ap-settings-dropdown-logout" onClick={() => pick(onLogout)}>{t.signOut}</button>

@@ -51,8 +51,8 @@ export function TxEntry({ tx, members, categories, onEdit, onDelete }: Props) {
                 <div style={{ width: 24 }} />
             ) : (
                 <>
-                    <button className="editbtn" onClick={() => onEdit(tx)} title="עריכה">✏</button>
-                    <button className="delbtn" onClick={() => onDelete(tx)} title="מחיקה">✕</button>
+                    <button className="editbtn" onClick={() => onEdit(tx)} title={t.editBtn}>✏</button>
+                    <button className="delbtn" onClick={() => onDelete(tx)} title={t.deleteBtn}>✕</button>
                 </>
             )}
         </div>

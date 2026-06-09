@@ -9,7 +9,7 @@ After the full refactor (June 2026), components/app/ is split into subdirectorie
 
 - `finance/` — HeroCard, SummaryView, TransactionView, MemberView, TxEntry, TransactionList
 - `recurring/` — RecurringSection (+ RecurringSection.css)
-- `settings/` — OwnerSettingsSection, ParticipantsSection, IncomePrivacySection, MembersSection, CategoryManager, ColorThemeSection, AutomationSection, ExportSection, EditMemberModal, WebhookLogModal
+- `settings/` — OwnerSettingsSection, ParticipantsSection, IncomePrivacySection, MembersSection, CategoryManager, ColorThemeSection, AutomationSection, ExportSection, EditMemberModal, WebhookLogModal (+ WebhookLogModal.css)
 - `(root)` — AppHeader, AppNav, AddMemberModal, EditTransactionModal, LogsSection, SettingsView, SyncOnlineBar
   - Note: `AddTransactionModal.tsx` was deleted (orphaned component). `AddTransactionModal.css` stays — used by EditTransactionModal.
 - `components/ui/` — LanguageToggle moved here (was in components/)

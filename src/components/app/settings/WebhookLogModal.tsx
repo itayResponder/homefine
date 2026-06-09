@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useI18n } from '../../../i18n/context'
 import { subscribeWebhookDebug, deleteWebhookDebugEntry, deleteWebhookDebugEntries } from '../../../firebase/db'
 import type { WebhookDebugEntry } from '../../../firebase/db'
+import './WebhookLogModal.css'
 
 interface Props {
     householdId: string
-    isRtl: boolean
     onClose: () => void
 }
 
@@ -24,7 +25,9 @@ function fmtTs(ts: number, isRtl: boolean): string {
     })
 }
 
-export function WebhookLogModal({ householdId, isRtl, onClose }: Props) {
+export function WebhookLogModal({ householdId, onClose }: Props) {
+    const { t } = useI18n()
+    const isRtl = t.dir === 'rtl'
     const [entries, setEntries] = useState<WebhookDebugEntry[]>([])
     const [tab, setTab] = useState<'ok' | 'failed'>('ok')
 
@@ -45,84 +48,53 @@ export function WebhookLogModal({ householdId, isRtl, onClose }: Props) {
         <div className="ap-modal-overlay" onClick={onClose}>
             <div className="ap-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
                 <div className="ap-modal-header">
-                    <span>{isRtl ? 'לוג אוטומציה' : 'Automation Log'}</span>
+                    <span>{t.automationLog}</span>
                     <button onClick={onClose} className="ap-modal-close">✕</button>
                 </div>
 
-                {/* Tabs */}
-                <div style={{ display: 'flex', gap: 8, padding: '10px 16px', borderBottom: '1px solid #F1F5F9' }}>
+                <div className="wl-tabs">
                     <button
                         onClick={() => setTab('ok')}
-                        style={{
-                            padding: '5px 14px', fontSize: 12, fontWeight: tab === 'ok' ? 700 : 500,
-                            borderRadius: 20, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                            background: tab === 'ok' ? 'var(--ac)' : '#F1F5F9',
-                            color: tab === 'ok' ? '#fff' : '#64748B',
-                        }}
+                        className={`wl-tab wl-tab--ok${tab === 'ok' ? ' wl-tab--active' : ''}`}
                     >
-                        ✅ {isRtl ? 'הצליחו' : 'Succeeded'} ({okEntries.length})
+                        ✅ {t.webhookSucceeded} ({okEntries.length})
                     </button>
                     <button
                         onClick={() => setTab('failed')}
-                        style={{
-                            padding: '5px 14px', fontSize: 12, fontWeight: tab === 'failed' ? 700 : 500,
-                            borderRadius: 20, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                            background: tab === 'failed' ? '#E11D48' : '#F1F5F9',
-                            color: tab === 'failed' ? '#fff' : '#64748B',
-                        }}
+                        className={`wl-tab wl-tab--failed${tab === 'failed' ? ' wl-tab--active' : ''}`}
                     >
-                        ❌ {isRtl ? 'כשלו' : 'Failed'} ({failedEntries.length})
+                        ❌ {t.webhookFailed} ({failedEntries.length})
                     </button>
                 </div>
 
                 <div className="ap-modal-body">
                     {visible.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8', fontSize: 13 }}>
-                            {isRtl ? 'אין רשומות' : 'No entries'}
-                        </div>
+                        <div className="wl-empty">{t.webhookNoEntries}</div>
                     ) : (
                         visible.map(entry => (
-                            <div key={entry.id} style={{
-                                display: 'flex', alignItems: 'flex-start', gap: 10,
-                                padding: '10px 0',
-                                borderBottom: '1px solid #F8FAFC',
-                            }}>
-                                <div style={{ flex: 1, minWidth: 0 }}>
+                            <div key={entry.id} className="wl-entry">
+                                <div className="wl-entry-body">
                                     {tab === 'ok' ? (
                                         <>
-                                            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--clr-dark)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                            <div className="wl-entry-merchant">
                                                 {extractMerchant(entry.title)}
                                                 {entry.isTest && (
-                                                    <span style={{ fontSize: 10, fontWeight: 700, color: '#F59E0B', background: '#FFFBEB', padding: '1px 6px', borderRadius: 10 }}>
-                                                        TEST
-                                                    </span>
+                                                    <span className="wl-entry-test-badge">TEST</span>
                                                 )}
                                             </div>
-                                            <div style={{ fontSize: 12, color: '#16A34A', fontWeight: 600, marginTop: 2 }}>
-                                                {extractAmount(entry.body)}
-                                            </div>
+                                            <div className="wl-entry-amount">{extractAmount(entry.body)}</div>
                                         </>
                                     ) : (
                                         <>
-                                            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--clr-dark)', wordBreak: 'break-all' }}>
-                                                {entry.title}
-                                            </div>
-                                            <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, wordBreak: 'break-all' }}>
-                                                {entry.body}
-                                            </div>
+                                            <div className="wl-entry-title">{entry.title}</div>
+                                            <div className="wl-entry-subtitle">{entry.body}</div>
                                         </>
                                     )}
-                                    <div style={{ fontSize: 10, color: '#CBD5E1', marginTop: 4 }}>
-                                        {fmtTs(entry.ts, isRtl)}
-                                    </div>
+                                    <div className="wl-entry-ts">{fmtTs(entry.ts, isRtl)}</div>
                                 </div>
                                 <button
                                     onClick={() => deleteWebhookDebugEntry(householdId, entry.id)}
-                                    style={{
-                                        flexShrink: 0, background: 'none', border: 'none',
-                                        cursor: 'pointer', fontSize: 16, color: '#CBD5E1',
-                                        lineHeight: 1, padding: '2px 4px',
-                                    }}
+                                    className="wl-entry-delete"
                                 >×</button>
                             </div>
                         ))
@@ -130,12 +102,9 @@ export function WebhookLogModal({ householdId, isRtl, onClose }: Props) {
                 </div>
 
                 {visible.length > 0 && (
-                    <div style={{ padding: '10px 16px', borderTop: '1px solid #F1F5F9', textAlign: 'center' }}>
-                        <button
-                            onClick={handleClearTab}
-                            style={{ fontSize: 11, color: '#94A3B8', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}
-                        >
-                            {isRtl ? 'נקה הכל' : 'Clear all'}
+                    <div className="wl-footer">
+                        <button onClick={handleClearTab} className="wl-clear-btn">
+                            {t.webhookClearAll}
                         </button>
                     </div>
                 )}

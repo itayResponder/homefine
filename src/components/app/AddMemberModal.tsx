@@ -74,7 +74,7 @@ export function AddMemberModal({ onAdd, onClose, members }: Props) {
                 </div>
                 <div className="ap-modal-body">
                     <form onSubmit={handleSubmit} noValidate>
-                        <div className="fg fg2" style={{ marginBottom: 12 }}>
+                        <div className="fg fg2 ap-member-fields">
                             <div className="fl">
                                 <label>{t.memberNameLabel}</label>
                                 <input

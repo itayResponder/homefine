@@ -1,4 +1,4 @@
-// src/i18n/types.ts
+﻿// src/i18n/types.ts
 export type Lang = 'en' | 'he'
 
 export interface MockupTx {
@@ -16,6 +16,7 @@ export interface T {
     // ── Shared actions ──────────────────────────────────
     cancel: string
     deleteBtn: string
+    editBtn: string
     saveChanges: string
 
     // ── App identity (hero card) ─────────────────────────
@@ -110,6 +111,8 @@ export interface T {
     toastRecDeleted: string
 
     // ── Recurring section ────────────────────────────────
+    monthCountLabel: string
+    monthCountPlaceholder: string
     recurringTitle: string
     newRecurringTitle: string
     recurringExpense: string
@@ -149,6 +152,8 @@ export interface T {
     categoryNamePlaceholder: string
     categoryNameEnPlaceholder: string
     categoryIconLabel: string
+    categoryNewTitle: string
+    categoryEditTitle: string
     categoryNameRequired: string
     categoryNameEnRequired: string
     membersLabel: string
@@ -162,6 +167,7 @@ export interface T {
     memberNameEnInvalidFormat: string
     memberNameDuplicate: string
     memberNameEnDuplicate: string
+    deleteMemberBtn: string
 
     // ── Settings panel ───────────────────────────────────
     settings: {
@@ -213,6 +219,17 @@ export interface T {
     dashboardDeleteHousehold: string
     dashboardDeleteTitle: (name: string) => string
     dashboardDeleteSub: string
+
+    // ── AppHeader / household actions ────────────────────
+    purchaseLog: string
+    leaveHouseholdBtn: string
+    leaveHouseholdTitle: string
+    leaveHouseholdSub: string
+    automationLog: string
+    webhookSucceeded: string
+    webhookFailed: string
+    webhookNoEntries: string
+    webhookClearAll: string
 
     // ── Presence / Sync ──────────────────────────────────
     onlineNow: string

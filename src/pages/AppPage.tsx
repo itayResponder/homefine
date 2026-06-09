@@ -182,9 +182,9 @@ export default function AppPage() {
 
     if (!appReady) {
         return (
-            <div className="wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.02em', opacity: 0.6 }}>
-                    Home<span style={{ color: '#2563EB' }}>Fine</span>
+            <div className="app-loading">
+                <span className="app-loading-logo">
+                    Home<span>Fine</span>
                 </span>
             </div>
         )

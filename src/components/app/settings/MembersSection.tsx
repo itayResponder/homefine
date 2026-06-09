@@ -32,7 +32,7 @@ export function MembersSection({ members, currentUserId, onRemoveMember, onRenam
                                         className={styles.memberEditBtn}
                                     >✏️</button>
                                 )}
-                                <button onClick={() => onRemoveMember(m.id)} title="מחק חבר">×</button>
+                                <button onClick={() => onRemoveMember(m.id)} title={t.deleteMemberBtn}>×</button>
                             </div>
                         ))}
                     </div>

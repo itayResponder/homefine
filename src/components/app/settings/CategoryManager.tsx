@@ -119,9 +119,7 @@ export function CategoryManager({ categories, onAdd, onUpdate, onDelete }: Props
             {editing && (
                 <form className="cm-form" onSubmit={handleSubmit} noValidate>
                     <div className="cm-form-title">
-                        {editing.mode === 'add'
-                            ? (isRtl ? 'קטגוריה חדשה' : 'New Category')
-                            : (isRtl ? 'עריכת קטגוריה' : 'Edit Category')}
+                        {editing.mode === 'add' ? t.categoryNewTitle : t.categoryEditTitle}
                     </div>
 
                     {/* Icon picker trigger */}

@@ -1,4 +1,4 @@
-// src/pages/HouseholdLayout.tsx
+﻿// src/pages/HouseholdLayout.tsx
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useNavigate, useParams, useLocation, Outlet, useOutletContext } from 'react-router-dom'
@@ -105,10 +105,8 @@ export default function HouseholdLayout() {
     const handleLeaveHousehold = async () => {
         if (!user) return
         const confirmed = await showConfirm({
-            title: t.dir === 'rtl' ? 'עזיבת הבית' : 'Leave household',
-            sub: t.dir === 'rtl'
-                ? 'בטוח שאתה רוצה לעזוב? תאבד את הגישה לבית.'
-                : 'Are you sure you want to leave? You will lose access.',
+            title: t.leaveHouseholdTitle,
+            sub: t.leaveHouseholdSub,
             danger: true,
         })
         if (!confirmed) return
@@ -174,7 +172,6 @@ export default function HouseholdLayout() {
             {showWebhookLog && (
                 <WebhookLogModal
                     householdId={householdId}
-                    isRtl={t.dir === 'rtl'}
                     onClose={() => setShowWebhookLog(false)}
                 />
             )}

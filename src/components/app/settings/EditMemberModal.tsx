@@ -11,7 +11,6 @@ interface Props {
 
 export function EditMemberModal({ member, onSave, onClose }: Props) {
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
     const [name, setName] = useState(member.name)
     const [nameEn, setNameEn] = useState(member.nameEn ?? '')
 
@@ -27,7 +26,7 @@ export function EditMemberModal({ member, onSave, onClose }: Props) {
         <div className="ap-modal-overlay" onClick={onClose}>
             <div className="ap-modal" onClick={(e) => e.stopPropagation()} style={{ minHeight: 280 }}>
                 <div className="ap-modal-header">
-                    <span className="ap-modal-title">✏️ {isRtl ? 'שינוי שם' : 'Edit name'}</span>
+                    <span className="ap-modal-title">✏️ {t.settings.editNameTitle}</span>
                     <button className="ap-modal-close" onClick={onClose}>✕</button>
                 </div>
                 <form onSubmit={handleSubmit}>

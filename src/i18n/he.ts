@@ -1,4 +1,4 @@
-// src/i18n/he.ts
+﻿// src/i18n/he.ts
 import type { T } from './types'
 
 export const he: T = {
@@ -7,6 +7,7 @@ export const he: T = {
 
     cancel: 'ביטול',
     deleteBtn: 'מחק',
+    editBtn: 'עריכה',
     saveChanges: 'שמור שינויים',
 
     appName: 'הבית שלנו',
@@ -92,6 +93,8 @@ export const he: T = {
     toastRecAdded: 'חיוב קבוע נוסף ✓',
     toastRecDeleted: 'חיוב קבוע נמחק',
 
+    monthCountLabel: 'כמות חודשים',
+    monthCountPlaceholder: 'מס׳ חודשים',
     recurringTitle: 'חיובים קבועים',
     newRecurringTitle: 'חיוב / הכנסה קבועה חדשה',
     recurringExpense: 'הוצאה קבועה',
@@ -129,6 +132,8 @@ export const he: T = {
     categoryNamePlaceholder: 'לדוגמה: בריאות',
     categoryNameEnPlaceholder: 'e.g. Health',
     categoryIconLabel: 'אייקון',
+    categoryNewTitle: 'קטגוריה חדשה',
+    categoryEditTitle: 'עריכת קטגוריה',
     categoryNameRequired: 'שם הקטגוריה הוא שדה חובה',
     categoryNameEnRequired: 'Category name in English is required',
     membersLabel: 'חברי בית',
@@ -142,6 +147,7 @@ export const he: T = {
     memberNameEnInvalidFormat: 'Please use English letters only',
     memberNameDuplicate: 'שם זה כבר קיים',
     memberNameEnDuplicate: 'This name already exists',
+    deleteMemberBtn: 'מחק חבר',
 
     settings: {
         ownerSettingsTitle: 'הגדרות בעלים',
@@ -186,6 +192,16 @@ export const he: T = {
     dashboardDeleteHousehold: 'מחק בית',
     dashboardDeleteTitle: (name) => `מחיקת "${name}"`,
     dashboardDeleteSub: 'כל הנתונים יימחקו לצמיתות וכל החברים יאבדו גישה.',
+
+    purchaseLog: 'לוג רכישות',
+    leaveHouseholdBtn: 'עזוב בית',
+    leaveHouseholdTitle: 'עזיבת הבית',
+    leaveHouseholdSub: 'בטוח שאתה רוצה לעזוב? תאבד את הגישה לבית.',
+    automationLog: 'לוג אוטומציה',
+    webhookSucceeded: 'הצליחו',
+    webhookFailed: 'כשלו',
+    webhookNoEntries: 'אין רשומות',
+    webhookClearAll: 'נקה הכל',
 
     onlineNow: 'מחוברים עכשיו:',
     nobodyOnline: 'אף אחד',

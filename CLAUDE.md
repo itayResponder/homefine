@@ -122,7 +122,7 @@ src/components/
 │   ├── settings/     ← OwnerSettingsSection, ParticipantsSection, IncomePrivacySection,
 │   │                    MembersSection, CategoryManager, ColorThemeSection,
 │   │                    AutomationSection, ExportSection, EditMemberModal, WebhookLogModal
-│   └── (root)        ← AppHeader, AppNav, AddMemberModal, AddTransactionModal,
+│   └── (root)        ← AppHeader, AppNav, AddMemberModal,
 │                        EditTransactionModal, LogsSection, SettingsView, SyncOnlineBar
 ├── calendar/         ← CalendarGrid, CalendarHeader, CalendarDay, EventModal
 └── home/             ← HomeView, tasks/*, shopping/*

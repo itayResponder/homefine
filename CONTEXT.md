@@ -112,7 +112,10 @@ src/
 │            useMemberName, useSyncStatus, useUserColor, useShoppingList, useTasks,
 │            useCalendarEvents)
 ├── i18n/                     ← he.ts, en.ts, types.ts, context.tsx (all strings here, no inline i18n)
-│   │                            includes: dashboard keys, removeMember/removeParticipant, colorTheme (settings.*)
+│   │                            includes: dashboard keys, removeMember/removeParticipant, colorTheme (settings.*),
+│   │                            purchaseLog, leaveHouseholdBtn/Title/Sub (AppHeader + HouseholdLayout),
+│   │                            automationLog/webhookSucceeded/Failed/NoEntries/ClearAll (WebhookLogModal),
+│   │                            categoryNewTitle/EditTitle, editBtn, monthCountLabel/Placeholder
 ├── types/
 │   ├── index.ts              ← all main types incl. PresenceRecord (moved from firebase/)
 │   └── home.ts               ← home/tasks types

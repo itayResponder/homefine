@@ -547,6 +547,7 @@
 .fg2 { grid-template-columns: 1fr 1fr; }
 .fg3 { grid-template-columns: 1fr 1fr 1fr; }
 .fg1 { grid-template-columns: 1fr; }
+.ap-member-fields { margin-bottom: 12px; }
 
 .fl { display: flex; flex-direction: column; gap: 4px; position: relative; }
 
@@ -1029,3 +1030,23 @@
         top: auto;
     }
 }
+
+.app-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+.app-loading-logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.02em;
+    opacity: 0.6;
+}
+
+.app-loading-logo span {
+    color: #2563EB;
+}
+

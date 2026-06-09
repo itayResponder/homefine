@@ -1,0 +1,125 @@
+/* src/components/app/settings/WebhookLogModal.css */
+
+.wl-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.wl-tab {
+    padding: 5px 14px;
+    font-size: 12px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    background: #F1F5F9;
+    color: #64748B;
+    transition: background 0.15s, color 0.15s;
+}
+
+.wl-tab--ok.wl-tab--active {
+    background: var(--ac);
+    color: #fff;
+    font-weight: 700;
+}
+
+.wl-tab--failed.wl-tab--active {
+    background: #E11D48;
+    color: #fff;
+    font-weight: 700;
+}
+
+.wl-empty {
+    text-align: center;
+    padding: 40px 0;
+    color: #94A3B8;
+    font-size: 13px;
+}
+
+.wl-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #F8FAFC;
+}
+
+.wl-entry-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.wl-entry-merchant {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--clr-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.wl-entry-test-badge {
+    font-size: 10px;
+    font-weight: 700;
+    color: #F59E0B;
+    background: #FFFBEB;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+
+.wl-entry-amount {
+    font-size: 12px;
+    color: #16A34A;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.wl-entry-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--clr-dark);
+    word-break: break-all;
+}
+
+.wl-entry-subtitle {
+    font-size: 11px;
+    color: #64748B;
+    margin-top: 2px;
+    word-break: break-all;
+}
+
+.wl-entry-ts {
+    font-size: 10px;
+    color: #CBD5E1;
+    margin-top: 4px;
+}
+
+.wl-entry-delete {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #CBD5E1;
+    line-height: 1;
+    padding: 2px 4px;
+}
+
+.wl-footer {
+    padding: 10px 16px;
+    border-top: 1px solid #F1F5F9;
+    text-align: center;
+}
+
+.wl-clear-btn {
+    font-size: 11px;
+    color: #94A3B8;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: underline;
+}

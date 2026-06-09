@@ -1,4 +1,4 @@
-// src/i18n/en.ts
+﻿// src/i18n/en.ts
 import type { T } from './types'
 
 export const en: T = {
@@ -7,6 +7,7 @@ export const en: T = {
 
     cancel: 'Cancel',
     deleteBtn: 'Delete',
+    editBtn: 'Edit',
     saveChanges: 'Save Changes',
 
     appName: 'HomeFine',
@@ -92,6 +93,8 @@ export const en: T = {
     toastRecAdded: 'Recurring charge added ✓',
     toastRecDeleted: 'Recurring charge deleted',
 
+    monthCountLabel: 'Number of months',
+    monthCountPlaceholder: 'Count',
     recurringTitle: 'Recurring Charges',
     newRecurringTitle: 'New Recurring Charge',
     recurringExpense: 'Recurring Expense',
@@ -129,6 +132,8 @@ export const en: T = {
     categoryNamePlaceholder: 'e.g. Health',
     categoryNameEnPlaceholder: 'e.g. Health',
     categoryIconLabel: 'Icon',
+    categoryNewTitle: 'New Category',
+    categoryEditTitle: 'Edit Category',
     categoryNameRequired: 'Category name is required',
     categoryNameEnRequired: 'English name is required',
     membersLabel: 'Household Members',
@@ -142,6 +147,7 @@ export const en: T = {
     memberNameEnInvalidFormat: 'Please use English letters only',
     memberNameDuplicate: 'This name already exists',
     memberNameEnDuplicate: 'This name already exists',
+    deleteMemberBtn: 'Delete member',
 
     settings: {
         ownerSettingsTitle: 'Owner Settings',
@@ -186,6 +192,16 @@ export const en: T = {
     dashboardDeleteHousehold: 'Delete household',
     dashboardDeleteTitle: (name) => `Delete "${name}"`,
     dashboardDeleteSub: 'All data will be deleted and all members will lose access.',
+
+    purchaseLog: 'Purchase Log',
+    leaveHouseholdBtn: 'Leave household',
+    leaveHouseholdTitle: 'Leave household',
+    leaveHouseholdSub: 'Are you sure you want to leave? You will lose access.',
+    automationLog: 'Automation Log',
+    webhookSucceeded: 'Succeeded',
+    webhookFailed: 'Failed',
+    webhookNoEntries: 'No entries',
+    webhookClearAll: 'Clear all',
 
     onlineNow: 'Online:',
     nobodyOnline: 'Nobody',

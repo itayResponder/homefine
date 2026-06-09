@@ -94,9 +94,6 @@ export function RecurringSection({ recurringCharges, members, categories, curren
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
     ]
 
-    const monthCountLabel = t.dir === 'rtl' ? 'כמות חודשים' : 'Number of months'
-    const monthCountPlaceholder = t.dir === 'rtl' ? 'מס׳ חודשים' : 'Count'
-
     return (
         <div className="rec-section">
             {/* ── Add form ── */}
@@ -166,7 +163,7 @@ export function RecurringSection({ recurringCharges, members, categories, curren
                         <CustomDatePicker value={form.startDate} onChange={(v) => setField('startDate', v)} />
                     </div>
                     <div className="rec-field">
-                        <label>{monthCountLabel}</label>
+                        <label>{t.monthCountLabel}</label>
                         <input
                             type="number"
                             min="1"
@@ -174,7 +171,7 @@ export function RecurringSection({ recurringCharges, members, categories, curren
                             className={`ap-input${errors.monthCount ? ' ap-input--error' : ''}`}
                             value={form.monthCount}
                             onChange={(e) => setField('monthCount', e.target.value)}
-                            placeholder={monthCountPlaceholder}
+                            placeholder={t.monthCountPlaceholder}
                         />
                         {errors.monthCount && <span className="field-error">{errors.monthCount}</span>}
                     </div>
