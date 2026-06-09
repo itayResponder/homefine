@@ -1,1 +1,20 @@
-/* App.css — unused, kept as placeholder */
+.app-root-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F8FAFF;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.app-root-logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.02em;
+    opacity: 0.6;
+}
+
+.app-root-logo span {
+    color: #2563EB;
+}

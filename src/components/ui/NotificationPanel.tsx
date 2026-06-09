@@ -1,6 +1,7 @@
 // src/components/ui/NotificationPanel.tsx
 import './NotificationPanel.css'
 import type { JoinRequest } from '../../types'
+import { useI18n } from '../../i18n/context'
 
 const BellSVG = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -14,7 +15,6 @@ interface Props {
     onApprove: (householdId: string, uid: string) => void
     onDeny: (householdId: string, uid: string) => void
     showHouseholdName?: boolean
-    isRtl?: boolean
 }
 
 function fmtTime(ts: number): string {
@@ -24,15 +24,16 @@ function fmtTime(ts: number): string {
 
 export { BellSVG }
 
-export function NotificationPanel({ requests, onApprove, onDeny, showHouseholdName, isRtl }: Props) {
+export function NotificationPanel({ requests, onApprove, onDeny, showHouseholdName }: Props) {
+    const { t } = useI18n()
     return (
         <div className="np-panel">
             <div className="np-title">
-                {isRtl ? 'בקשות הצטרפות' : 'Join Requests'}
+                {t.joinRequestsTitle}
             </div>
             {requests.length === 0 ? (
                 <div className="np-empty">
-                    {isRtl ? 'אין בקשות ממתינות' : 'No pending requests'}
+                    {t.noPendingRequests}
                 </div>
             ) : (
                 requests.map((r) => (

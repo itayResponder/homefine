@@ -1,6 +1,7 @@
 // src/components/home/shopping/ShoppingItemRow.tsx
 import type { ShoppingItem } from '../../../types/home'
 import type { Member } from '../../../types'
+import { useI18n } from '../../../i18n/context'
 
 interface Props {
     item: ShoppingItem
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function ShoppingItemRow({ item, members, onToggle, onDelete }: Props) {
+    const { t } = useI18n()
     const adder = members.find((m) => m.id === item.addedBy)
 
     return (
@@ -17,7 +19,7 @@ export function ShoppingItemRow({ item, members, onToggle, onDelete }: Props) {
             <button
                 className="sir-check"
                 onClick={() => onToggle(item.id, !item.done)}
-                aria-label={item.done ? 'Uncheck' : 'Check'}
+                aria-label={item.done ? t.uncheckItem : t.checkItem}
                 style={{ borderColor: item.done ? (adder?.color ?? '#2563EB') : undefined,
                          background: item.done ? (adder?.color ?? '#2563EB') : undefined }}
             >
@@ -36,7 +38,7 @@ export function ShoppingItemRow({ item, members, onToggle, onDelete }: Props) {
             <button
                 className="sir-delete"
                 onClick={() => onDelete(item.id)}
-                aria-label="Delete"
+                aria-label={t.deleteItem}
             >
                 ×
             </button>

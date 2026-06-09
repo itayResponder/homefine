@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { EMOJI_GROUPS } from '../../constants/categories'
+import { useI18n } from '../../i18n/context'
 import './EmojiPicker.css'
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
+    const { t } = useI18n()
     const [search, setSearch] = useState('')
 
     const allEmojis = EMOJI_GROUPS.flatMap(g => g.emojis)
@@ -37,7 +39,7 @@ export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
             <div className="ep-panel" style={panelStyle} onClick={e => e.stopPropagation()}>
                 <input
                     className="ep-search"
-                    placeholder="חפש אמוג'י..."
+                    placeholder={t.emojiSearchPlaceholder}
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     autoFocus

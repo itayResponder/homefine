@@ -204,6 +204,14 @@ export const he: T = {
     webhookNoEntries: 'אין רשומות',
     webhookClearAll: 'נקה הכל',
 
+    joinRequestsTitle: 'בקשות הצטרפות',
+    noPendingRequests: 'אין בקשות ממתינות',
+    householdNamePlaceholder: 'שם הבית...',
+    emojiSearchPlaceholder: 'חפש אמוג\'י...',
+    checkItem: 'סמן כבוצע',
+    uncheckItem: 'בטל סימון',
+    deleteItem: 'מחק פריט',
+
     onlineNow: 'מחוברים עכשיו:',
     nobodyOnline: 'אף אחד',
     syncConnected: 'מחובר — real-time ✓',

@@ -127,7 +127,6 @@ export function AppHeader({
                                     requests={joinRequests}
                                     onApprove={onApproveJoin!}
                                     onDeny={onDenyJoin!}
-                                    isRtl={t.dir === 'rtl'}
                                 />
                             </div>
                         )}

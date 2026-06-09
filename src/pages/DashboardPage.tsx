@@ -19,7 +19,6 @@ export default function DashboardPage() {
     const { user, logout } = useAuth()
     const navigate = useNavigate()
     const { t } = useI18n()
-    const isRtl = t.dir === 'rtl'
     const { color: primaryColor } = useUserColor(user?.uid)
     const { households, ready, create } = useHouseholds(user?.uid)
     const { showConfirm } = useConfirm()
@@ -134,7 +133,6 @@ export default function DashboardPage() {
                                     onApprove={handleApprove}
                                     onDeny={handleDeny}
                                     showHouseholdName
-                                    isRtl={isRtl}
                                 />
                             </div>
                         )}
@@ -232,7 +230,7 @@ export default function DashboardPage() {
                                 className="db-input"
                                 value={newName}
                                 onChange={(e) => setNewName(e.target.value)}
-                                placeholder={isRtl ? 'שם הבית...' : 'Household name...'}
+                                placeholder={t.householdNamePlaceholder}
                                 autoFocus
                                 required
                             />

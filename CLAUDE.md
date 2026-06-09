@@ -132,7 +132,7 @@ src/components/
 - `src/components/ui/CustomSelect.tsx` — styled dropdown (cs-* classes); accepts `error?: boolean` → applies `.cs-trig--error`
 - `src/components/ui/CustomDatePicker.tsx` — styled calendar (cd-* classes)
 - `src/components/ui/Money.tsx` — currency display
-- `src/components/ui/NotificationPanel.tsx` — join request panel + BellSVG export
+- `src/components/ui/NotificationPanel.tsx` — join request panel + BellSVG export; uses `useI18n()` internally — no `isRtl` prop
 - `src/components/ui/LanguageToggle.tsx` — EN/עב toggle (moved from `components/`)
 - `src/components/app/AddMemberModal.tsx` — modal for adding a member (name HE + EN + duplicate check), opened via AppNav ＋ pill
 - `src/components/app/finance/TransactionView.tsx` — unified expense/income form + list; accepts `type: 'expense' | 'income'`

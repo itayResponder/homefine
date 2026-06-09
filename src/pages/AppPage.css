@@ -72,6 +72,14 @@
     border-color: var(--ib, #D4D0FF);
 }
 
+.ap-modal--member-edit {
+    min-height: 280px;
+}
+
+.money {
+    unicode-bidi: embed;
+}
+
 /* ── Theme variables ── */
 .ap-root {
     --ac: #6C63FF;

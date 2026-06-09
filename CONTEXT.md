@@ -20,7 +20,10 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 ## What's Built
 - ✅ Multi-household support with invite links + owner approval flow
 - ✅ Real-time sync (Firebase onValue listeners)
-- ✅ Hebrew (RTL) + English (LTR) i18n
+- ✅ Hebrew (RTL) + English (LTR) i18n — all strings via i18n; no inline hardcoded text in components
+  - i18n keys (סבב 6): `joinRequestsTitle`, `noPendingRequests`, `householdNamePlaceholder`, `emojiSearchPlaceholder`, `checkItem`, `uncheckItem`, `deleteItem`
+  - `NotificationPanel` uses `useI18n()` internally — no `isRtl` prop
+  - Inline styles converted to CSS classes: `App.css` (loading state), `AppPage.css` (`.ap-modal--member-edit`, `.money`)
 - ✅ Per-user color theming
 - ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 20 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
   - `automation` (⚡, order 19) added as default — used automatically for Google Wallet webhook transactions

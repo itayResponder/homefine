@@ -232,6 +232,15 @@ export interface T {
     webhookNoEntries: string
     webhookClearAll: string
 
+    // ── Notification panel ───────────────────────────────
+    joinRequestsTitle: string
+    noPendingRequests: string
+    householdNamePlaceholder: string
+    emojiSearchPlaceholder: string
+    checkItem: string
+    uncheckItem: string
+    deleteItem: string
+
     // ── Presence / Sync ──────────────────────────────────
     onlineNow: string
     nobodyOnline: string

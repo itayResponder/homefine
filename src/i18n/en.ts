@@ -204,6 +204,14 @@ export const en: T = {
     webhookNoEntries: 'No entries',
     webhookClearAll: 'Clear all',
 
+    joinRequestsTitle: 'Join Requests',
+    noPendingRequests: 'No pending requests',
+    householdNamePlaceholder: 'Household name...',
+    emojiSearchPlaceholder: 'Search emoji...',
+    checkItem: 'Check item',
+    uncheckItem: 'Uncheck item',
+    deleteItem: 'Delete item',
+
     onlineNow: 'Online:',
     nobodyOnline: 'Nobody',
     syncConnected: 'Connected — real-time ✓',

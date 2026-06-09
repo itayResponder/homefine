@@ -24,7 +24,7 @@ export function EditMemberModal({ member, onSave, onClose }: Props) {
 
     return (
         <div className="ap-modal-overlay" onClick={onClose}>
-            <div className="ap-modal" onClick={(e) => e.stopPropagation()} style={{ minHeight: 280 }}>
+            <div className="ap-modal ap-modal--member-edit" onClick={(e) => e.stopPropagation()}>
                 <div className="ap-modal-header">
                     <span className="ap-modal-title">✏️ {t.settings.editNameTitle}</span>
                     <button className="ap-modal-close" onClick={onClose}>✕</button>

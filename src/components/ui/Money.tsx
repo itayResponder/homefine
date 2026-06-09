@@ -8,7 +8,7 @@ interface Props {
 
 export function Money({ amount, sign = '' }: Props) {
     return (
-        <span dir="ltr" style={{ unicodeBidi: 'embed' }}>
+        <span dir="ltr" className="money">
             {formatCurrency(amount, undefined, sign)}
         </span>
     )
