@@ -235,7 +235,7 @@ function RecurringItem({ r, members, categories, onDelete }: ItemProps) {
 
     const rangeLabel = (() => {
         if (!r.startYearMonth || !r.monthCount) {
-            return t.dir === 'rtl' ? `יום ${r.dayOfMonth}` : `Day ${r.dayOfMonth}`
+            return t.recurringDayLabel(r.dayOfMonth)
         }
         const [sy, sm] = r.startYearMonth.split('-').map(Number)
         const total = sy * 12 + (sm - 1) + r.monthCount - 1

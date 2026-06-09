@@ -113,6 +113,7 @@ export interface T {
     // ── Recurring section ────────────────────────────────
     monthCountLabel: string
     monthCountPlaceholder: string
+    recurringDayLabel: (day: number) => string
     recurringTitle: string
     newRecurringTitle: string
     recurringExpense: string

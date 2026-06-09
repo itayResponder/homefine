@@ -115,7 +115,8 @@ src/
 │   │                            includes: dashboard keys, removeMember/removeParticipant, colorTheme (settings.*),
 │   │                            purchaseLog, leaveHouseholdBtn/Title/Sub (AppHeader + HouseholdLayout),
 │   │                            automationLog/webhookSucceeded/Failed/NoEntries/ClearAll (WebhookLogModal),
-│   │                            categoryNewTitle/EditTitle, editBtn, monthCountLabel/Placeholder
+│   │                            categoryNewTitle/EditTitle, editBtn, monthCountLabel/Placeholder,
+│   │                            recurringDayLabel (function)
 ├── types/
 │   ├── index.ts              ← all main types incl. PresenceRecord (moved from firebase/)
 │   └── home.ts               ← home/tasks types

@@ -95,6 +95,7 @@ export const he: T = {
 
     monthCountLabel: 'כמות חודשים',
     monthCountPlaceholder: 'מס׳ חודשים',
+    recurringDayLabel: (day) => `יום ${day}`,
     recurringTitle: 'חיובים קבועים',
     newRecurringTitle: 'חיוב / הכנסה קבועה חדשה',
     recurringExpense: 'הוצאה קבועה',

@@ -95,6 +95,7 @@ export const en: T = {
 
     monthCountLabel: 'Number of months',
     monthCountPlaceholder: 'Count',
+    recurringDayLabel: (day) => `Day ${day}`,
     recurringTitle: 'Recurring Charges',
     newRecurringTitle: 'New Recurring Charge',
     recurringExpense: 'Recurring Expense',
