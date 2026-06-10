@@ -23,6 +23,13 @@ function darken(hex: string, amount: number) {
 
 export const DEFAULT_COLOR = '#2563EB'
 
+const AVATAR_COLORS = ['#6366F1','#EC4899','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EF4444','#06B6D4']
+
+export function nameToColor(name: string): string {
+    const sum = [...name].reduce((a, c) => a + c.charCodeAt(0), 0)
+    return AVATAR_COLORS[sum % AVATAR_COLORS.length]
+}
+
 export function buildColorVars(hex: string): Record<string, string> {
     return {
         '--ac': hex,

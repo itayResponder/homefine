@@ -30,7 +30,7 @@ export function EditMemberModal({ member, onSave, onClose }: Props) {
                     <button className="ap-modal-close" onClick={onClose}>✕</button>
                 </div>
                 <form onSubmit={handleSubmit}>
-                    <div className="fg fg2" style={{ marginBottom: 8 }}>
+                    <div className="fg fg2 ap-member-fields--modal">
                         <div className="fl">
                             <label>{t.memberNameLabel}</label>
                             <input

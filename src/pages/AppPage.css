@@ -556,6 +556,7 @@
 .fg3 { grid-template-columns: 1fr 1fr 1fr; }
 .fg1 { grid-template-columns: 1fr; }
 .ap-member-fields { margin-bottom: 12px; }
+.ap-member-fields--modal { margin-bottom: 8px; }
 
 .fl { display: flex; flex-direction: column; gap: 4px; position: relative; }
 

@@ -23,7 +23,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Hebrew (RTL) + English (LTR) i18n — all strings via i18n; no inline hardcoded text in components
   - i18n keys (סבב 6): `joinRequestsTitle`, `noPendingRequests`, `householdNamePlaceholder`, `emojiSearchPlaceholder`, `checkItem`, `uncheckItem`, `deleteItem`
   - `NotificationPanel` uses `useI18n()` internally — no `isRtl` prop
-  - Inline styles converted to CSS classes: `App.css` (loading state), `AppPage.css` (`.ap-modal--member-edit`, `.money`)
+  - Inline styles converted to CSS classes: `App.css` (loading state), `AppPage.css` (`.ap-modal--member-edit`, `.money`, `.ap-member-fields--modal`)
 - ✅ Per-user color theming
 - ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 20 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
   - `automation` (⚡, order 19) added as default — used automatically for Google Wallet webhook transactions
@@ -127,7 +127,7 @@ src/
 │   ├── macroDroid.ts         ← MacroDroid file generator (extracted from SettingsView)
 │   ├── members.ts            ← getDefaultMemberId (shared across 3 components)
 │   ├── transactions.ts       ← computeDiffs (extracted from AppPage)
-│   └── categories.ts, color.ts, date.ts, format.ts, recurring.ts, taskUrgency.ts
+│   └── categories.ts, color.ts (nameToColor + buildColorVars), date.ts, format.ts, recurring.ts, taskUrgency.ts
 └── pages/                    ← AppPage, HouseholdLayout, DashboardPage, LandingPage, JoinPage,
                                  CalendarPage, HouseholdPage
 ```

@@ -9,6 +9,7 @@ import { useClickOutside } from '../../hooks/useClickOutside'
 import type { AppUser, JoinRequest } from '../../types'
 import type { PresenceMap } from '../../hooks/usePresence'
 import './AppHeader.css'
+import { nameToColor } from '../../utils/color'
 
 interface Props {
     user: AppUser | null
@@ -23,12 +24,6 @@ interface Props {
     onDenyJoin?: (householdId: string, uid: string) => void
     onLeave?: () => void
     online?: PresenceMap
-}
-
-const AVATAR_COLORS = ['#6366F1','#EC4899','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EF4444','#06B6D4']
-function nameToColor(name: string): string {
-    const sum = [...name].reduce((a, c) => a + c.charCodeAt(0), 0)
-    return AVATAR_COLORS[sum % AVATAR_COLORS.length]
 }
 
 export function AppHeader({
