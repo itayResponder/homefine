@@ -212,6 +212,10 @@ export const he: T = {
     uncheckItem: 'בטל סימון',
     deleteItem: 'מחק פריט',
 
+    chatTitle: 'HomeFine AI',
+    chatWelcome: 'שאל אותי כל שאלה על המשק הבית שלך',
+    chatPlaceholder: 'הקלד הודעה...',
+
     onlineNow: 'מחוברים עכשיו:',
     nobodyOnline: 'אף אחד',
     syncConnected: 'מחובר — real-time ✓',

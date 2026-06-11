@@ -212,6 +212,10 @@ export const en: T = {
     uncheckItem: 'Uncheck item',
     deleteItem: 'Delete item',
 
+    chatTitle: 'HomeFine AI',
+    chatWelcome: 'Ask me anything about your household',
+    chatPlaceholder: 'Type a message...',
+
     onlineNow: 'Online:',
     nobodyOnline: 'Nobody',
     syncConnected: 'Connected — real-time ✓',

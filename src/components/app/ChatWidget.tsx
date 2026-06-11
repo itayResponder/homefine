@@ -70,7 +70,7 @@ export function ChatWidget({ householdId }: Props) {
           <div className={styles.header}>
             <div className={styles.headerTitle}>
               <span className={styles.aiDot} />
-              HomeFine AI
+              {t.chatTitle}
             </div>
             <div className={styles.headerActions}>
               {messages.length > 0 && (
@@ -111,7 +111,7 @@ export function ChatWidget({ householdId }: Props) {
             {messages.length === 0 && (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>✨</div>
-                <p>שאל אותי כל שאלה על המשק הבית שלך</p>
+                <p>{t.chatWelcome}</p>
               </div>
             )}
 
@@ -145,7 +145,7 @@ export function ChatWidget({ householdId }: Props) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="הקלד הודעה..."
+              placeholder={t.chatPlaceholder}
               rows={1}
               disabled={streaming}
               aria-label="Chat input"

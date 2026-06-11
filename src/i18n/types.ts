@@ -241,6 +241,11 @@ export interface T {
     uncheckItem: string
     deleteItem: string
 
+    // ── Chat widget ─────────────────────────────────────
+    chatTitle: string
+    chatWelcome: string
+    chatPlaceholder: string
+
     // ── Presence / Sync ──────────────────────────────────
     onlineNow: string
     nobodyOnline: string
