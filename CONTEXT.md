@@ -139,6 +139,16 @@ src/
 - Shared design-system classes live in `AppPage.css`; component-specific CSS in per-component files
 - `SettingsView.module.css` — CSS Modules for settings sub-components
 
+## AI Chat Widget
+- ✅ Floating chat widget (`ChatWidget`) — FAB button, sliding panel, streaming SSE responses
+- ✅ `src/services/api.ts` — only file that knows `VITE_API_URL`; handles Firebase token + fetch + SSE parsing → `ReadableStream<ChatStreamEvent>`
+- ✅ `src/hooks/useChat.ts` — chat state (messages, streaming, error); calls `chatStream`, appends tokens to assistant bubble in real time
+- ✅ `src/components/app/ChatWidget.tsx` — self-contained floating UI; no prop drilling; uses `useChat` + `useI18n`; RTL-aware
+- ✅ `src/components/app/ChatWidget.module.css` — CSS Modules; uses `var(--clr-dark)` / `var(--clr-purple)`; mobile responsive
+- ✅ `VITE_API_URL=https://homefine-backend.onrender.com` in `.env`
+- Backend endpoint: `POST /api/chat/stream` — request: `{ messages, householdId, lang }` + `Authorization: Bearer <token>`
+- **Integration:** add `<ChatWidget householdId={householdId} />` anywhere `householdId` is available (e.g. `HouseholdLayout.tsx`)
+
 ## What's Planned / Not Yet Built
 - ❌ Super Admin panel
 - ❌ Viewer role (read-only member)

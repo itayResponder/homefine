@@ -12,6 +12,7 @@ import { useCategories } from '../hooks/useCategories'
 import { useI18n } from '../i18n/context'
 import { useConfirm } from '../contexts/ui'
 import { AppHeader } from '../components/app/AppHeader'
+import { ChatWidget } from '../components/app/ChatWidget'
 import { WebhookLogModal } from '../components/app/settings/WebhookLogModal'
 import {
     approveJoinRequest,
@@ -175,6 +176,7 @@ export default function HouseholdLayout() {
                     onClose={() => setShowWebhookLog(false)}
                 />
             )}
+            <ChatWidget householdId={householdId} />
         </div>
     )
 }
