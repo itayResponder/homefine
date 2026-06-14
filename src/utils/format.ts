@@ -7,7 +7,10 @@
  * Always wrap in <span dir="ltr"> when used in JSX to prevent bidi reordering.
  */
 export function formatCurrency(amount: number, _dir?: string, sign = ''): string {
-    const n = Math.round(Math.abs(amount)).toLocaleString()
+    const abs = Math.abs(amount)
+    const n = Number.isInteger(abs)
+        ? abs.toLocaleString()
+        : abs.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     return `${sign}${n} ₪`
 }
 
