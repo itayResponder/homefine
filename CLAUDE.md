@@ -94,10 +94,10 @@ userPrefs/{uid}/webhookConfigs/{householdId} ← { apiKey, householdId, memberId
 - Shared component: `src/components/ui/NotificationPanel.tsx`
 
 ### Per-User Color Theming
-`useUserColor(uid)` syncs with `userPrefs/{uid}/primaryColor`. `buildColorVars(hex)` derives CSS variables (`--ac`, `--acd`, `--acl`, `--ib`, `--ibg`, `--bg`). Applied as inline `style` on `.ap-root` and `.db-root`.
+`useUserColor(uid)` syncs with `userPrefs/{uid}/primaryColor`. `buildColorVars(hex)` derives CSS variables (`--ac`, `--acd`, `--acl`, `--ib`, `--ibg`, `--bg`). Applied as inline `style` on `.ap-root` and `.db-root`. `updateColor` also propagates the new hex to `member.color` in every household the user belongs to (via `getUserHouseholdIds` + `updateMember`).
 
 ### Currency Formatting
-Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir, sign)` for string contexts. Format: `−1,000 ₪`.
+Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir, sign)` for string contexts. Format: `−1,000 ₪` (integers) or `−1,000.50 ₪` (decimals). `formatCurrency` preserves 2 decimal places for non-integer amounts; integers render without decimals.
 
 ### Categories
 Categories are **per-household and dynamic** — stored at `households/{id}/categories/{catId}` → `{ name, nameEn, icon, order }`. `TransactionCategory` is now `string`. On first load, `useCategories` auto-seeds the 19 defaults (same IDs: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, pet, other) so existing transactions display correctly. Members can add/edit/delete categories from the Settings modal via `CategoryManager`. Icon selection via `EmojiPicker` (~70 curated emojis from `EMOJI_GROUPS` in `src/constants/categories.ts`). Helpers in `src/utils/categories.ts`: `getCatIcon(categories, id)`, `getCatName(categories, id, locale)`, `categoriesToOptions(cats, locale)`. `categories` + CRUD actions live in `HouseholdContextType` (loaded in `HouseholdLayout`), passed as prop to all consumers (TransactionView, RecurringSection, TxEntry, etc.).

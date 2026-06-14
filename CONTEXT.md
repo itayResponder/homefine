@@ -25,7 +25,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
   - i18n key added: `categorySearchPlaceholder` (CategorySelect search field)
   - `NotificationPanel` uses `useI18n()` internally — no `isRtl` prop
   - Inline styles converted to CSS classes: `App.css` (loading state), `AppPage.css` (`.ap-modal--member-edit`, `.money`, `.ap-member-fields--modal`)
-- ✅ Per-user color theming
+- ✅ Per-user color theming — `updateColor` propagates to `member.color` in all households the user belongs to (so member chips stay in sync immediately)
 - ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 20 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
   - `automation` (⚡, order 19) added as default — used automatically for Google Wallet webhook transactions
   - `electricity` icon changed from ⚡ to 💡
@@ -60,6 +60,8 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Create household modal (DashboardPage, side-by-side name fields)
 - ✅ AddMemberModal via pills ＋ button — custom validation (no browser popup): required fields, Hebrew/English character-set enforcement, duplicate name check; red border + field-error message
 - ✅ TransactionView — unified expense/income form+list (replaces separate ExpensesView/IncomeView); custom validation on desc (required), amount (>0), category (required); red border + field-error messages
+- ✅ `TransactionList` — requires `members: Member[]` prop; `TransactionItem` shows per-member color chip (same style as TxEntry `wtag`) in the sub-line alongside category + date
+- ✅ `formatCurrency` — preserves decimal places for non-integer amounts (e.g. `1,000.50 ₪`); integers still render without decimals
 - ✅ Landing page with locale-aware screenshots
 - ✅ Home module: Kanban tasks (dnd-kit, 3 columns: לבצע/בתהליך/בוצע) + shopping list
 - ✅ Settings + Logs modals (scrollable ap-modal-body pattern)

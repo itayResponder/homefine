@@ -14,3 +14,4 @@
 - [Dynamic Categories](project-dynamic-categories.md) — Per-household categories in Firebase; seeded from 19 defaults; CategoryManager + EmojiPicker in Settings
 - [Component Structure](project-component-structure.md) — finance/, recurring/, settings/ subdirs in components/app/ after June 2026 refactor
 - [Chat Widget](project-chat-widget.md) — AI chat widget (ChatWidget): files, SSE backend contract, integration point
+- [Recent Fixes](project-recent-fixes.md) — formatCurrency decimals, TransactionList members prop (required!), updateColor syncs member.color
