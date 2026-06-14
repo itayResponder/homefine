@@ -137,6 +137,7 @@ export const en: T = {
     categoryEditTitle: 'Edit Category',
     categoryNameRequired: 'Category name is required',
     categoryNameEnRequired: 'English name is required',
+    categoryNextBtn: 'Next',
     membersLabel: 'Household Members',
     memberNameLabel: 'Hebrew Name',
     memberNameEnLabel: 'English Name',

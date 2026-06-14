@@ -9,10 +9,11 @@ interface Props {
     value: string
     onChange: (emoji: string) => void
     onClose: () => void
-    anchorRect: DOMRect | null
+    anchorRect?: DOMRect | null
+    inline?: boolean
 }
 
-export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
+export function EmojiPicker({ value, onChange, onClose, anchorRect, inline }: Props) {
     const { t } = useI18n()
     const [search, setSearch] = useState('')
 
@@ -22,6 +23,41 @@ export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
             g.label.includes(q) || g.labelEn.toLowerCase().includes(q)
           )
         : null
+
+    const content = (
+        <>
+            <input
+                className="ep-search"
+                placeholder={t.emojiSearchPlaceholder}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                autoFocus={!inline}
+            />
+            <div className="ep-scroll">
+                {(filteredGroups ?? EMOJI_GROUPS).map(group => (
+                    <div key={group.label}>
+                        <div className="ep-group-label">{group.label}</div>
+                        <div className="ep-group">
+                            {group.emojis.map(emoji => (
+                                <button
+                                    key={emoji}
+                                    type="button"
+                                    className={`ep-btn${value === emoji ? ' ep-btn--active' : ''}`}
+                                    onClick={() => { onChange(emoji); if (!inline) onClose() }}
+                                >
+                                    {emoji}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </>
+    )
+
+    if (inline) {
+        return <div className="ep-inline">{content}</div>
+    }
 
     const isRtl = document.documentElement.dir === 'rtl'
     const panelStyle: React.CSSProperties = anchorRect
@@ -39,32 +75,7 @@ export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
         <>
             <div className="ep-backdrop" onClick={onClose} />
             <div className="ep-panel" style={panelStyle} onClick={e => e.stopPropagation()}>
-                <input
-                    className="ep-search"
-                    placeholder={t.emojiSearchPlaceholder}
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    autoFocus
-                />
-                <div className="ep-scroll">
-                    {(filteredGroups ?? EMOJI_GROUPS).map(group => (
-                        <div key={group.label}>
-                            <div className="ep-group-label">{group.label}</div>
-                            <div className="ep-group">
-                                {group.emojis.map(emoji => (
-                                    <button
-                                        key={emoji}
-                                        type="button"
-                                        className={`ep-btn${value === emoji ? ' ep-btn--active' : ''}`}
-                                        onClick={() => { onChange(emoji); onClose() }}
-                                    >
-                                        {emoji}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                {content}
             </div>
         </>,
         document.body

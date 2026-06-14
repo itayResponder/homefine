@@ -157,6 +157,7 @@ export interface T {
     categoryEditTitle: string
     categoryNameRequired: string
     categoryNameEnRequired: string
+    categoryNextBtn: string
     membersLabel: string
     memberNameLabel: string
     memberNameEnLabel: string

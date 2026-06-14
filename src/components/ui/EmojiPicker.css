@@ -73,3 +73,23 @@
     background: var(--acl, #EFF6FF);
     border-color: var(--ac, #2563EB);
 }
+
+/* ── Inline mode (wizard step 1) ── */
+.ep-inline {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+}
+
+.ep-inline .ep-search {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.ep-inline .ep-scroll {
+    border-radius: 0 0 10px 10px;
+}

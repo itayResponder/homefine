@@ -137,6 +137,7 @@ export const he: T = {
     categoryEditTitle: 'עריכת קטגוריה',
     categoryNameRequired: 'שם הקטגוריה הוא שדה חובה',
     categoryNameEnRequired: 'Category name in English is required',
+    categoryNextBtn: 'הבא',
     membersLabel: 'חברי בית',
     memberNameLabel: 'שם בעברית',
     memberNameEnLabel: 'שם באנגלית',

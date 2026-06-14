@@ -1,5 +1,5 @@
 // src/components/ui/CategorySelect.tsx
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { EmojiPicker } from './EmojiPicker'
 import { useI18n } from '../../i18n/context'
@@ -58,9 +58,11 @@ export function CategorySelect(props: Props) {
     const [addForm, setAddForm] = useState<AddForm>(() => initAddForm(props))
     const [addErrors, setAddErrors] = useState<{ name?: string; nameEn?: string }>({})
     const [saving, setSaving] = useState(false)
-    const [showPicker, setShowPicker] = useState(false)
-    const [pickerAnchor, setPickerAnchor] = useState<DOMRect | null>(null)
-    const iconBtnRef = useRef<HTMLButtonElement>(null)
+    // wizard step — 'icon' shows inline EmojiPicker, 'details' shows name fields
+    const [step, setStep] = useState<'icon' | 'details'>(() => {
+        if (defaultOpen && defaultMode === 'edit') return 'details'
+        return 'icon'
+    })
 
     const selected = categories.find(c => c.id === value)
 
@@ -79,13 +81,12 @@ export function CategorySelect(props: Props) {
         setEditingId(null)
         setAddForm(emptyAdd())
         setAddErrors({})
+        setStep('icon')
         setOpen(true)
     }
 
     const closeModal = () => {
         setOpen(false)
-        setShowPicker(false)
-        setPickerAnchor(null)
         onClose?.()
     }
 
@@ -104,8 +105,7 @@ export function CategorySelect(props: Props) {
         setEditingId(cat.id)
         setAddForm({ icon: cat.icon, name: cat.name, nameEn: cat.nameEn })
         setAddErrors({})
-        setShowPicker(false)
-        setPickerAnchor(null)
+        setStep('details')
         setMode('edit')
     }
 
@@ -114,8 +114,7 @@ export function CategorySelect(props: Props) {
         setEditingId(null)
         setAddForm(emptyAdd())
         setAddErrors({})
-        setShowPicker(false)
-        setPickerAnchor(null)
+        setStep('icon')
     }
 
     const handleAdd = async (e: React.FormEvent) => {
@@ -257,13 +256,14 @@ export function CategorySelect(props: Props) {
                                     <button
                                         type="button"
                                         className="csel-add-btn"
-                                        onClick={() => { setMode('add'); setSearch('') }}
+                                        onClick={() => { setMode('add'); setStep('icon'); setSearch('') }}
                                     >
                                         {t.categoryAddBtn}
                                     </button>
                                 </div>
                             </>
                         ) : (
+                            /* ── Wizard form (add / edit) ── */
                             <form
                                 className="csel-add-form"
                                 onSubmit={mode === 'edit' ? handleEdit : handleAdd}
@@ -273,99 +273,107 @@ export function CategorySelect(props: Props) {
                                     {mode === 'edit' ? t.categoryEditTitle : t.categoryNewTitle}
                                 </div>
 
-                                {/* Icon picker */}
-                                <div className="csel-add-field">
-                                    <label>{t.categoryIconLabel}</label>
-                                    <button
-                                        ref={iconBtnRef}
-                                        type="button"
-                                        className="csel-icon-trigger"
-                                        onClick={() => {
-                                            if (showPicker) {
-                                                setShowPicker(false)
-                                                setPickerAnchor(null)
-                                            } else {
-                                                setPickerAnchor(iconBtnRef.current?.getBoundingClientRect() ?? null)
-                                                setShowPicker(true)
-                                            }
-                                        }}
-                                    >
-                                        <span>{addForm.icon}</span>
-                                        <span className="csel-icon-caret">▾</span>
-                                    </button>
-                                    {showPicker && (
+                                {/* Step 1 — icon picker */}
+                                {step === 'icon' ? (
+                                    <>
                                         <EmojiPicker
                                             value={addForm.icon}
-                                            anchorRect={pickerAnchor}
-                                            onChange={emoji => {
-                                                setAddField('icon', emoji)
-                                                setShowPicker(false)
-                                                setPickerAnchor(null)
-                                            }}
-                                            onClose={() => {
-                                                setShowPicker(false)
-                                                setPickerAnchor(null)
-                                            }}
+                                            onChange={emoji => setAddField('icon', emoji)}
+                                            onClose={() => {}}
+                                            inline
                                         />
-                                    )}
-                                </div>
+                                        <div className="csel-wizard-footer">
+                                            <button
+                                                type="button"
+                                                className="csel-cancel-btn"
+                                                onClick={defaultOpen ? closeModal : backToList}
+                                            >
+                                                {t.cancel}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="csel-save-btn"
+                                                onClick={() => setStep('details')}
+                                            >
+                                                {t.categoryNextBtn}
+                                            </button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    /* Step 2 — name fields */
+                                    <div className="csel-wizard-details">
+                                        {/* Icon preview — click to go back to step 1 */}
+                                        <div className="csel-add-field">
+                                            <label>{t.categoryIconLabel}</label>
+                                            <button
+                                                type="button"
+                                                className="csel-icon-preview-btn"
+                                                onClick={() => setStep('icon')}
+                                                title={isRtl ? 'לחץ לשינוי אייקון' : 'Click to change icon'}
+                                            >
+                                                {addForm.icon}
+                                            </button>
+                                        </div>
 
-                                {/* Hebrew name */}
-                                <div className="csel-add-field">
-                                    <label>{t.categoryNameLabel}</label>
-                                    <input
-                                        className={`csel-input${addErrors.name ? ' csel-input--error' : ''}`}
-                                        value={addForm.name}
-                                        onChange={e => setAddField('name', e.target.value)}
-                                        placeholder={t.categoryNamePlaceholder}
-                                        dir="rtl"
-                                    />
-                                    {addErrors.name && (
-                                        <span className="csel-field-error">{addErrors.name}</span>
-                                    )}
-                                </div>
+                                        {/* Hebrew name */}
+                                        <div className="csel-add-field">
+                                            <label>{t.categoryNameLabel}</label>
+                                            <input
+                                                className={`csel-input${addErrors.name ? ' csel-input--error' : ''}`}
+                                                value={addForm.name}
+                                                onChange={e => setAddField('name', e.target.value)}
+                                                placeholder={t.categoryNamePlaceholder}
+                                                dir="rtl"
+                                                autoFocus
+                                            />
+                                            {addErrors.name && (
+                                                <span className="csel-field-error">{addErrors.name}</span>
+                                            )}
+                                        </div>
 
-                                {/* English name */}
-                                <div className="csel-add-field">
-                                    <label>{t.categoryNameEnLabel}</label>
-                                    <input
-                                        className={`csel-input${addErrors.nameEn ? ' csel-input--error' : ''}`}
-                                        value={addForm.nameEn}
-                                        onChange={e => setAddField('nameEn', e.target.value)}
-                                        placeholder={t.categoryNameEnPlaceholder}
-                                        dir="ltr"
-                                    />
-                                    {addErrors.nameEn && (
-                                        <span className="csel-field-error">{addErrors.nameEn}</span>
-                                    )}
-                                </div>
+                                        {/* English name */}
+                                        <div className="csel-add-field">
+                                            <label>{t.categoryNameEnLabel}</label>
+                                            <input
+                                                className={`csel-input${addErrors.nameEn ? ' csel-input--error' : ''}`}
+                                                value={addForm.nameEn}
+                                                onChange={e => setAddField('nameEn', e.target.value)}
+                                                placeholder={t.categoryNameEnPlaceholder}
+                                                dir="ltr"
+                                            />
+                                            {addErrors.nameEn && (
+                                                <span className="csel-field-error">{addErrors.nameEn}</span>
+                                            )}
+                                        </div>
 
-                                <div className="csel-add-actions">
-                                    {mode === 'edit' && onDeleteCategory && (
-                                        <button
-                                            type="button"
-                                            className="csel-delete-btn"
-                                            onClick={handleDelete}
-                                            disabled={saving}
-                                        >
-                                            🗑️
-                                        </button>
-                                    )}
-                                    <button
-                                        type="button"
-                                        className="csel-cancel-btn"
-                                        onClick={defaultOpen ? closeModal : backToList}
-                                    >
-                                        {t.cancel}
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="csel-save-btn"
-                                        disabled={saving}
-                                    >
-                                        {saving ? '...' : t.categorySaveBtn}
-                                    </button>
-                                </div>
+                                        <div className="csel-add-actions">
+                                            {mode === 'edit' && onDeleteCategory && (
+                                                <button
+                                                    type="button"
+                                                    className="csel-delete-btn"
+                                                    onClick={handleDelete}
+                                                    disabled={saving}
+                                                >
+                                                    🗑️
+                                                </button>
+                                            )}
+                                            <button
+                                                type="button"
+                                                className="csel-cancel-btn"
+                                                onClick={defaultOpen ? closeModal : backToList}
+                                            >
+                                                {t.cancel}
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="csel-save-btn"
+                                                disabled={saving}
+                                            >
+                                                {saving ? '...' : t.categorySaveBtn}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </form>
                         )}
                     </div>

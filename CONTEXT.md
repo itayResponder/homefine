@@ -33,12 +33,16 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
   - Legacy `categoryNames`/`categoryOptions` removed from i18n files (were unused)
 - ✅ `CategorySelect` — unified category picker used in TransactionView, EditTransactionModal, RecurringSection
   - bottom sheet on mobile, centered modal on desktop
-  - search (Hebrew + English), grid of icons, inline mini-form with EmojiPicker for add + edit
+  - search (Hebrew + English), grid of icons; add/edit uses **2-step wizard** (no floating EmojiPicker)
+  - Wizard step 1: inline `EmojiPicker` fills full modal height + "הבא" / ביטול footer
+  - Wizard step 2: large icon preview (click → back to step 1), Hebrew name, English name, Save/Cancel/Delete
+  - Add mode starts at step 1; Edit mode starts at step 2 (icon already set)
   - trigger button styled identically to `CustomSelect` (uses `--ib`, `--ibg`, `--clr-dark`, `--rs`, `--clr-purple`)
   - X button in modal corner (always visible); backdrop click also closes
   - `error?: boolean` prop — same validation UX as CustomSelect
   - `onUpdateCategory?` / `onDeleteCategory?` — edit ✏️ button on each grid item (hover on desktop, always on mobile); delete 🗑️ in edit form; if deleted category was selected, clears selection
   - `defaultOpen` / `defaultMode` / `defaultEditId` / `onClose` props — management mode (no trigger rendered, modal opens immediately); used by CategoryManager
+  - `EmojiPicker` supports `inline?: boolean` prop — when inline, renders without portal/backdrop/positioning; clicking an emoji calls `onChange` only (no auto-close)
 - ✅ `CategoryManager` (settings) — rewritten to use `CategorySelect` for full UI consistency
   - inline grid using `csel-*` classes (same visual as picker modal)
   - click category / ✏️ → opens CategorySelect in edit mode; "+ הוסף קטגוריה" → opens in add mode
