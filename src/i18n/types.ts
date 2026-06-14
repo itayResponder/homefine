@@ -237,6 +237,7 @@ export interface T {
     noPendingRequests: string
     householdNamePlaceholder: string
     emojiSearchPlaceholder: string
+    categorySearchPlaceholder: string
     checkItem: string
     uncheckItem: string
     deleteItem: string

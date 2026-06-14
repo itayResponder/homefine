@@ -50,18 +50,18 @@ export const DEFAULT_CATEGORY_SEEDS: Category[] = [
 ]
 
 // Curated emoji list for the picker — grouped by theme
-export const EMOJI_GROUPS: { label: string; emojis: string[] }[] = [
-    { label: 'דיור', emojis: ['🏠', '🏡', '🏢', '🔑', '🛋️', '🛏️', '🪟', '🚪'] },
-    { label: 'חשמל / מים', emojis: ['💡', '🔌', '💧', '🔥', '🌡️', '♻️'] },
-    { label: 'אוכל', emojis: ['🛒', '🍕', '🥗', '🍔', '🥩', '☕', '🍰', '🥦', '🧃', '🍺', '🍽️', '🧁'] },
-    { label: 'תחבורה', emojis: ['🚗', '🚌', '✈️', '⛽', '🚲', '🛵', '🚂', '🛳️'] },
-    { label: 'בריאות', emojis: ['💊', '🏥', '🩺', '🦷', '👓', '🧴', '🧘', '🩻'] },
-    { label: 'בידור', emojis: ['🎬', '🎮', '🎵', '📺', '🎨', '🏋️', '⚽', '🎯', '🎭', '🥂', '🍷'] },
-    { label: 'חינוך', emojis: ['📚', '📖', '✏️', '🎓', '🏫', '🖊️'] },
-    { label: 'ילדים', emojis: ['👶', '🍼', '🧸', '🎠', '🧩', '🎀'] },
-    { label: 'כסף', emojis: ['💰', '💳', '🏦', '💸', '🧾', '📈', '💼'] },
-    { label: 'בית', emojis: ['🧹', '🧺', '🪴', '🛁', '🚿', '🔧', '🪛', '🧰'] },
-    { label: 'ביגוד', emojis: ['👗', '👕', '👟', '🧥', '👜', '🧣'] },
-    { label: 'חיות', emojis: ['🐾', '🐕', '🐈', '🐇', '🐠'] },
-    { label: 'שונות', emojis: ['🎁', '📱', '📶', '🏛️', '⭐', '🌟', '🔒', '📦', '⚡'] },
+export const EMOJI_GROUPS: { label: string; labelEn: string; emojis: string[] }[] = [
+    { label: 'דיור', labelEn: 'Housing', emojis: ['🏠', '🏡', '🏢', '🔑', '🛋️', '🛏️', '🪟', '🚪'] },
+    { label: 'חשמל / מים', labelEn: 'Electricity / Water', emojis: ['💡', '🔌', '💧', '🔥', '🌡️', '♻️'] },
+    { label: 'אוכל', labelEn: 'Food', emojis: ['🛒', '🍕', '🥗', '🍔', '🥩', '☕', '🍰', '🥦', '🧃', '🍺', '🍽️', '🧁'] },
+    { label: 'תחבורה', labelEn: 'Transport', emojis: ['🚗', '🚌', '✈️', '⛽', '🚲', '🛵', '🚂', '🛳️'] },
+    { label: 'בריאות', labelEn: 'Health', emojis: ['💊', '🏥', '🩺', '🦷', '👓', '🧴', '🧘', '🩻'] },
+    { label: 'בידור', labelEn: 'Entertainment', emojis: ['🎬', '🎮', '🎵', '📺', '🎨', '🏋️', '⚽', '🎯', '🎭', '🥂', '🍷'] },
+    { label: 'חינוך', labelEn: 'Education', emojis: ['📚', '📖', '✏️', '🎓', '🏫', '🖊️'] },
+    { label: 'ילדים', labelEn: 'Children', emojis: ['👶', '🍼', '🧸', '🎠', '🧩', '🎀'] },
+    { label: 'כסף', labelEn: 'Money', emojis: ['💰', '💳', '🏦', '💸', '🧾', '📈', '💼'] },
+    { label: 'בית', labelEn: 'Home', emojis: ['🧹', '🧺', '🪴', '🛁', '🚿', '🔧', '🪛', '🧰'] },
+    { label: 'ביגוד', labelEn: 'Clothing', emojis: ['👗', '👕', '👟', '🧥', '👜', '🧣'] },
+    { label: 'חיות', labelEn: 'Pets', emojis: ['🐾', '🐕', '🐈', '🐇', '🐠'] },
+    { label: 'שונות', labelEn: 'Misc', emojis: ['🎁', '📱', '📶', '🏛️', '⭐', '🌟', '🔒', '📦', '⚡'] },
 ]

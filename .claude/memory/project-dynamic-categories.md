@@ -23,11 +23,14 @@ Categories are per-household and fully dynamic.
 - `categoriesToOptions(cats, locale)` — builds `{ value, label }[]` for CustomSelect
 
 **UI:**
-- `CategoryManager` (`src/components/app/CategoryManager.tsx` + `.css`) — chip list + add/edit form; lives inside SettingsView categories fcard; all members can manage
-- `EmojiPicker` (`src/components/ui/EmojiPicker.tsx` + `.css`) — grid of ~70 curated emojis in `EMOJI_GROUPS` (from `src/constants/categories.ts`), grouped by theme; search input; backdrop closes picker
+- `CategoryManager` (`src/components/app/settings/CategoryManager.tsx` + `.css`) — chip list + add/edit form; lives inside SettingsView categories fcard; all members can manage
+- `EmojiPicker` (`src/components/ui/EmojiPicker.tsx` + `.css`) — grid of ~70 curated emojis in `EMOJI_GROUPS` (from `src/constants/categories.ts`), grouped by theme; each group has `label` (Hebrew) + `labelEn` (English); search filters by both; backdrop closes picker
+- `CategorySelect` (`src/components/ui/CategorySelect.tsx` + `.css`) — **the standard category picker for all transaction forms**; bottom sheet on mobile, centered modal on desktop; has search, category grid, inline "add new category" mini-form; auto-selects newly created category; accepts `error?: boolean`
 
-**All consumers** receive `categories: Category[]` as prop: `TransactionView`, `RecurringSection`, `TxEntry`, `TransactionList`, `SummaryView`, `MemberView`, `AddTransactionModal`, `EditTransactionModal`, `SettingsView`.
+**All consumers** receive `categories: Category[]` as prop: `TransactionView`, `RecurringSection`, `TxEntry`, `TransactionList`, `SummaryView`, `MemberView`, `EditTransactionModal`, `SettingsView`.
+
+**`onAddCategory` prop:** `TransactionView`, `EditTransactionModal`, and `RecurringSection` all receive `onAddCategory` from `AppPage` (which pulls `addCategory` from `useHouseholdContext()`).
 
 **Why:** User wanted per-household add/edit/delete of categories with emoji icons. Option A (full Firebase) was chosen over code-based overrides for cleaner data model.
 
-**How to apply:** Never hardcode category options — always use `categoriesToOptions(categories, t.locale)` for dropdowns and `getCatIcon/getCatName` for display.
+**How to apply:** Use `CategorySelect` (not `CustomSelect` + `categoriesToOptions`) for all category fields in transaction forms. Use `getCatIcon/getCatName` for display-only contexts (e.g. `RecurringItem`, `TxEntry`).

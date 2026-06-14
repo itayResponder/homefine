@@ -16,9 +16,11 @@ export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
     const { t } = useI18n()
     const [search, setSearch] = useState('')
 
-    const allEmojis = EMOJI_GROUPS.flatMap(g => g.emojis)
-    const filtered = search.trim()
-        ? allEmojis.filter(e => e.includes(search.trim()))
+    const q = search.trim().toLowerCase()
+    const filteredGroups = q
+        ? EMOJI_GROUPS.filter(g =>
+            g.label.includes(q) || g.labelEn.toLowerCase().includes(q)
+          )
         : null
 
     const isRtl = document.documentElement.dir === 'rtl'
@@ -45,38 +47,23 @@ export function EmojiPicker({ value, onChange, onClose, anchorRect }: Props) {
                     autoFocus
                 />
                 <div className="ep-scroll">
-                    {filtered ? (
-                        <div className="ep-group">
-                            {filtered.map(emoji => (
-                                <button
-                                    key={emoji}
-                                    type="button"
-                                    className={`ep-btn${value === emoji ? ' ep-btn--active' : ''}`}
-                                    onClick={() => { onChange(emoji); onClose() }}
-                                >
-                                    {emoji}
-                                </button>
-                            ))}
-                        </div>
-                    ) : (
-                        EMOJI_GROUPS.map(group => (
-                            <div key={group.label}>
-                                <div className="ep-group-label">{group.label}</div>
-                                <div className="ep-group">
-                                    {group.emojis.map(emoji => (
-                                        <button
-                                            key={emoji}
-                                            type="button"
-                                            className={`ep-btn${value === emoji ? ' ep-btn--active' : ''}`}
-                                            onClick={() => { onChange(emoji); onClose() }}
-                                        >
-                                            {emoji}
-                                        </button>
-                                    ))}
-                                </div>
+                    {(filteredGroups ?? EMOJI_GROUPS).map(group => (
+                        <div key={group.label}>
+                            <div className="ep-group-label">{group.label}</div>
+                            <div className="ep-group">
+                                {group.emojis.map(emoji => (
+                                    <button
+                                        key={emoji}
+                                        type="button"
+                                        className={`ep-btn${value === emoji ? ' ep-btn--active' : ''}`}
+                                        onClick={() => { onChange(emoji); onClose() }}
+                                    >
+                                        {emoji}
+                                    </button>
+                                ))}
                             </div>
-                        ))
-                    )}
+                        </div>
+                    ))}
                 </div>
             </div>
         </>,

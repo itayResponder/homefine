@@ -22,6 +22,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Real-time sync (Firebase onValue listeners)
 - ✅ Hebrew (RTL) + English (LTR) i18n — all strings via i18n; no inline hardcoded text in components
   - i18n keys (סבב 6): `joinRequestsTitle`, `noPendingRequests`, `householdNamePlaceholder`, `emojiSearchPlaceholder`, `checkItem`, `uncheckItem`, `deleteItem`
+  - i18n key added: `categorySearchPlaceholder` (CategorySelect search field)
   - `NotificationPanel` uses `useI18n()` internally — no `isRtl` prop
   - Inline styles converted to CSS classes: `App.css` (loading state), `AppPage.css` (`.ap-modal--member-edit`, `.money`, `.ap-member-fields--modal`)
 - ✅ Per-user color theming
@@ -30,6 +31,12 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
   - `electricity` icon changed from ⚡ to 💡
   - `useCategories` auto-patches existing households: adds `automation` if missing, fixes electricity icon if still ⚡
   - Legacy `categoryNames`/`categoryOptions` removed from i18n files (were unused)
+- ✅ `CategorySelect` — unified category picker used in TransactionView, EditTransactionModal, RecurringSection
+  - bottom sheet on mobile, centered modal on desktop
+  - search (Hebrew + English), grid of icons, inline "+ קטגוריה חדשה" mini-form with EmojiPicker
+  - after adding, auto-selects the new category and closes the modal
+  - `error?: boolean` prop — same validation UX as CustomSelect
+- ✅ EmojiPicker search fix — groups now have `labelEn`; search filters by Hebrew `label` OR English `labelEn`
 - ✅ Recurring charges (auto-apply monthly)
 - ✅ Audit logs with diff tracking
 - ✅ Online presence tracking (green/gray dots in AppHeader)
@@ -75,8 +82,8 @@ src/
 │   │   ├── EditTransactionModal, LogsSection, SettingsView, SyncOnlineBar
 │   ├── calendar/             ← CalendarDay, CalendarGrid, CalendarHeader, EventModal
 │   ├── home/                 ← HomeView, tasks/*, shopping/*
-│   └── ui/                   ← AmountInput, CustomDatePicker, CustomSelect, EmojiPicker,
-│                                LanguageToggle, Money, NotificationPanel
+│   └── ui/                   ← AmountInput, CategorySelect, CustomDatePicker, CustomSelect,
+│                                EmojiPicker, LanguageToggle, Money, NotificationPanel
 ├── firebase/
 │   ├── db.ts                 ← barrel re-export (backwards compat)
 │   ├── households.ts, members.ts, transactions.ts, presence.ts, webhooks.ts

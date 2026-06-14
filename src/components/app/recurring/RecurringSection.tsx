@@ -5,8 +5,9 @@ import { useMemberName } from '../../../hooks/useMemberName'
 import { todayISO } from '../../../utils/date'
 import { getDefaultMemberId } from '../../../utils/members'
 import { computeStartYearMonth } from '../../../utils/recurring'
-import { getCatIcon, getCatName, categoriesToOptions } from '../../../utils/categories'
+import { getCatIcon, getCatName } from '../../../utils/categories'
 import { CustomSelect } from '../../ui/CustomSelect'
+import { CategorySelect } from '../../ui/CategorySelect'
 import { CustomDatePicker } from '../../ui/CustomDatePicker'
 import { AmountInput } from '../../ui/AmountInput'
 import { Money } from '../../ui/Money'
@@ -20,6 +21,7 @@ interface Props {
     currentUserId?: string
     onAdd: (charge: Omit<RecurringCharge, 'id'>) => void
     onDelete: (r: RecurringCharge) => void
+    onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
 }
 
 interface FormState {
@@ -32,7 +34,7 @@ interface FormState {
     monthCount: string
 }
 
-export function RecurringSection({ recurringCharges, members, categories, currentUserId, onAdd, onDelete }: Props) {
+export function RecurringSection({ recurringCharges, members, categories, currentUserId, onAdd, onDelete, onAddCategory }: Props) {
     const { t } = useI18n()
 
     const emptyForm = (): FormState => ({
@@ -88,7 +90,6 @@ export function RecurringSection({ recurringCharges, members, categories, curren
     }
 
     const getMemberName = useMemberName()
-    const categoryOpts = categoriesToOptions(categories, t.locale)
     const memberOpts = [
         { value: 'shared', label: t.shared },
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
@@ -141,11 +142,11 @@ export function RecurringSection({ recurringCharges, members, categories, curren
                     </div>
                     <div className="rec-field">
                         <label>{t.categoryLabel}</label>
-                        <CustomSelect
-                            options={categoryOpts}
+                        <CategorySelect
+                            categories={categories}
                             value={form.category}
                             onChange={(v) => setField('category', v as TransactionCategory)}
-                            placeholder={t.categoryLabel}
+                            onAddCategory={onAddCategory}
                             error={!!errors.category}
                         />
                         {errors.category && <span className="field-error">{errors.category}</span>}

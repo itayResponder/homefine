@@ -208,6 +208,7 @@ export const he: T = {
     noPendingRequests: 'אין בקשות ממתינות',
     householdNamePlaceholder: 'שם הבית...',
     emojiSearchPlaceholder: 'חפש אמוג\'י...',
+    categorySearchPlaceholder: 'חיפוש קטגוריה...',
     checkItem: 'סמן כבוצע',
     uncheckItem: 'בטל סימון',
     deleteItem: 'מחק פריט',

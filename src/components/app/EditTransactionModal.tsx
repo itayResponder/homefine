@@ -2,10 +2,10 @@
 import { useState } from 'react'
 import { useI18n } from '../../i18n/context'
 import { useMemberName } from '../../hooks/useMemberName'
-import { categoriesToOptions } from '../../utils/categories'
 import { CustomSelect } from '../ui/CustomSelect'
 import { CustomDatePicker } from '../ui/CustomDatePicker'
 import { AmountInput } from '../ui/AmountInput'
+import { CategorySelect } from '../ui/CategorySelect'
 import type { Category, Member, Transaction, TransactionType } from '../../types'
 import './AddTransactionModal.css'
 
@@ -15,6 +15,7 @@ interface Props {
     categories: Category[]
     onClose: () => void
     onSave: (id: string, changes: Partial<Transaction>) => Promise<void>
+    onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
 }
 
 interface FormState {
@@ -26,7 +27,7 @@ interface FormState {
     date: string
 }
 
-export function EditTransactionModal({ tx, members, categories, onClose, onSave }: Props) {
+export function EditTransactionModal({ tx, members, categories, onClose, onSave, onAddCategory }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [form, setForm] = useState<FormState>({
@@ -51,7 +52,6 @@ export function EditTransactionModal({ tx, members, categories, onClose, onSave 
         })
     }
 
-    const categoryOpts = categoriesToOptions(categories, t.locale)
     const memberOpts = [
         { value: 'shared', label: t.shared },
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
@@ -94,7 +94,12 @@ export function EditTransactionModal({ tx, members, categories, onClose, onSave 
                     {/* Category */}
                     <div className="ap-form-row">
                         <label>{t.categoryLabel}</label>
-                        <CustomSelect options={categoryOpts} value={form.category} onChange={(v) => set('category', v)} />
+                        <CategorySelect
+                            categories={categories}
+                            value={form.category}
+                            onChange={(v) => set('category', v)}
+                            onAddCategory={onAddCategory}
+                        />
                     </div>
 
                     {/* Who */}

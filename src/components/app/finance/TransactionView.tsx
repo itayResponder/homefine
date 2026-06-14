@@ -4,11 +4,11 @@ import { useI18n } from '../../../i18n/context'
 import { useMemberName } from '../../../hooks/useMemberName'
 import { todayISO } from '../../../utils/date'
 import { getDefaultMemberId } from '../../../utils/members'
-import { categoriesToOptions } from '../../../utils/categories'
 import { CustomSelect } from '../../ui/CustomSelect'
 import { CustomDatePicker } from '../../ui/CustomDatePicker'
 import { AmountInput } from '../../ui/AmountInput'
 import { Money } from '../../ui/Money'
+import { CategorySelect } from '../../ui/CategorySelect'
 import { TxEntry } from './TxEntry'
 import type { Category, Member, Transaction } from '../../../types'
 
@@ -22,9 +22,10 @@ interface Props {
     onAdd: (tx: Omit<Transaction, 'id'>) => Promise<void>
     onDelete: (tx: Transaction) => void
     onEdit: (tx: Transaction) => void
+    onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
 }
 
-export function TransactionView({ type, transactions, members, categories, month, currentUserId, onAdd, onDelete, onEdit }: Props) {
+export function TransactionView({ type, transactions, members, categories, month, currentUserId, onAdd, onDelete, onEdit, onAddCategory }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [desc, setDesc] = useState('')
@@ -48,7 +49,6 @@ export function TransactionView({ type, transactions, members, categories, month
     )
     const total = useMemo(() => monthTxs.reduce((s, tx) => s + tx.amount, 0), [monthTxs])
 
-    const categoryOpts = categoriesToOptions(categories, t.locale)
     const memberOpts = [
         { value: 'shared', label: t.shared },
         ...members.map((m) => ({ value: m.id, label: getMemberName(m) })),
@@ -108,11 +108,11 @@ export function TransactionView({ type, transactions, members, categories, month
                     <div className="fg fg3">
                         <div className="fl">
                             <label>{t.categoryLabel}</label>
-                            <CustomSelect
-                                options={categoryOpts}
+                            <CategorySelect
+                                categories={categories}
                                 value={category}
                                 onChange={(v) => { setCategory(v); setErrors(prev => ({ ...prev, category: undefined })) }}
-                                placeholder={t.categoryLabel}
+                                onAddCategory={onAddCategory}
                                 error={!!errors.category}
                             />
                             {errors.category && <span className="field-error">{errors.category}</span>}

@@ -31,7 +31,7 @@ export default function AppPage() {
         isOwner, expensesOnly, meta,
         openModal, setOpenModal,
         addMember: ctxAddMember, removeMember: ctxRemoveMember,
-        categories,
+        categories, addCategory,
     } = useHouseholdContext()
 
     const { transactions, ready: txReady, add: addTransaction, remove: removeTransaction, update: updateTransaction } = useTransactions(householdId)
@@ -234,6 +234,7 @@ export default function AppPage() {
                         onAdd={handleAddTransaction}
                         onEdit={setEditingTx}
                         onDelete={handleDeleteTx}
+                        onAddCategory={addCategory}
                     />
                 )}
 
@@ -248,6 +249,7 @@ export default function AppPage() {
                         onAdd={handleAddTransaction}
                         onEdit={setEditingTx}
                         onDelete={handleDeleteTx}
+                        onAddCategory={addCategory}
                     />
                 )}
 
@@ -272,6 +274,7 @@ export default function AppPage() {
                         currentUserId={user?.uid}
                         onAdd={handleAddRecurring}
                         onDelete={handleDeleteRecurring}
+                        onAddCategory={addCategory}
                     />
                 )}
             </div>
@@ -318,6 +321,7 @@ export default function AppPage() {
                     categories={categories}
                     onClose={() => setEditingTx(null)}
                     onSave={handleEditSave}
+                    onAddCategory={addCategory}
                 />
             )}
         </>

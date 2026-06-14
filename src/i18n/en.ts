@@ -208,6 +208,7 @@ export const en: T = {
     noPendingRequests: 'No pending requests',
     householdNamePlaceholder: 'Household name...',
     emojiSearchPlaceholder: 'Search emoji...',
+    categorySearchPlaceholder: 'Search category...',
     checkItem: 'Check item',
     uncheckItem: 'Uncheck item',
     deleteItem: 'Delete item',
