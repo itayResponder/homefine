@@ -22,6 +22,8 @@ interface Props {
     onAdd: (charge: Omit<RecurringCharge, 'id'>) => void
     onDelete: (r: RecurringCharge) => void
     onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
+    onUpdateCategory?: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
+    onDeleteCategory?: (id: string) => Promise<void>
 }
 
 interface FormState {
@@ -34,7 +36,7 @@ interface FormState {
     monthCount: string
 }
 
-export function RecurringSection({ recurringCharges, members, categories, currentUserId, onAdd, onDelete, onAddCategory }: Props) {
+export function RecurringSection({ recurringCharges, members, categories, currentUserId, onAdd, onDelete, onAddCategory, onUpdateCategory, onDeleteCategory }: Props) {
     const { t } = useI18n()
 
     const emptyForm = (): FormState => ({
@@ -147,6 +149,8 @@ export function RecurringSection({ recurringCharges, members, categories, curren
                             value={form.category}
                             onChange={(v) => setField('category', v as TransactionCategory)}
                             onAddCategory={onAddCategory}
+                            onUpdateCategory={onUpdateCategory}
+                            onDeleteCategory={onDeleteCategory}
                             error={!!errors.category}
                         />
                         {errors.category && <span className="field-error">{errors.category}</span>}

@@ -16,6 +16,8 @@ interface Props {
     onClose: () => void
     onSave: (id: string, changes: Partial<Transaction>) => Promise<void>
     onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
+    onUpdateCategory?: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
+    onDeleteCategory?: (id: string) => Promise<void>
 }
 
 interface FormState {
@@ -27,7 +29,7 @@ interface FormState {
     date: string
 }
 
-export function EditTransactionModal({ tx, members, categories, onClose, onSave, onAddCategory }: Props) {
+export function EditTransactionModal({ tx, members, categories, onClose, onSave, onAddCategory, onUpdateCategory, onDeleteCategory }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [form, setForm] = useState<FormState>({
@@ -99,6 +101,8 @@ export function EditTransactionModal({ tx, members, categories, onClose, onSave,
                             value={form.category}
                             onChange={(v) => set('category', v)}
                             onAddCategory={onAddCategory}
+                            onUpdateCategory={onUpdateCategory}
+                            onDeleteCategory={onDeleteCategory}
                         />
                     </div>
 

@@ -33,9 +33,16 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
   - Legacy `categoryNames`/`categoryOptions` removed from i18n files (were unused)
 - ✅ `CategorySelect` — unified category picker used in TransactionView, EditTransactionModal, RecurringSection
   - bottom sheet on mobile, centered modal on desktop
-  - search (Hebrew + English), grid of icons, inline "+ קטגוריה חדשה" mini-form with EmojiPicker
-  - after adding, auto-selects the new category and closes the modal
+  - search (Hebrew + English), grid of icons, inline mini-form with EmojiPicker for add + edit
+  - trigger button styled identically to `CustomSelect` (uses `--ib`, `--ibg`, `--clr-dark`, `--rs`, `--clr-purple`)
+  - X button in modal corner (always visible); backdrop click also closes
   - `error?: boolean` prop — same validation UX as CustomSelect
+  - `onUpdateCategory?` / `onDeleteCategory?` — edit ✏️ button on each grid item (hover on desktop, always on mobile); delete 🗑️ in edit form; if deleted category was selected, clears selection
+  - `defaultOpen` / `defaultMode` / `defaultEditId` / `onClose` props — management mode (no trigger rendered, modal opens immediately); used by CategoryManager
+- ✅ `CategoryManager` (settings) — rewritten to use `CategorySelect` for full UI consistency
+  - inline grid using `csel-*` classes (same visual as picker modal)
+  - click category / ✏️ → opens CategorySelect in edit mode; "+ הוסף קטגוריה" → opens in add mode
+  - old chip-list + inline form removed
 - ✅ EmojiPicker search fix — groups now have `labelEn`; search filters by Hebrew `label` OR English `labelEn`
 - ✅ Recurring charges (auto-apply monthly)
 - ✅ Audit logs with diff tracking

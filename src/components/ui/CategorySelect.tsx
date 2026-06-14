@@ -11,8 +11,15 @@ interface Props {
     value: string
     onChange: (categoryId: string) => void
     onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
+    onUpdateCategory?: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
+    onDeleteCategory?: (id: string) => Promise<void>
     placeholder?: string
     error?: boolean
+    // Management mode — used by CategoryManager
+    defaultOpen?: boolean
+    defaultMode?: 'list' | 'add' | 'edit'
+    defaultEditId?: string
+    onClose?: () => void
 }
 
 interface AddForm {
@@ -23,14 +30,32 @@ interface AddForm {
 
 const emptyAdd = (): AddForm => ({ icon: '💰', name: '', nameEn: '' })
 
-export function CategorySelect({ categories, value, onChange, onAddCategory, placeholder, error }: Props) {
+function initAddForm(props: Props): AddForm {
+    if (props.defaultOpen && props.defaultMode === 'edit' && props.defaultEditId) {
+        const cat = props.categories.find(c => c.id === props.defaultEditId)
+        if (cat) return { icon: cat.icon, name: cat.name, nameEn: cat.nameEn }
+    }
+    return emptyAdd()
+}
+
+export function CategorySelect(props: Props) {
+    const { categories, value, onChange, onAddCategory, onUpdateCategory, onDeleteCategory,
+            placeholder, error, defaultOpen, defaultMode, defaultEditId, onClose } = props
+
     const { t } = useI18n()
     const isRtl = t.dir === 'rtl'
 
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(defaultOpen ?? false)
     const [search, setSearch] = useState('')
-    const [mode, setMode] = useState<'list' | 'add'>('list')
-    const [addForm, setAddForm] = useState<AddForm>(emptyAdd())
+    const [mode, setMode] = useState<'list' | 'add' | 'edit'>(() => {
+        if (defaultOpen && defaultMode) return defaultMode
+        return 'list'
+    })
+    const [editingId, setEditingId] = useState<string | null>(() => {
+        if (defaultOpen && defaultMode === 'edit' && defaultEditId) return defaultEditId
+        return null
+    })
+    const [addForm, setAddForm] = useState<AddForm>(() => initAddForm(props))
     const [addErrors, setAddErrors] = useState<{ name?: string; nameEn?: string }>({})
     const [saving, setSaving] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
@@ -51,6 +76,7 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
     const openModal = () => {
         setSearch('')
         setMode('list')
+        setEditingId(null)
         setAddForm(emptyAdd())
         setAddErrors({})
         setOpen(true)
@@ -60,6 +86,7 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
         setOpen(false)
         setShowPicker(false)
         setPickerAnchor(null)
+        onClose?.()
     }
 
     const selectCat = (id: string) => {
@@ -70,6 +97,25 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
     const setAddField = <K extends keyof AddForm>(key: K, val: AddForm[K]) => {
         setAddForm(f => ({ ...f, [key]: val }))
         setAddErrors(e => ({ ...e, [key]: undefined }))
+    }
+
+    const openEdit = (cat: Category, e: React.MouseEvent) => {
+        e.stopPropagation()
+        setEditingId(cat.id)
+        setAddForm({ icon: cat.icon, name: cat.name, nameEn: cat.nameEn })
+        setAddErrors({})
+        setShowPicker(false)
+        setPickerAnchor(null)
+        setMode('edit')
+    }
+
+    const backToList = () => {
+        setMode('list')
+        setEditingId(null)
+        setAddForm(emptyAdd())
+        setAddErrors({})
+        setShowPicker(false)
+        setPickerAnchor(null)
     }
 
     const handleAdd = async (e: React.FormEvent) => {
@@ -88,34 +134,85 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
             order,
         })
         setSaving(false)
-        onChange(newId)
-        closeModal()
+        if (!defaultOpen) {
+            onChange(newId)
+            closeModal()
+        } else {
+            backToList()
+            closeModal()
+        }
     }
+
+    const handleEdit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!editingId) return
+        const errs: typeof addErrors = {}
+        if (!addForm.name.trim()) errs.name = t.categoryNameRequired
+        if (!addForm.nameEn.trim()) errs.nameEn = t.categoryNameEnRequired
+        if (Object.keys(errs).length) { setAddErrors(errs); return }
+
+        setSaving(true)
+        await onUpdateCategory?.(editingId, {
+            name: addForm.name.trim(),
+            nameEn: addForm.nameEn.trim(),
+            icon: addForm.icon,
+        })
+        setSaving(false)
+        if (defaultOpen) {
+            closeModal()
+        } else {
+            backToList()
+        }
+    }
+
+    const handleDelete = async () => {
+        if (!editingId) return
+        setSaving(true)
+        await onDeleteCategory?.(editingId)
+        setSaving(false)
+        if (value === editingId) onChange('')
+        if (defaultOpen) {
+            closeModal()
+        } else {
+            backToList()
+        }
+    }
+
+    const canEdit = !!(onUpdateCategory || onDeleteCategory)
 
     return (
         <>
-            <button
-                type="button"
-                className={`csel-trigger${error ? ' csel-trigger--error' : ''}`}
-                onClick={openModal}
-            >
-                {selected ? (
-                    <>
-                        <span className="csel-trigger-icon">{selected.icon}</span>
-                        <span className="csel-trigger-name">{catName(selected)}</span>
-                    </>
-                ) : (
-                    <span className="csel-trigger-placeholder">
-                        {placeholder ?? t.categoryLabel}
-                    </span>
-                )}
-                <span className="csel-trigger-arr">▼</span>
-            </button>
+            {!defaultOpen && (
+                <button
+                    type="button"
+                    className={`csel-trigger${error ? ' csel-trigger--error' : ''}`}
+                    onClick={openModal}
+                >
+                    {selected ? (
+                        <>
+                            <span className="csel-trigger-icon">{selected.icon}</span>
+                            <span className="csel-trigger-name">{catName(selected)}</span>
+                        </>
+                    ) : (
+                        <span className="csel-trigger-placeholder">
+                            {placeholder ?? t.categoryLabel}
+                        </span>
+                    )}
+                    <span className="csel-trigger-arr">▼</span>
+                </button>
+            )}
 
             {open && createPortal(
                 <>
                     <div className="csel-backdrop" onClick={closeModal} />
                     <div className="csel-panel" onClick={e => e.stopPropagation()}>
+
+                        <button
+                            type="button"
+                            className="csel-close-btn"
+                            onClick={closeModal}
+                            aria-label="Close"
+                        >✕</button>
 
                         {/* Search header — only in list mode */}
                         {mode === 'list' && (
@@ -134,15 +231,24 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
                             <>
                                 <div className="csel-grid">
                                     {filtered.length > 0 ? filtered.map(cat => (
-                                        <button
-                                            key={cat.id}
-                                            type="button"
-                                            className={`csel-item${cat.id === value ? ' csel-item--active' : ''}`}
-                                            onClick={() => selectCat(cat.id)}
-                                        >
-                                            <span className="csel-item-icon">{cat.icon}</span>
-                                            <span className="csel-item-name">{catName(cat)}</span>
-                                        </button>
+                                        <div key={cat.id} className="csel-item-wrap">
+                                            <button
+                                                type="button"
+                                                className={`csel-item${cat.id === value ? ' csel-item--active' : ''}`}
+                                                onClick={() => selectCat(cat.id)}
+                                            >
+                                                <span className="csel-item-icon">{cat.icon}</span>
+                                                <span className="csel-item-name">{catName(cat)}</span>
+                                            </button>
+                                            {canEdit && (
+                                                <button
+                                                    type="button"
+                                                    className="csel-item-edit-btn"
+                                                    onClick={e => openEdit(cat, e)}
+                                                    aria-label="Edit category"
+                                                >✏️</button>
+                                            )}
+                                        </div>
                                     )) : (
                                         <div className="csel-empty">{isRtl ? 'לא נמצאו תוצאות' : 'No results'}</div>
                                     )}
@@ -158,8 +264,14 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
                                 </div>
                             </>
                         ) : (
-                            <form className="csel-add-form" onSubmit={handleAdd} noValidate>
-                                <div className="csel-add-title">{t.categoryNewTitle}</div>
+                            <form
+                                className="csel-add-form"
+                                onSubmit={mode === 'edit' ? handleEdit : handleAdd}
+                                noValidate
+                            >
+                                <div className="csel-add-title">
+                                    {mode === 'edit' ? t.categoryEditTitle : t.categoryNewTitle}
+                                </div>
 
                                 {/* Icon picker */}
                                 <div className="csel-add-field">
@@ -229,10 +341,20 @@ export function CategorySelect({ categories, value, onChange, onAddCategory, pla
                                 </div>
 
                                 <div className="csel-add-actions">
+                                    {mode === 'edit' && onDeleteCategory && (
+                                        <button
+                                            type="button"
+                                            className="csel-delete-btn"
+                                            onClick={handleDelete}
+                                            disabled={saving}
+                                        >
+                                            🗑️
+                                        </button>
+                                    )}
                                     <button
                                         type="button"
                                         className="csel-cancel-btn"
-                                        onClick={() => setMode('list')}
+                                        onClick={defaultOpen ? closeModal : backToList}
                                     >
                                         {t.cancel}
                                     </button>

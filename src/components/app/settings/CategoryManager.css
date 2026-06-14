@@ -6,11 +6,10 @@
     gap: 12px;
 }
 
-/* ── Chip list ── */
-.cm-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+/* Grid override for inline (settings) context */
+.cm-grid {
+    overflow-y: visible;
+    padding: 0;
 }
 
 .cm-chip {

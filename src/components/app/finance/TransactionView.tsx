@@ -23,9 +23,11 @@ interface Props {
     onDelete: (tx: Transaction) => void
     onEdit: (tx: Transaction) => void
     onAddCategory: (cat: Omit<Category, 'id'>) => Promise<string>
+    onUpdateCategory?: (id: string, data: Partial<Omit<Category, 'id'>>) => Promise<void>
+    onDeleteCategory?: (id: string) => Promise<void>
 }
 
-export function TransactionView({ type, transactions, members, categories, month, currentUserId, onAdd, onDelete, onEdit, onAddCategory }: Props) {
+export function TransactionView({ type, transactions, members, categories, month, currentUserId, onAdd, onDelete, onEdit, onAddCategory, onUpdateCategory, onDeleteCategory }: Props) {
     const { t } = useI18n()
     const getMemberName = useMemberName()
     const [desc, setDesc] = useState('')
@@ -113,6 +115,8 @@ export function TransactionView({ type, transactions, members, categories, month
                                 value={category}
                                 onChange={(v) => { setCategory(v); setErrors(prev => ({ ...prev, category: undefined })) }}
                                 onAddCategory={onAddCategory}
+                                onUpdateCategory={onUpdateCategory}
+                                onDeleteCategory={onDeleteCategory}
                                 error={!!errors.category}
                             />
                             {errors.category && <span className="field-error">{errors.category}</span>}
