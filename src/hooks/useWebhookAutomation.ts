@@ -4,10 +4,8 @@ import {
     saveWebhookConfig,
     deleteWebhookConfig,
     subscribeWebhookConfig,
-    getAllWebhookConfigs,
-    getHouseholdName,
 } from '../firebase/db'
-import { generateMacroDroidFile } from '../utils/macroDroid'
+import { generateAutomateFlow } from '../utils/automateFlow'
 import type { WebhookConfig } from '../types'
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
@@ -25,7 +23,7 @@ interface UseWebhookAutomationResult {
     webhookSaving: boolean
     webhookTestStatus: TestStatus
     webhookTestError: string
-    handleDownloadMacro: () => Promise<void>
+    handleDownloadFlow: () => Promise<void>
     handleTestWebhook: () => Promise<void>
     handleGenerateKey: () => Promise<void>
     handleDeleteConfig: () => Promise<void>
@@ -43,21 +41,14 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
         return subscribeWebhookConfig(currentUserId, householdId, setWebhookConfig)
     }, [currentUserId, householdId])
 
-    const handleDownloadMacro = async () => {
+    const handleDownloadFlow = async () => {
         if (!webhookConfig) return
-        const allConfigs = await getAllWebhookConfigs(currentUserId)
-        const entries = await Promise.all(
-            Object.entries(allConfigs).map(async ([hId, cfg]) => ({
-                apiKey: cfg.apiKey,
-                householdName: await getHouseholdName(hId),
-            }))
-        )
-        const json = generateMacroDroidFile(entries, WEBHOOK_URL)
-        const blob = new Blob([json], { type: 'application/octet-stream' })
+        const json = generateAutomateFlow(webhookConfig.apiKey, WEBHOOK_URL)
+        const blob = new Blob([json], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'HomeFine_Wallet.mdr'
+        a.download = 'HomeFine_Wallet.flo'
         a.click()
         URL.revokeObjectURL(url)
     }
@@ -113,7 +104,7 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
         webhookSaving,
         webhookTestStatus,
         webhookTestError,
-        handleDownloadMacro,
+        handleDownloadFlow,
         handleTestWebhook,
         handleGenerateKey,
         handleDeleteConfig,

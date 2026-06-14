@@ -1,110 +1,57 @@
 ---
 name: project-automation-webhook
-description: "Google Wallet → HomeFine automation: Cloudflare Worker webhook, parser, MacroDroid setup, debugging findings"
+description: "Google Wallet → HomeFine automation: Render Backend webhook, Automate (LlamaLab) .flo flow, setup and debugging"
 metadata: 
   node_type: memory
   type: project
   originSessionId: ce781d7a-5fc4-4b1c-963e-7ccba48a3d3b
 ---
 
-Webhook automation is built and fully working. Google Wallet push notifications → MacroDroid → Cloudflare Worker → Firebase Realtime DB.
+Webhook automation is built and fully working. Google Wallet push notifications → Automate (LlamaLab) → HomeFine Backend (Render) → Firebase Realtime DB.
 
-**Why:** User wants automatic transaction entry from Google Wallet. Chose Cloudflare over Firebase Functions to avoid Blaze plan requirement.
+**Why:** User wants automatic transaction entry from Google Wallet. Backend runs on Render (`homefine-backend.onrender.com`), replacing the old Cloudflare Worker.
 
 **Architecture:**
-- `worker/` — Cloudflare Worker (TypeScript, Wrangler)
-- `worker/src/index.ts` — auth + DB write via Firebase REST API + service account JWT
-- `worker/src/parser.ts` — parses Google Wallet format: title `"MERCHANT  D/M/YY"` or `"MERCHANT"` (falls back to today), body `"₪amount with CardName ••1289"`
-- `functions/` — Firebase Functions equivalent, **kept for future Blaze migration** (do not delete)
-- `database.rules.json` — `webhookKeys/` path added (no client read); `webhookDebug/` path added (owner-read, member-write)
-- `VITE_WEBHOOK_URL` in `.env` — `https://homefine-webhook.homefine.workers.dev`
+- Backend at `https://homefine-backend.onrender.com/api/webhook` — receives POST, parses Google Wallet notification, writes transaction to Firebase
+- `src/utils/automateFlow.ts` — `generateAutomateFlow(apiKey, webhookUrl): string` generates Automate (LlamaLab) JSON flow file (`.flo`)
+- `src/hooks/useWebhookAutomation.ts` — `handleDownloadFlow` downloads `HomeFine_Wallet.flo` (mime: `application/json`)
+- `VITE_WEBHOOK_URL` in `.env` — `https://homefine-backend.onrender.com/api/webhook`
 
 **DB paths:**
 - `webhookKeys/{apiKey}: { uid, householdId, memberId }` — reverse lookup for auth
-- `userPrefs/{uid}/webhookConfigs/{householdId}: { apiKey, householdId, memberId, lastPingedAt? }` — **per-household** config
-- `households/{id}/webhookDebug/{pushId}: { title, body, ts, error }` — written by Worker on parse failure; owner-readable for debugging
+- `userPrefs/{uid}/webhookConfigs/{householdId}: { apiKey, householdId, memberId, lastPingedAt? }` — per-household config
+- `households/{id}/webhookDebug/{pushId}: { title, body, ts, error }` — written by backend on parse failure; owner-readable
 
-**To deploy Worker:**
-```bash
-cd worker && npm install
-wrangler login
-wrangler secret put FIREBASE_CLIENT_EMAIL
-wrangler secret put FIREBASE_PRIVATE_KEY
-wrangler deploy
-# Update VITE_WEBHOOK_URL in .env → rebuild frontend
-```
-Service account from: Firebase Console → Project Settings → Service Accounts → Generate new private key
+**Automate (LlamaLab) setup — via download button:**
+- App Settings → "הורד Flow" → downloads `HomeFine_Wallet.flo`
+- Automate → Import → select the .flo file → everything is pre-configured
+- Flow: NotificationPosted (Google Wallet package) → HttpRequest POST to webhook with apiKey + notification title/body
 
-**Future migration to Firebase Blaze (user requested):**
-1. Upgrade project to Blaze plan at console.firebase.google.com
-2. `firebase deploy --only functions`
-3. `VITE_WEBHOOK_URL=https://europe-west1-homefine-a7613.cloudfunctions.net/smsWebhook`
-4. Rebuild + redeploy frontend (`npm run build && firebase deploy --only hosting`)
-5. Delete `worker/` after confirming
-
-**Bugs fixed during setup (important for future deploys):**
-- Private key stored with literal `\n` sequences → added `.replace(/\\n/g, '\n')` in `importPrivateKey`
-- Private key stored with surrounding JSON quotes `"` → added `.replace(/"/g, '')` in `importPrivateKey`
-- Both fixes are now in `worker/src/index.ts`
-
-**MacroDroid setup — via download button (recommended):**
-- App Settings → "הורד קובץ הגדרה ל-MacroDroid" → downloads `HomeFine_Wallet.mdr`
-- MacroDroid → Export/Import → Import → Select items to import → check macro → OK (don't check "Clear existing data")
-- The downloaded .mdr fetches ALL configured households for the user and generates ONE macro with ONE trigger + one HTTP action per household
-- Re-downloading and re-importing replaces the old macro with an updated version (e.g. when a new household is added)
-
-**Multi-household support (updated architecture):**
-- Each household has its own API key at `userPrefs/{uid}/webhookConfigs/{householdId}`
-- **Single macro, multiple HTTP actions** — `generateMacroDroidFile` in `SettingsView.tsx` reads ALL webhook configs via `getAllWebhookConfigs(uid)` + `getHouseholdName(hId)` and generates one macro covering all households
-- Macro name: `"Google Wallet → HomeFine (בית1, בית2)"`
-- File name: `HomeFine_Wallet.mdr` (not per-household)
-
-**Automation UI features (SettingsView) — simplified:**
-- **No URL or API Key displayed** — key is baked into .mdr file, user never needs to see it
+**Automation UI features (SettingsView):**
 - Connection status: 🟢 "מחובר — פעיל לאחרונה DD/MM/YY HH:MM" or ⚪ "טרם חובר"
-- "הורד קובץ הגדרה ל-MacroDroid" → downloads `HomeFine_Wallet.mdr` covering ALL households
+- "הורד Flow" → downloads `HomeFine_Wallet.flo` for the current household
 - "בדוק חיבור" → sends ₪1 test transaction (isTest:true, does NOT update lastPingedAt); shows ✅/❌
 - "כבה אוטומציה" — subtle underline link at bottom, deletes config from Firebase
 - **Android only** — iOS has no notification interception equivalent
 
-**CRITICAL — MacroDroid variable format:**
-- **CORRECT:** `{not_title}` and `{notification}` — must be inserted via the `...` (Magic Text) button in Content Body, NOT typed manually
-- **WRONG:** `%%ntitle%%` and `%%ntbody%%` — these are NOT substituted in HTTP body (they get sent as literal strings)
-- The `.mdr` file generated by the app uses the correct `{not_title}` / `{notification}` format
-
-**CRITICAL — MacroDroid trigger conflict:**
-- Having TWO separate macros both listening to Google Wallet notifications causes a conflict — neither fires
-- Solution: single macro with multiple HTTP actions (one per household) — implemented in current .mdr generation
-
-**Parser details:**
+**Parser details (backend):**
 - Body regex: `/[₪﹩]?\s*([\d,]+\.?\d*)\s+with\s+(.+?)\s+[^\d\s]{1,4}(\d{4})/i`
 - Accepts any non-digit separator before card last-4 (handles `••`, `..`, or other variants)
 - Title: splits on 2+ spaces; first part = merchant, second = date (D/M/YY) or time (falls back to today)
 
 **Debugging — webhookDebug path:**
-- Worker writes to `households/{id}/webhookDebug/` on **every authenticated request** (not just failures)
-- Status values: `received` (key valid, before parse) | `parse_failed` (422) | `ok` + transactionId (success)
-- If nothing appears in webhookDebug → MacroDroid didn't fire OR apiKey invalid (400/401)
-- 422 from MacroDroid "Test Trigger" is ALWAYS expected (test sends dummy values)
-- To test without real purchase: PowerShell `Invoke-RestMethod` with `[char]0x2022` for bullet chars + UTF-8 bytes encoding
-- **WhatsApp as test:** gives 400 (Invalid JSON) because WhatsApp notification content can contain `"` chars that break the JSON body. Not representative of Google Wallet behavior.
+- Backend writes to `households/{id}/webhookDebug/` on every authenticated request
+- Status values: `parse_failed` (422) | `ok` + transactionId (success)
+- If nothing appears in webhookDebug → Automate didn't fire OR apiKey invalid
 
 **Debug checklist after a purchase:**
-1. MacroDroid System Log → did macro fire? what response code?
-2. Firebase → `webhookDebug` → `status: received/parse_failed/ok`? + `logStatus` (HTTP code of log write)
+1. Automate flow log → did flow fire? what response code?
+2. Firebase → `webhookDebug` → `status: parse_failed/ok`? + `logStatus`
 3. Firebase → `transactions` → was transaction written?
 4. App → Logs modal → "⚡ אוטומציה" entry should appear
 
-**CRITICAL — Cloudflare Worker fire-and-forget:**
-- The log write MUST be awaited (`const logResp = await fetch(...)`) — fire-and-forget is NOT guaranteed to complete in Cloudflare Workers
-- webhookDebug writes use `writeDebug()` (fire-and-forget) and DO work because they are called before the response is sent and the Worker keeps them alive
-- `who` field in log entries = `'⚡ אוטומציה'` (not the user UID)
+**Migration history:**
+- Previously used Cloudflare Worker (`homefine-webhook.homefine.workers.dev`) + MacroDroid (`.mdr` file)
+- Migrated 2026-06-14 to Render Backend + Automate (LlamaLab) (`.flo` file)
 
-**Current deployment status (2026-06-07) — FULLY WORKING ✅:**
-- Worker at `https://homefine-webhook.homefine.workers.dev` ✅
-- Real Google Wallet notification confirmed working end-to-end (2026-06-07) ✅
-- Single .mdr covers all households ✅
-- webhookDebug logging on parse failure ✅
-- Flexible parser (any separator before card-4) ✅
-
-**How to apply:** When user asks to migrate to Blaze or deploy the webhook, follow steps above.
+**How to apply:** When user asks about webhook/automation, refer to Render Backend + Automate. The old Worker/MacroDroid references are obsolete.
