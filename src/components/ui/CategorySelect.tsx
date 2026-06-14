@@ -221,7 +221,7 @@ export function CategorySelect(props: Props) {
                                     placeholder={t.categorySearchPlaceholder}
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
-                                    autoFocus
+                                    autoFocus={!window.matchMedia('(max-width: 600px)').matches}
                                 />
                             </div>
                         )}
