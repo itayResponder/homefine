@@ -7,8 +7,6 @@ import {
 } from '../firebase/db'
 import type { WebhookConfig } from '../types'
 import { generateAutomateFlowBinary } from '../utils/automateFlow'
-import { useAllWebhookConfigs } from './useAllWebhookConfigs'
-
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
 type TestStatus = 'idle' | 'loading' | 'ok' | 'error'
@@ -38,7 +36,6 @@ interface UseWebhookAutomationResult {
 export function useWebhookAutomation({ householdId, currentUserId, memberId }: Options): UseWebhookAutomationResult {
     const { t } = useI18n()
 
-    const allConfigs = useAllWebhookConfigs(currentUserId)
     const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
     const [webhookSaving, setWebhookSaving] = useState(false)
     const [webhookTestStatus, setWebhookTestStatus] = useState<TestStatus>('idle')
@@ -118,8 +115,11 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
     }
 
     const handleDownloadFlow = () => {
-        if (allConfigs.length === 0) return
-        const binary = generateAutomateFlowBinary(allConfigs, WEBHOOK_URL)
+        if (!webhookConfig) return
+        const binary = generateAutomateFlowBinary(
+            [{ apiKey: webhookConfig.apiKey }],
+            WEBHOOK_URL
+        )
         const blob = new Blob([binary], { type: 'application/octet-stream' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
