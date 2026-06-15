@@ -3,6 +3,8 @@ import { useWebhookAutomation } from '../../../hooks/useWebhookAutomation'
 import type { Member } from '../../../types'
 import styles from '../SettingsView.module.css'
 
+const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
+
 interface Props {
     householdId: string
     currentUserId: string
@@ -17,7 +19,10 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
         webhookSaving,
         webhookTestStatus,
         webhookTestError,
-        handleDownloadFlow,
+        copyStatus,
+        copyUrlStatus,
+        handleCopyBody,
+        handleCopyUrl,
         handleTestWebhook,
         handleGenerateKey,
         handleDeleteConfig,
@@ -36,13 +41,29 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
                             : `⚪ ${t.settings.automationNotConnected}`}
                     </div>
 
-                    <button
-                        onClick={handleDownloadFlow}
-                        className={`${styles.automationBtn} ${styles.downloadBtn}`}
-                    >
-                        📥 {t.settings.automationDownloadBtn}
-                    </button>
-                    <div className={styles.automationInstructions}>{t.settings.automationInstructions}</div>
+                    <div className={styles.automationSetup}>
+                        <div className={styles.automationSetupTitle}>
+                            {t.settings.automationSetupTitle}
+                        </div>
+
+                        <div className={styles.automationSetupLabel}>{t.settings.automationUrlLabel}</div>
+                        <div className={styles.automationCodeRow}>
+                            <code className={styles.automationCode}>{WEBHOOK_URL}</code>
+                            <button onClick={handleCopyUrl} className={styles.copyBtn}>
+                                {copyUrlStatus === 'copied' ? '✅' : '📋'}
+                            </button>
+                        </div>
+
+                        <div className={styles.automationSetupLabel}>{t.settings.automationBodyLabel}</div>
+                        <div className={styles.automationCodeRow}>
+                            <code className={styles.automationCode}>
+                                {`{"title":"{notifTitle}","body":"{notifText}","apiKey":"${webhookConfig.apiKey}","ticker":"{notifTicker}","timestamp":"{notifTimestamp}","extras":"{notifExtras}"}`}
+                            </code>
+                            <button onClick={handleCopyBody} className={styles.copyBtn}>
+                                {copyStatus === 'copied' ? '✅' : '📋'}
+                            </button>
+                        </div>
+                    </div>
 
                     <button
                         onClick={handleTestWebhook}

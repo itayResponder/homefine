@@ -194,8 +194,9 @@ export interface T {
         automationDesc: string
         automationConnected: string
         automationNotConnected: string
-        automationDownloadBtn: string
-        automationInstructions: string
+        automationSetupTitle: string
+        automationUrlLabel: string
+        automationBodyLabel: string
         automationTestBtn: string
         automationTestOk: string
         automationDisableBtn: string

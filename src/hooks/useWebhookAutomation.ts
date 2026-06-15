@@ -5,12 +5,12 @@ import {
     deleteWebhookConfig,
     subscribeWebhookConfig,
 } from '../firebase/db'
-import { generateAutomateFlow } from '../utils/automateFlow'
 import type { WebhookConfig } from '../types'
 
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
 type TestStatus = 'idle' | 'loading' | 'ok' | 'error'
+type CopyStatus = 'idle' | 'copied'
 
 interface Options {
     householdId: string
@@ -23,7 +23,10 @@ interface UseWebhookAutomationResult {
     webhookSaving: boolean
     webhookTestStatus: TestStatus
     webhookTestError: string
-    handleDownloadFlow: () => Promise<void>
+    copyStatus: CopyStatus
+    copyUrlStatus: CopyStatus
+    handleCopyBody: () => Promise<void>
+    handleCopyUrl: () => Promise<void>
     handleTestWebhook: () => Promise<void>
     handleGenerateKey: () => Promise<void>
     handleDeleteConfig: () => Promise<void>
@@ -36,21 +39,32 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
     const [webhookSaving, setWebhookSaving] = useState(false)
     const [webhookTestStatus, setWebhookTestStatus] = useState<TestStatus>('idle')
     const [webhookTestError, setWebhookTestError] = useState('')
+    const [copyStatus, setCopyStatus] = useState<CopyStatus>('idle')
+    const [copyUrlStatus, setCopyUrlStatus] = useState<CopyStatus>('idle')
 
     useEffect(() => {
         return subscribeWebhookConfig(currentUserId, householdId, setWebhookConfig)
     }, [currentUserId, householdId])
 
-    const handleDownloadFlow = async () => {
+    const handleCopyBody = async () => {
         if (!webhookConfig) return
-        const json = generateAutomateFlow(webhookConfig.apiKey, WEBHOOK_URL)
-        const blob = new Blob([json], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = 'HomeFine_Wallet.flo'
-        a.click()
-        URL.revokeObjectURL(url)
+        const body = JSON.stringify({
+            title: '{notifTitle}',
+            body: '{notifText}',
+            apiKey: webhookConfig.apiKey,
+            ticker: '{notifTicker}',
+            timestamp: '{notifTimestamp}',
+            extras: '{notifExtras}',
+        })
+        await navigator.clipboard.writeText(body)
+        setCopyStatus('copied')
+        setTimeout(() => setCopyStatus('idle'), 2000)
+    }
+
+    const handleCopyUrl = async () => {
+        await navigator.clipboard.writeText(WEBHOOK_URL)
+        setCopyUrlStatus('copied')
+        setTimeout(() => setCopyUrlStatus('idle'), 2000)
     }
 
     const handleTestWebhook = async () => {
@@ -104,7 +118,10 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
         webhookSaving,
         webhookTestStatus,
         webhookTestError,
-        handleDownloadFlow,
+        copyStatus,
+        copyUrlStatus,
+        handleCopyBody,
+        handleCopyUrl,
         handleTestWebhook,
         handleGenerateKey,
         handleDeleteConfig,

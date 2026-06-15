@@ -71,10 +71,10 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Backend webhook (`https://homefine-backend.onrender.com/api/webhook`) — receives Google Wallet push notifications via Automate (LlamaLab) and writes transactions to Firebase
 - ✅ `webhookKeys/{apiKey}` Firebase path — reverse lookup (uid, householdId, memberId). No client-read.
 - ✅ `userPrefs/{uid}/webhookConfigs/{householdId}` — **per-household** config (apiKey, householdId, memberId, lastPingedAt)
-- ✅ Automation UI in SettingsView — connection status (🟢/⚪), `.flo` download, test button, subtle "כבה אוטומציה" link. No URL/key display (baked into .flo). Android only.
+- ✅ Automation UI in SettingsView — connection status (🟢/⚪), "הגדרת Automate" section with copy buttons for Webhook URL + Request body (apiKey baked in), test button, subtle "כבה אוטומציה" link. Android only.
 - ✅ "לוג רכישות" in ⚙️ dropdown menu (AppHeader) — WebhookLogModal with two tabs: הצליחו (ok) / כשלו (parse_failed). Delete individual entries or clear tab. Rendered from HouseholdLayout.
 - ✅ Webhook transactions appear in Logs modal with `who: '⚡ אוטומציה'`
-- ✅ `.flo` download — `generateAutomateFlow(apiKey, webhookUrl)` in `src/utils/automateFlow.ts` generates a single-household Automate flow JSON (`HomeFine_Wallet.flo`). Import directly into Automate app.
+- ✅ Manual Automate setup — UI shows Webhook URL (📋 copy) + pre-filled JSON body with apiKey (📋 copy). User pastes both manually into Automate's HTTP Request block. `src/utils/automateFlow.ts` deleted (binary .flo import was not supported by Automate).
 - ✅ `lastPingedAt` — backend writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-backend.onrender.com/api/webhook`

@@ -324,11 +324,12 @@
   opacity: 0.6;
 }
 
-.automationInstructions {
-  font-size: 11px;
-  color: #64748B;
-  line-height: 1.6;
-}
+.automationSetup { margin: 12px 0; display: flex; flex-direction: column; gap: 6px; }
+.automationSetupTitle { font-weight: 600; font-size: 0.9rem; color: var(--clr-dark); }
+.automationSetupLabel { font-size: 0.8rem; color: #64748B; margin-top: 8px; }
+.automationCodeRow { display: flex; align-items: center; gap: 8px; background: #F8FAFC; border-radius: 8px; padding: 8px 12px; }
+.automationCode { font-size: 0.75rem; word-break: break-all; flex: 1; color: var(--clr-dark); font-family: monospace; }
+.copyBtn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 4px; flex-shrink: 0; }
 
 .testSuccess {
   font-size: 11px;
