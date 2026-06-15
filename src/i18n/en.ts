@@ -179,6 +179,7 @@ export const en: T = {
         automationInvalidKey: 'Invalid API key — regenerate',
         automationUnknownError: 'Unknown error',
         automationServerError: 'Server unavailable — try again',
+        automationDownloadBtn: 'Download Flow for Automate',
         colorThemeTitle: 'Primary Color',
         colorThemeHint: 'Click to change color',
         colorThemeReset: 'Reset',

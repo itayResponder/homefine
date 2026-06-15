@@ -179,6 +179,7 @@ export const he: T = {
         automationInvalidKey: 'מפתח לא תקין — צור מפתח חדש',
         automationUnknownError: 'שגיאה לא ידועה',
         automationServerError: 'השרת לא זמין — נסה שוב',
+        automationDownloadBtn: 'הורד Flow לAutomate',
         colorThemeTitle: 'צבע ראשי',
         colorThemeHint: 'לחץ לשינוי הצבע',
         colorThemeReset: 'איפוס',

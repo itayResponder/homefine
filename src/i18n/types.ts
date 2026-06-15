@@ -204,6 +204,7 @@ export interface T {
         automationInvalidKey: string
         automationUnknownError: string
         automationServerError: string
+        automationDownloadBtn: string
         // Color theme
         colorThemeTitle: string
         colorThemeHint: string

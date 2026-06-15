@@ -1,6 +1,6 @@
 ---
 name: project-automation-webhook
-description: "Google Wallet → HomeFine automation: Render Backend webhook, Automate (LlamaLab) manual HTTP setup"
+description: "Google Wallet → HomeFine automation: Render Backend webhook, Automate (LlamaLab) manual setup + .flo binary download"
 metadata: 
   node_type: memory
   type: project
@@ -13,8 +13,9 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 
 **Architecture:**
 - Backend at `https://homefine-backend.onrender.com/api/webhook` — receives POST, parses Google Wallet notification, writes transaction to Firebase
-- `src/utils/automateFlow.ts` — **DELETED** (2026-06-15). .flo format is binary-proprietary and cannot be imported from JSON.
-- `src/hooks/useWebhookAutomation.ts` — exposes `handleCopyBody` + `handleCopyUrl` + `copyStatus` + `copyUrlStatus` (replaced old `handleDownloadFlow`)
+- `src/utils/automateFlow.ts` — **RECREATED** (2026-06-15). Generates `.flo` binary (Automate proprietary format, reverse-engineered from real file). `generateAutomateFlowBinary(configs, webhookUrl): Uint8Array<ArrayBuffer>` — HEADER + [HTTP request block per config] + FOOTER. Each block has URL, POST method, Content-Type, and 6 body fields (title/body/ticker/timestamp/extras as Automate variable refs; apiKey as literal string).
+- `src/hooks/useAllWebhookConfigs.ts` — listens to `userPrefs/{uid}/webhookConfigs`, returns `HouseholdWebhookConfig[]` (all households for a user)
+- `src/hooks/useWebhookAutomation.ts` — exposes `handleCopyBody` + `handleCopyUrl` + `copyStatus` + `copyUrlStatus` + `handleDownloadFlow` (downloads `HomeFine_Wallet.flo`)
 - `VITE_WEBHOOK_URL` in `.env` — `https://homefine-backend.onrender.com/api/webhook`
 
 **DB paths:**
@@ -22,7 +23,9 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 - `userPrefs/{uid}/webhookConfigs/{householdId}: { apiKey, householdId, memberId, lastPingedAt? }` — per-household config
 - `households/{id}/webhookDebug/{pushId}: { title, body, ts, error }` — written by backend on parse failure; owner-readable
 
-**Automate (LlamaLab) setup — manual copy-paste (as of 2026-06-15):**
+**Automate (LlamaLab) setup — two options (as of 2026-06-15):**
+1. **📥 Download .flo** — "הורד Flow לAutomate" button downloads `HomeFine_Wallet.flo`; contains one HTTP request block per configured household. Import in Automate → File → Import.
+2. **Manual copy-paste:**
 - App Settings → "הגדרת Automate" section shows:
   - **URL**: webhook endpoint with 📋 copy button → paste into Automate HTTP Request block "Request URL"
   - **Body**: pre-filled JSON with `{notifTitle}`, `{notifText}`, `{notifTicker}`, `{notifTimestamp}`, `{notifExtras}` variables + baked-in `apiKey` → paste into "Request content body"
@@ -54,6 +57,7 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 **Migration history:**
 - Previously used Cloudflare Worker (`homefine-webhook.homefine.workers.dev`) + MacroDroid (`.mdr` file)
 - Migrated 2026-06-14 to Render Backend + Automate (LlamaLab) (`.flo` download)
-- Migrated 2026-06-15 to manual copy-paste setup (`.flo` binary format not importable from JSON)
+- Migrated 2026-06-15 to manual copy-paste setup (`.flo` binary format not importable from JSON at the time)
+- 2026-06-15: Re-added `.flo` binary download after reverse-engineering the Automate proprietary format from a real file
 
-**How to apply:** When user asks about webhook/automation, refer to Render Backend + Automate manual setup. No .flo file anymore — user copies URL + body manually.
+**How to apply:** When user asks about webhook/automation, refer to Render Backend + Automate. UI offers both `.flo` download AND manual copy-paste. `.flo` includes one HTTP request block per household the user has configured.

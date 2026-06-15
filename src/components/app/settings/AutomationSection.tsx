@@ -26,6 +26,7 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
         handleTestWebhook,
         handleGenerateKey,
         handleDeleteConfig,
+        handleDownloadFlow,
     } = useWebhookAutomation({ householdId, currentUserId, memberId: myMember.id })
 
     return (
@@ -64,6 +65,13 @@ export function AutomationSection({ householdId, currentUserId, myMember }: Prop
                             </button>
                         </div>
                     </div>
+
+                    <button
+                        onClick={handleDownloadFlow}
+                        className={`${styles.automationBtn} ${styles.downloadBtn}`}
+                    >
+                        📥 {t.settings.automationDownloadBtn}
+                    </button>
 
                     <button
                         onClick={handleTestWebhook}

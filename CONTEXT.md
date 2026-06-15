@@ -74,7 +74,8 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Automation UI in SettingsView — connection status (🟢/⚪), "הגדרת Automate" section with copy buttons for Webhook URL + Request body (apiKey baked in), test button, subtle "כבה אוטומציה" link. Android only.
 - ✅ "לוג רכישות" in ⚙️ dropdown menu (AppHeader) — WebhookLogModal with two tabs: הצליחו (ok) / כשלו (parse_failed). Delete individual entries or clear tab. Rendered from HouseholdLayout.
 - ✅ Webhook transactions appear in Logs modal with `who: '⚡ אוטומציה'`
-- ✅ Manual Automate setup — UI shows Webhook URL (📋 copy) + pre-filled JSON body with apiKey (📋 copy). User pastes both manually into Automate's HTTP Request block. `src/utils/automateFlow.ts` deleted (binary .flo import was not supported by Automate).
+- ✅ Manual Automate setup — UI shows Webhook URL (📋 copy) + pre-filled JSON body with apiKey (📋 copy). User pastes both manually into Automate's HTTP Request block.
+- ✅ `.flo` binary download — "📥 הורד Flow לAutomate" button in AutomationSection generates a `HomeFine_Wallet.flo` file (Automate binary format, reverse-engineered). `src/utils/automateFlow.ts` — `generateAutomateFlowBinary(configs, webhookUrl)`: HEADER + [HTTP request block per household] + FOOTER. `src/hooks/useAllWebhookConfigs.ts` — listens to `userPrefs/{uid}/webhookConfigs` and returns all configs across all households. Button disabled when no configs exist.
 - ✅ `lastPingedAt` — backend writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-backend.onrender.com/api/webhook`
@@ -104,7 +105,8 @@ src/
 ├── hooks/
 │   ├── useRecurringAutoApply ← debounced auto-apply logic (extracted from AppPage)
 │   ├── useClickOutside       ← shared outside-click handler
-│   ├── useWebhookAutomation  ← webhook download/test/keygen logic
+│   ├── useWebhookAutomation  ← webhook download/test/keygen logic (+ handleDownloadFlow)
+│   ├── useAllWebhookConfigs  ← all webhook configs for a user (all households)
 │   └── ... (useAuth, useMembers, usePresence, useTransactions, useRecurring, useLogs,
 │            useCategories, useHouseholdMeta, useHouseholds, useJoinRequests,
 │            useMemberName, useSyncStatus, useUserColor, useShoppingList, useTasks,
