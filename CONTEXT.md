@@ -76,6 +76,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Webhook transactions appear in Logs modal with `who: '⚡ אוטומציה'`
 - ✅ Manual Automate setup — UI shows Webhook URL (📋 copy) + pre-filled JSON body with apiKey (📋 copy). User pastes both manually into Automate's HTTP Request block.
 - ✅ `.flo` binary download — "📥 הורד Flow לAutomate" button in AutomationSection generates a `HomeFine_Wallet.flo` file (Automate binary format, reverse-engineered). `src/utils/automateFlow.ts` — `generateAutomateFlowBinary(configs, webhookUrl)`: HEADER + [HTTP request block per household] + FOOTER. `src/hooks/useAllWebhookConfigs.ts` — listens to `userPrefs/{uid}/webhookConfigs` and returns all configs across all households. Button disabled when no configs exist.
+  - ⚠️ **Debug in progress (2026-06-15):** Automate does not recognize the downloaded file. Expected magic bytes: `4c 41 46 6c` (LAFl). Debug `console.log` added in `useWebhookAutomation.ts:handleDownloadFlow` to print first 20 bytes before download — check DevTools console after clicking the button.
 - ✅ `lastPingedAt` — backend writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-backend.onrender.com/api/webhook`

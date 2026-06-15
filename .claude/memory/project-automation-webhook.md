@@ -60,4 +60,9 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 - Migrated 2026-06-15 to manual copy-paste setup (`.flo` binary format not importable from JSON at the time)
 - 2026-06-15: Re-added `.flo` binary download after reverse-engineering the Automate proprietary format from a real file
 
+**⚠️ Open issue (2026-06-15): Automate does not recognize the downloaded .flo file.**
+- Expected magic bytes (first 4): `4c 41 46 6c` (ASCII "LAFl") — already present in HEADER constant
+- Debug `console.log` added to `useWebhookAutomation.ts:handleDownloadFlow` — prints first 20 bytes before download; check DevTools console
+- Blob and `URL.createObjectURL` code verified correct; root cause not yet identified
+
 **How to apply:** When user asks about webhook/automation, refer to Render Backend + Automate. UI offers both `.flo` download AND manual copy-paste. `.flo` includes one HTTP request block per household the user has configured.
