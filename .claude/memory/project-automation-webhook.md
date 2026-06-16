@@ -15,7 +15,7 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 - Backend at `https://homefine-backend.onrender.com/api/webhook` — receives POST, parses Google Wallet notification, writes transaction to Firebase
 - `src/utils/automateFlow.ts` — **RECREATED** (2026-06-15). Generates `.flo` binary (Automate proprietary format, reverse-engineered from real file). `generateAutomateFlowBinary(configs, webhookUrl): Uint8Array<ArrayBuffer>` — HEADER + [HTTP request block per config] + FOOTER. Each block has URL, POST method, Content-Type, and 6 body fields (title/body/ticker/timestamp/extras as Automate variable refs; apiKey as literal string).
 - `src/hooks/useAllWebhookConfigs.ts` — listens to `userPrefs/{uid}/webhookConfigs`, returns `HouseholdWebhookConfig[]` (all households for a user)
-- `src/hooks/useWebhookAutomation.ts` — exposes `handleCopyBody` + `handleCopyUrl` + `copyStatus` + `copyUrlStatus` + `handleDownloadFlow` (downloads `HomeFine_Wallet.flo`)
+- `src/hooks/useWebhookAutomation.ts` — exposes `handleDownloadFlow` (downloads `HomeFine_Wallet.flo`); `handleCopyBody`/`handleCopyUrl`/`copyStatus`/`copyUrlStatus` removed (URL+Body UI removed)
 - `VITE_WEBHOOK_URL` in `.env` — `https://homefine-backend.onrender.com/api/webhook`
 
 **DB paths:**
@@ -23,17 +23,13 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 - `userPrefs/{uid}/webhookConfigs/{householdId}: { apiKey, householdId, memberId, lastPingedAt? }` — per-household config
 - `households/{id}/webhookDebug/{pushId}: { title, body, ts, error }` — written by backend on parse failure; owner-readable
 
-**Automate (LlamaLab) setup — two options (as of 2026-06-15):**
-1. **📥 Download .flo** — "הורד Flow לAutomate" button downloads `HomeFine_Wallet.flo`; contains one HTTP request block per configured household. Import in Automate → File → Import.
-2. **Manual copy-paste:**
-- App Settings → "הגדרת Automate" section shows:
-  - **URL**: webhook endpoint with 📋 copy button → paste into Automate HTTP Request block "Request URL"
-  - **Body**: pre-filled JSON with `{notifTitle}`, `{notifText}`, `{notifTicker}`, `{notifTimestamp}`, `{notifExtras}` variables + baked-in `apiKey` → paste into "Request content body"
-- Flow: NotificationPosted (Google Wallet package) → HttpRequest POST with the copied body
+**Automate (LlamaLab) setup (as of 2026-06-16):**
+- **📥 Download .flo** — "הורד Flow לAutomate" button downloads `HomeFine_Wallet.flo`; contains one HTTP request block per configured household. Import in Automate → File → Import.
+- URL + Body copy-paste section **removed** from UI — superseded by .flo download.
 
 **Automation UI features (SettingsView → AutomationSection):**
 - Connection status: 🟢 "מחובר — פעיל לאחרונה DD/MM/YY HH:MM" or ⚪ "טרם חובר"
-- "הגדרת Automate" section: URL row + Body row, each with 📋/✅ copy button (2s feedback)
+- "📥 הורד Flow לAutomate" button
 - "בדוק חיבור" → sends ₪1 test transaction (isTest:true, does NOT update lastPingedAt); shows ✅/❌
 - "כבה אוטומציה" — subtle underline link at bottom, deletes config from Firebase
 - **Android only** — iOS has no notification interception equivalent
@@ -59,10 +55,7 @@ Webhook automation is built and fully working. Google Wallet push notifications 
 - Migrated 2026-06-14 to Render Backend + Automate (LlamaLab) (`.flo` download)
 - Migrated 2026-06-15 to manual copy-paste setup (`.flo` binary format not importable from JSON at the time)
 - 2026-06-15: Re-added `.flo` binary download after reverse-engineering the Automate proprietary format from a real file
-
-**⚠️ Open issue (2026-06-15): Automate does not recognize the downloaded .flo file.**
-- Expected magic bytes (first 4): `4c 41 46 6c` (ASCII "LAFl") — already present in HEADER constant
-- Debug `console.log` added to `useWebhookAutomation.ts:handleDownloadFlow` — prints first 20 bytes before download; check DevTools console
-- Blob and `URL.createObjectURL` code verified correct; root cause not yet identified
+- 2026-06-16: Fixed binary format in `automateFlow.ts` (3 corrections): replaced footer bytes after `walletnfcrel`; added 22-byte pre-URL block to `requestBlock` (`de 13 08 00 24 03 03 d0 01 40 08 00 ...`); removed stray `03 00` from end of HEADER. HEADER is now 23 bytes.
+- 2026-06-16: Removed URL + Body copy-paste section from AutomationSection UI (superseded by .flo download).
 
 **How to apply:** When user asks about webhook/automation, refer to Render Backend + Automate. UI offers both `.flo` download AND manual copy-paste. `.flo` includes one HTTP request block per household the user has configured.

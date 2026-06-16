@@ -73,12 +73,10 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Backend webhook (`https://homefine-backend.onrender.com/api/webhook`) — receives Google Wallet push notifications via Automate (LlamaLab) and writes transactions to Firebase
 - ✅ `webhookKeys/{apiKey}` Firebase path — reverse lookup (uid, householdId, memberId). No client-read.
 - ✅ `userPrefs/{uid}/webhookConfigs/{householdId}` — **per-household** config (apiKey, householdId, memberId, lastPingedAt)
-- ✅ Automation UI in SettingsView — connection status (🟢/⚪), "הגדרת Automate" section with copy buttons for Webhook URL + Request body (apiKey baked in), test button, subtle "כבה אוטומציה" link. Android only.
+- ✅ Automation UI in SettingsView — connection status (🟢/⚪), "📥 הורד Flow" button, "בדוק חיבור" test button, subtle "כבה אוטומציה" link. Android only. URL + Body copy-paste section removed (superseded by .flo download).
 - ✅ "לוג רכישות" in ⚙️ dropdown menu (AppHeader) — WebhookLogModal with two tabs: הצליחו (ok) / כשלו (parse_failed). Delete individual entries or clear tab. Rendered from HouseholdLayout.
 - ✅ Webhook transactions appear in Logs modal with `who: '⚡ אוטומציה'`
-- ✅ Manual Automate setup — UI shows Webhook URL (📋 copy) + pre-filled JSON body with apiKey (📋 copy). User pastes both manually into Automate's HTTP Request block.
-- ✅ `.flo` binary download — "📥 הורד Flow לAutomate" button in AutomationSection generates a `HomeFine_Wallet.flo` file (Automate binary format, reverse-engineered). `src/utils/automateFlow.ts` — `generateAutomateFlowBinary(configs, webhookUrl)`: HEADER + [HTTP request block per household] + FOOTER. `src/hooks/useAllWebhookConfigs.ts` — listens to `userPrefs/{uid}/webhookConfigs` and returns all configs across all households. Button disabled when no configs exist.
-  - ⚠️ **Debug in progress (2026-06-15):** Automate does not recognize the downloaded file. Expected magic bytes: `4c 41 46 6c` (LAFl). Debug `console.log` added in `useWebhookAutomation.ts:handleDownloadFlow` to print first 20 bytes before download — check DevTools console after clicking the button.
+- ✅ `.flo` binary download — "📥 הורד Flow לAutomate" button in AutomationSection generates `HomeFine_Wallet.flo` (Automate binary format, reverse-engineered). `src/utils/automateFlow.ts` — `generateAutomateFlowBinary(configs, webhookUrl)`: HEADER (23 bytes) + [requestBlock per config] + FOOTER. Each requestBlock: 22-byte pre-URL block (`de 13 08 00 ...`) + URL + POST method + Content-Type + 6 body fields. `src/hooks/useAllWebhookConfigs.ts` — listens to `userPrefs/{uid}/webhookConfigs`, returns all configs across all households. Button appears only when webhookConfig is active.
 - ✅ `lastPingedAt` — backend writes timestamp on every valid request; UI shows 🟢/⚪ connection status
 - ✅ Test Connection button — sends ₪1 test transaction from within the app
 - ✅ `VITE_WEBHOOK_URL` — `https://homefine-backend.onrender.com/api/webhook`
