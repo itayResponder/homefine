@@ -1,0 +1,29 @@
+.colorPicker .react-colorful {
+    width: 100%;
+    height: 200px;
+}
+
+.hexRow {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.hexRow input {
+    flex: 1;
+    height: 32px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 0 8px;
+    font-size: 12px;
+    font-family: monospace;
+    color: var(--clr-dark);
+    background: #F8FAFC;
+    outline: none;
+    direction: ltr;
+}
+
+.hexRow input:focus {
+    border-color: var(--ac);
+}
