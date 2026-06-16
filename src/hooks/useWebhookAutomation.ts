@@ -7,6 +7,7 @@ import {
 } from '../firebase/db'
 import type { WebhookConfig } from '../types'
 import { generateAutomateFlowBinary } from '../utils/automateFlow'
+import { useHouseholdMeta } from './useHouseholdMeta'
 const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL ?? ''
 
 type TestStatus = 'idle' | 'loading' | 'ok' | 'error'
@@ -35,6 +36,8 @@ interface UseWebhookAutomationResult {
 
 export function useWebhookAutomation({ householdId, currentUserId, memberId }: Options): UseWebhookAutomationResult {
     const { t } = useI18n()
+
+    const { meta } = useHouseholdMeta(householdId, currentUserId)
 
     const [webhookConfig, setWebhookConfig] = useState<WebhookConfig | null>(null)
     const [webhookSaving, setWebhookSaving] = useState(false)
@@ -124,7 +127,8 @@ export function useWebhookAutomation({ householdId, currentUserId, memberId }: O
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'HomeFine_Wallet.flo'
+        const safeName = (meta?.name ?? householdId).replace(/[^a-zA-Z0-9֐-׿\-_]/g, '_')
+        a.download = `HomeFine-Wallet-${safeName}.flo`
         a.click()
         URL.revokeObjectURL(url)
     }
