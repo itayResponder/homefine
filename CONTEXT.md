@@ -58,6 +58,7 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Join request flow: JoinPage collects nameHe/nameEn → bell notification → approve auto-creates member card
 - ✅ Bilingual member names (he + en); created on household creation + join approval
 - ✅ Delete member (cascades) + Leave household + Delete household
+- ✅ HeroCard — עו"ש (checking account) per user+household: 3 rows (מאזן חודשי / עו"ש עכשיו / עו"ש עתידי). Firebase: `userPrefs/{uid}/householdBalance/{householdId}`. עו"ש עתידי = checkingBalance + myBalance (personal balance of logged-in user only). Shown only when balance is set. Inline edit via `editbtn` (✎) next to label; uses `<AmountInput className="inp hbal-inp-hero">`. Colors: positive=`#86efac`, negative=`#fca5a5`. `AmountInput` now supports `onKeyDown` + `autoFocus` props.
 - ✅ Membership guard (redirects if removed mid-session)
 - ✅ Create household modal (DashboardPage, side-by-side name fields)
 - ✅ AddMemberModal via pills ＋ button — custom validation (no browser popup): required fields, Hebrew/English character-set enforcement, duplicate name check; red border + field-error message

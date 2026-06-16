@@ -12,7 +12,9 @@ export const en: T = {
 
     appName: 'HomeFine',
     appSubtitle: 'Shared Household Finance',
-    monthlyBalance: 'Monthly Balance',
+    checkingAccount: 'Checking Account',
+    futureBalance: 'Projected Balance',
+    monthlyBalance:'Monthly Balance',
     shortExp: 'Exp.',
     shortInc: 'Inc.',
     monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],

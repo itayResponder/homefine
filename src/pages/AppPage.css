@@ -178,6 +178,100 @@
     margin-bottom: 14px;
 }
 
+.hbal-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+.hbal-row {
+    background: rgba(255, 255, 255, 0.13);
+    border-radius: 10px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.hbal-row-lbl {
+    font-size: 13px;
+    opacity: 0.75;
+    white-space: nowrap;
+}
+
+.hbal-row-val {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hbal-edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    opacity: 0.55;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+}
+.hbal-edit-btn:hover { opacity: 1; }
+
+.hbal-edit-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.hbal-inp-hero {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+    text-align: end;
+    width: 160px;
+}
+.hbal-inp-hero::placeholder { color: rgba(255, 255, 255, 0.4); }
+.hbal-inp-hero:focus { border-color: rgba(255, 255, 255, 0.8); box-shadow: none; background: rgba(255, 255, 255, 0.2); }
+
+.hbal-save-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--rs);
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--clr-dark);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+.hbal-save-btn:hover { background: #fff; }
+
+.hbal-cancel-btn {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: var(--rs);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+.hbal-cancel-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
 .hboxes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

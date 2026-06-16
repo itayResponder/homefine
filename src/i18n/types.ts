@@ -23,6 +23,8 @@ export interface T {
     appName: string
     appSubtitle: string
     monthlyBalance: string
+    checkingAccount: string
+    futureBalance: string
     shortExp: string
     shortInc: string
     monthNames: [string,string,string,string,string,string,string,string,string,string,string,string]

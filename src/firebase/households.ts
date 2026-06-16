@@ -161,6 +161,19 @@ export const subscribeUserColor = (uid: string, cb: (color: string | null) => vo
 export const setHouseholdColor = (uid: string, householdId: string, color: string) =>
     set(ref(db, `userPrefs/${uid}/householdColors/${householdId}`), color)
 
+export const setHouseholdBalance = (uid: string, householdId: string, balance: number) =>
+    set(ref(db, `userPrefs/${uid}/householdBalance/${householdId}`), balance)
+
+export const subscribeHouseholdBalance = (
+    uid: string,
+    householdId: string,
+    cb: (balance: number | null) => void,
+) => {
+    const r = ref(db, `userPrefs/${uid}/householdBalance/${householdId}`)
+    onValue(r, (snap) => cb(snap.val() ?? null))
+    return () => off(r)
+}
+
 export const subscribeHouseholdColor = (
     uid: string,
     householdId: string,

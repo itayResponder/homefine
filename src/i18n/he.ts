@@ -12,7 +12,9 @@ export const he: T = {
 
     appName: 'הבית שלנו',
     appSubtitle: 'ניהול כספי משותף',
-    monthlyBalance: 'מאזן חודשי',
+    checkingAccount: 'עו"ש עכשיו',
+    futureBalance: 'עו"ש עתידי',
+    monthlyBalance:'מאזן חודשי',
     shortExp: 'הוצ׳',
     shortInc: 'הכנ׳',
     monthNames: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'],

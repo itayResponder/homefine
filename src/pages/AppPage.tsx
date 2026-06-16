@@ -200,6 +200,7 @@ export default function AppPage() {
                     onMonthChange={setMonth}
                     householdName={meta?.name}
                     currentUserId={user?.uid}
+                    householdId={householdId}
                 />
 
                 <AppNav

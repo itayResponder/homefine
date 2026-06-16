@@ -14,9 +14,11 @@ interface Props {
     placeholder?: string
     required?: boolean
     className?: string
+    onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+    autoFocus?: boolean
 }
 
-export function AmountInput({ value, onChange, placeholder, required, className }: Props) {
+export function AmountInput({ value, onChange, placeholder, required, className, onKeyDown, autoFocus }: Props) {
     const [display, setDisplay] = useState(() => fmt(value))
     const lastRawRef = useRef(value)
 
@@ -44,6 +46,8 @@ export function AmountInput({ value, onChange, placeholder, required, className 
             onChange={handleChange}
             placeholder={placeholder}
             required={required}
+            onKeyDown={onKeyDown}
+            autoFocus={autoFocus}
         />
     )
 }
