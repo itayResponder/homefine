@@ -1,7 +1,7 @@
 import { useI18n } from '../../../i18n/context'
+import { ColorPicker } from '../../ui/ColorPicker'
+import { DEFAULT_COLOR } from '../../../utils/color'
 import styles from '../SettingsView.module.css'
-
-const DEFAULT_COLOR = '#2563EB'
 
 interface Props {
     primaryColor: string
@@ -15,15 +15,7 @@ export function ColorThemeSection({ primaryColor, onColorChange }: Props) {
         <div className="fcard">
             <div className="fttl">🎨 {t.settings.colorThemeTitle}</div>
             <div className={styles.colorRow}>
-                <div className={styles.colorPickerWrapper}>
-                    <input
-                        type="color"
-                        value={primaryColor}
-                        onChange={(e) => onColorChange(e.target.value)}
-                        className={styles.colorInput}
-                    />
-                    <div className={styles.colorSwatch} style={{ background: primaryColor }} />
-                </div>
+                <ColorPicker value={primaryColor} onChange={onColorChange} />
                 <div>
                     <div className={styles.colorHex}>{primaryColor.toUpperCase()}</div>
                     <div className={styles.colorHint}>{t.settings.colorThemeHint}</div>

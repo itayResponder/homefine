@@ -158,6 +158,19 @@ export const subscribeUserColor = (uid: string, cb: (color: string | null) => vo
     return () => off(r)
 }
 
+export const setHouseholdColor = (uid: string, householdId: string, color: string) =>
+    set(ref(db, `userPrefs/${uid}/householdColors/${householdId}`), color)
+
+export const subscribeHouseholdColor = (
+    uid: string,
+    householdId: string,
+    cb: (color: string | null) => void
+) => {
+    const r = ref(db, `userPrefs/${uid}/householdColors/${householdId}`)
+    onValue(r, (snap) => cb(snap.val()))
+    return () => off(r)
+}
+
 // ─── Categories ───────────────────────────────────────────────────────────────
 export const seedCategories = async (householdId: string): Promise<void> => {
     const updates: Record<string, Omit<Category, 'id'>> = {}

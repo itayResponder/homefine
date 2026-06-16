@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useHouseholds } from '../hooks/useHouseholds'
 import { useJoinRequests } from '../hooks/useJoinRequests'
-import { useUserColor } from '../hooks/useUserColor'
-import { buildColorVars } from '../utils/color'
+import { buildColorVars, DEFAULT_COLOR } from '../utils/color'
 import { approveJoinRequest, denyJoinRequest, deleteHousehold, addMember } from '../firebase/db'
 import { useConfirm } from '../contexts/ui'
 import { useClickOutside } from '../hooks/useClickOutside'
@@ -19,7 +18,6 @@ export default function DashboardPage() {
     const { user, logout } = useAuth()
     const navigate = useNavigate()
     const { t } = useI18n()
-    const { color: primaryColor } = useUserColor(user?.uid)
     const { households, ready, create } = useHouseholds(user?.uid)
     const { showConfirm } = useConfirm()
 
@@ -108,7 +106,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="db-root" style={buildColorVars(primaryColor) as React.CSSProperties}>
+        <div className="db-root" style={buildColorVars(DEFAULT_COLOR) as React.CSSProperties}>
             <header className="db-header">
                 <div className="db-logo">Home<span>Fine</span></div>
                 <div className="db-header-right">

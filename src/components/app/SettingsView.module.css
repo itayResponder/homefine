@@ -224,30 +224,6 @@
   margin-top: 8px;
 }
 
-.colorPickerWrapper {
-  position: relative;
-  width: 44px;
-  height: 44px;
-}
-
-.colorInput {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  border: none;
-  padding: 0;
-}
-
-.colorSwatch {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-}
 
 .colorHex {
   font-size: 13px;

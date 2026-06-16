@@ -62,7 +62,7 @@ export default function HouseholdLayout() {
     const { members, ready: membersReady, add: addMember, remove: removeMember } = useMembers(householdId)
     const { categories, categoriesReady, addCategory, updateCategory, deleteCategory } = useCategories(householdId)
     const online = usePresence(householdId, user)
-    const { color: primaryColor, updateColor } = useUserColor(user?.uid)
+    const { color: primaryColor, updateColor } = useUserColor(user?.uid, householdId)
     const { meta, isOwner, expensesOnly, updateSettings, renameMeta, toggleMemberIncome } = useHouseholdMeta(householdId, user?.uid)
     const { t } = useI18n()
     const { showConfirm } = useConfirm()

@@ -25,7 +25,9 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
   - i18n key added: `categorySearchPlaceholder` (CategorySelect search field)
   - `NotificationPanel` uses `useI18n()` internally — no `isRtl` prop
   - Inline styles converted to CSS classes: `App.css` (loading state), `AppPage.css` (`.ap-modal--member-edit`, `.money`, `.ap-member-fields--modal`)
-- ✅ Per-user color theming — `updateColor` propagates to `member.color` in all households the user belongs to (so member chips stay in sync immediately)
+- ✅ Per-household color theming — `useUserColor(uid, householdId)` reads from `userPrefs/{uid}/householdColors/{householdId}`; dashboard (no householdId) falls back to global `primaryColor`. `updateColor` only updates the specific household's `member.color` (not all households). Firebase helpers: `setHouseholdColor`, `subscribeHouseholdColor` in `households.ts`.
+- ✅ `ColorPicker` (`src/components/ui/ColorPicker.tsx`) — replaces `<input type="color">` in `ColorThemeSection`. 16 preset colors (4×4 grid) + HEX input field. Desktop: dropdown below swatch. Mobile: bottom sheet with backdrop. Uses `useClickOutside` for desktop close.
+- ✅ Dashboard always uses `DEFAULT_COLOR` (#2563EB) — `DashboardPage` no longer calls `useUserColor`; passes `DEFAULT_COLOR` directly to `buildColorVars`. Color theming is per-household only.
 - ✅ Dynamic per-household categories — add/edit/delete via Settings modal; seeded from 20 defaults on first load; emoji picker (curated ~70 emojis grouped by theme)
   - `automation` (⚡, order 19) added as default — used automatically for Google Wallet webhook transactions
   - `electricity` icon changed from ⚡ to 💡
