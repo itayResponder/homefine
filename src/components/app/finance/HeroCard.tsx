@@ -39,6 +39,10 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
         setEditing(true)
     }
 
+    const toggleSign = () => {
+        setInputVal(v => v.startsWith('-') ? v.slice(1) : `-${v}`)
+    }
+
     const saveEdit = async () => {
         if (!currentUserId) return
         const parsed = parseFloat(inputVal)
@@ -166,9 +170,12 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                     {editing ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <button className="hbal-cancel-btn" onClick={() => setEditing(false)}>{t.cancel}</button>
+                            <button className="hbal-sign-btn" onClick={toggleSign}>
+                                {inputVal.startsWith('-') ? '+' : '−'}
+                            </button>
                             <AmountInput
-                                value={inputVal}
-                                onChange={setInputVal}
+                                value={inputVal.startsWith('-') ? inputVal.slice(1) : inputVal}
+                                onChange={(v) => setInputVal(inputVal.startsWith('-') ? `-${v}` : v)}
                                 placeholder="0"
                                 className="inp hbal-inp-hero"
                                 onKeyDown={handleKeyDown}
