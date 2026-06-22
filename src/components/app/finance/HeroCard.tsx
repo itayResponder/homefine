@@ -40,7 +40,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
     }
 
     const toggleSign = () => {
-        setInputVal(v => v.startsWith('-') ? v.slice(1) : `-${v}`)
+        setInputVal(v => v.startsWith('-') ? v.slice(1) : v ? `-${v}` : v)
     }
 
     const saveEdit = async () => {
@@ -170,12 +170,16 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                     {editing ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <button className="hbal-cancel-btn" onClick={() => setEditing(false)}>{t.cancel}</button>
-                            <button className="hbal-sign-btn" onClick={toggleSign}>
-                                {inputVal.startsWith('-') ? '+' : '−'}
+                            <button
+                                className={`hbal-sign-btn${inputVal.startsWith('-') ? ' hbal-sign-btn--active' : ''}`}
+                                onClick={toggleSign}
+                                title="החלף סימן"
+                            >
+                                −
                             </button>
                             <AmountInput
-                                value={inputVal.startsWith('-') ? inputVal.slice(1) : inputVal}
-                                onChange={(v) => setInputVal(inputVal.startsWith('-') ? `-${v}` : v)}
+                                value={inputVal}
+                                onChange={setInputVal}
                                 placeholder="0"
                                 className="inp hbal-inp-hero"
                                 onKeyDown={handleKeyDown}

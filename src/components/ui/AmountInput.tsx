@@ -2,10 +2,14 @@
 import { useEffect, useRef, useState } from 'react'
 
 function fmt(raw: string): string {
-    if (!raw) return ''
-    const [int, dec] = raw.split('.')
+    if (!raw || raw === '-') return raw
+    const isNeg = raw.startsWith('-')
+    const abs = isNeg ? raw.slice(1) : raw
+    const [int, dec] = abs.split('.')
+    if (!int && int !== '0') return isNeg ? '-' : ''
     const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    return dec !== undefined ? `${grouped}.${dec}` : grouped
+    const formatted = dec !== undefined ? `${grouped}.${dec}` : grouped
+    return isNeg ? `-${formatted}` : formatted
 }
 
 interface Props {
@@ -31,7 +35,7 @@ export function AmountInput({ value, onChange, placeholder, required, className,
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const raw = e.target.value.replace(/,/g, '')
-        if (raw !== '' && !/^\d*\.?\d*$/.test(raw)) return
+        if (raw !== '' && raw !== '-' && !/^-?\d*\.?\d*$/.test(raw)) return
         lastRawRef.current = raw
         setDisplay(fmt(raw))
         onChange(raw)
