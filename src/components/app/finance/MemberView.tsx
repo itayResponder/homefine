@@ -5,6 +5,7 @@ import { useMemberName } from '../../../hooks/useMemberName'
 import { Money } from '../../ui/Money'
 import { TxEntry } from './TxEntry'
 import type { Category, Member, Transaction } from '../../../types'
+import { isInFinanceCycle } from '../../../utils/date'
 
 interface Props {
     memberId: string
@@ -27,7 +28,7 @@ export function MemberView({ memberId, transactions, members, categories, month,
     const memberTxs = useMemo(
         () => transactions.filter((tx) =>
             tx.memberId === memberId &&
-            tx.date.startsWith(month) &&
+            isInFinanceCycle(tx.date, tx.type, month) &&
             (tx.type !== 'income' || isIncomeVisible)
         ),
         [transactions, memberId, month, isIncomeVisible],

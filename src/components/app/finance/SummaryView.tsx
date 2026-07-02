@@ -5,6 +5,7 @@ import { useMemberName } from '../../../hooks/useMemberName'
 import { Money } from '../../ui/Money'
 import { TxEntry } from './TxEntry'
 import type { Category, Member, Transaction } from '../../../types'
+import { isInFinanceCycle } from '../../../utils/date'
 
 interface Props {
     transactions: Transaction[]
@@ -29,7 +30,7 @@ export function SummaryView({ transactions, members, categories, month, currentU
     }
 
     const monthTxs = useMemo(
-        () => transactions.filter((tx) => tx.date.startsWith(month) && isVisible(tx)),
+        () => transactions.filter((tx) => isInFinanceCycle(tx.date, tx.type, month) && isVisible(tx)),
         [transactions, month, members, currentUserId],
     )
 

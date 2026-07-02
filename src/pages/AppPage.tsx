@@ -16,7 +16,7 @@ import { LogsSection } from '../components/app/LogsSection'
 import { SettingsView } from '../components/app/SettingsView'
 import { EditTransactionModal } from '../components/app/EditTransactionModal'
 import { AddMemberModal } from '../components/app/AddMemberModal'
-import { currentMonth } from '../utils/date'
+import { currentBillingCycle } from '../utils/date'
 import { computeDiffs } from '../utils/transactions'
 import { useRecurringAutoApply } from '../hooks/useRecurringAutoApply'
 import { subscribeParticipants, removeParticipant, updateMember } from '../firebase/db'
@@ -50,7 +50,7 @@ export default function AppPage() {
 
     // ── UI state ──────────────────────────────────────────────────────────────
     const [view, setView] = useState('summary')
-    const [month, setMonth] = useState(currentMonth)
+    const [month, setMonth] = useState(currentBillingCycle)
     const [editingTx, setEditingTx] = useState<Transaction | null>(null)
     const [showAddMember, setShowAddMember] = useState(false)
 

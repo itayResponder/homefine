@@ -6,6 +6,7 @@ import { Money } from '../../ui/Money'
 import { AmountInput } from '../../ui/AmountInput'
 import { subscribeHouseholdBalance, setHouseholdBalance } from '../../../firebase/households'
 import type { Member, Transaction } from '../../../types'
+import { isInFinanceCycle } from '../../../utils/date'
 
 interface Props {
     members: Member[]
@@ -64,7 +65,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
         return member.userId === currentUserId
     }
 
-    const monthlyTxs = transactions.filter((tx) => tx.date.startsWith(month) && isVisible(tx))
+    const monthlyTxs = transactions.filter((tx) => isInFinanceCycle(tx.date, tx.type, month) && isVisible(tx))
 
     const totalIncome = monthlyTxs.filter(tx => tx.type === 'income').reduce((s, tx) => s + tx.amount, 0)
     const totalExpenses = monthlyTxs.filter(tx => tx.type === 'expense').reduce((s, tx) => s + tx.amount, 0)
@@ -97,8 +98,6 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
         if (!open) setNavYear(year)
         setOpen((v) => !v)
     }
-
-    const balanceColor = (n: number) => n >= 0 ? '#86efac' : '#fca5a5'
 
     return (
         <div className="hero">
@@ -154,7 +153,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                 {/* Row 1 — monthly balance */}
                 <div className="hbal-row">
                     <span className="hbal-row-lbl">{t.monthlyBalance}</span>
-                    <span className="hbal-row-val" style={{ color: balanceColor(totalBalance) }}>
+                    <span className="hbal-row-val">
                         <Money amount={Math.abs(totalBalance)} sign={totalBalance < 0 ? '−' : ''} />
                     </span>
                 </div>
@@ -190,7 +189,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                     ) : (
                         <span
                             className="hbal-row-val"
-                            style={{ color: checkingBalance !== null ? balanceColor(checkingBalance) : 'rgba(255,255,255,0.4)' }}
+                            style={checkingBalance === null ? { color: 'rgba(255,255,255,0.4)' } : undefined}
                         >
                             {checkingBalance !== null
                                 ? <Money amount={Math.abs(checkingBalance)} sign={checkingBalance < 0 ? '−' : ''} />
@@ -204,7 +203,7 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                 {futureBalance !== null && (
                     <div className="hbal-row">
                         <span className="hbal-row-lbl">{t.futureBalance}</span>
-                        <span className="hbal-row-val" style={{ color: balanceColor(futureBalance) }}>
+                        <span className="hbal-row-val">
                             <Money amount={Math.abs(futureBalance)} sign={futureBalance < 0 ? '−' : ''} />
                         </span>
                     </div>
@@ -216,16 +215,13 @@ export function HeroCard({ members, transactions, month, onMonthChange, househol
                     {memberStats.map(({ member, expenses, income, balance: mBal }) => (
                         <div key={member.id} className="hbox">
                             <div className="hbox-name">{getMemberName(member)}</div>
-                            <div className="hbox-exp" style={{ color: '#fca5a5' }}>
+                            <div className="hbox-exp">
                                 {t.shortExp} <Money amount={expenses} sign="−" />
                             </div>
-                            <div className="hbox-inc" style={{ color: '#86efac' }}>
+                            <div className="hbox-inc">
                                 {t.shortInc} <Money amount={income} />
                             </div>
-                            <div
-                                className="hbox-bal"
-                                style={{ color: mBal >= 0 ? '#86efac' : '#fca5a5' }}
-                            >
+                            <div className="hbox-bal">
                                 <Money amount={Math.abs(mBal)} sign={mBal < 0 ? '−' : ''} />
                             </div>
                         </div>

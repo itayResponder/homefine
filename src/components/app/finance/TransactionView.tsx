@@ -2,7 +2,7 @@
 import { useState, useMemo } from 'react'
 import { useI18n } from '../../../i18n/context'
 import { useMemberName } from '../../../hooks/useMemberName'
-import { todayISO } from '../../../utils/date'
+import { todayISO, isInFinanceCycle } from '../../../utils/date'
 import { getDefaultMemberId } from '../../../utils/members'
 import { CustomSelect } from '../../ui/CustomSelect'
 import { CustomDatePicker } from '../../ui/CustomDatePicker'
@@ -45,7 +45,7 @@ export function TransactionView({ type, transactions, members, categories, month
     const monthTxs = useMemo(
         () =>
             transactions
-                .filter((tx) => tx.type === type && tx.date.startsWith(month))
+                .filter((tx) => tx.type === type && isInFinanceCycle(tx.date, tx.type, month))
                 .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt),
         [transactions, type, month],
     )
