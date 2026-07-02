@@ -58,7 +58,9 @@ Multi-household finance manager SPA. React 19 + TypeScript + Vite + Firebase Rea
 - ✅ Join request flow: JoinPage collects nameHe/nameEn → bell notification → approve auto-creates member card
 - ✅ Bilingual member names (he + en); created on household creation + join approval
 - ✅ Delete member (cascades) + Leave household + Delete household
-- ✅ HeroCard — עו"ש (checking account) per user+household: 3 rows (מאזן חודשי / עו"ש עכשיו / עו"ש עתידי). Firebase: `userPrefs/{uid}/householdBalance/{householdId}`. עו"ש עתידי = checkingBalance + myBalance (personal balance of logged-in user only). Shown only when balance is set. Inline edit via `editbtn` (✎) next to label; uses `<AmountInput className="inp hbal-inp-hero">`. Colors: positive=`#86efac`, negative=`#fca5a5`. `AmountInput` now supports `onKeyDown` + `autoFocus` props.
+- ✅ HeroCard — עו"ש (checking account) per user+household: 3 rows (מאזן חודשי / עו"ש עכשיו / עו"ש עתידי). Firebase: `userPrefs/{uid}/householdBalance/{householdId}`. עו"ש עתידי = checkingBalance + myBalance (personal balance of logged-in user only). Shown only when balance is set. Inline edit via `editbtn` (✎) next to label; uses `<AmountInput className="inp hbal-inp-hero">`. `AmountInput` supports `onKeyDown` + `autoFocus` props, plus negative values (minus toggle button, red-highlighted when active).
+- ✅ HeroCard colors reverted to uniform white (2026-07) — all amounts (מאזן חודשי, עו"ש עכשיו, עו"ש עתידי, member boxes) render in white regardless of positive/negative; `balanceColor` helper removed. Minus sign + ₪ sign unaffected (come from `<Money sign="...">`, not color). Scope was Hero only — SummaryView/TransactionView/MemberView/TxEntry still use green `#86efac`/red `#fca5a5`.
+- ✅ Billing cycle + income cycle (2026-07) — finance `month` state (`YYYY-MM`, owned by `AppPage.tsx`) no longer means a plain calendar month. Expenses use a 10th-to-10th credit-card-style cycle; income uses a separate calendar-month+1 cycle. Single entry point `isInFinanceCycle(dateISO, type, monthLabel)` in `src/utils/date.ts`, applied in HeroCard/TransactionView/SummaryView/MemberView. See `.claude/memory/project-billing-cycle.md` for full details.
 - ✅ Membership guard (redirects if removed mid-session)
 - ✅ Create household modal (DashboardPage, side-by-side name fields)
 - ✅ AddMemberModal via pills ＋ button — custom validation (no browser popup): required fields, Hebrew/English character-set enforcement, duplicate name check; red border + field-error message
@@ -126,7 +128,9 @@ src/
 │   ├── automateFlow.ts       ← Automate (LlamaLab) .flo file generator
 │   ├── members.ts            ← getDefaultMemberId (shared across 3 components)
 │   ├── transactions.ts       ← computeDiffs (extracted from AppPage)
-│   └── categories.ts, color.ts (nameToColor + buildColorVars), date.ts, format.ts, recurring.ts, taskUrgency.ts
+│   ├── date.ts                ← currentMonth/formatMonth/shiftMonth (calendar) + billing cycle (isInBillingCycle) +
+│   │                             income cycle (isInIncomeCycle) + isInFinanceCycle dispatcher — see project-billing-cycle.md
+│   └── categories.ts, color.ts (nameToColor + buildColorVars), format.ts, recurring.ts, taskUrgency.ts
 └── pages/                    ← AppPage, HouseholdLayout, DashboardPage, LandingPage, JoinPage,
                                  CalendarPage, HouseholdPage
 ```
@@ -152,3 +156,4 @@ src/
 - ❌ Super Admin panel
 - ❌ Viewer role (read-only member)
 - ❌ Server-side income privacy
+- ❌ Per-user billing cycle day (1/10/15 selectable at household creation/join + settings) — currently hardcoded to 10 for everyone; see `project-billing-cycle.md`

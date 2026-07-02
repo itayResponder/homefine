@@ -99,11 +99,20 @@ userPrefs/{uid}/webhookConfigs/{householdId} ← { apiKey, householdId, memberId
 ### Currency Formatting
 Always use `<Money amount={n} sign="−" />` for JSX, or `formatCurrency(n, dir, sign)` for string contexts. Format: `−1,000 ₪` (integers) or `−1,000.50 ₪` (decimals). `formatCurrency` preserves 2 decimal places for non-integer amounts; integers render without decimals.
 
+### Finance Month Filtering (Billing Cycle / Income Cycle)
+The finance `month` state (`YYYY-MM`, owned by `AppPage.tsx`, passed to HeroCard/TransactionView/SummaryView/MemberView) does **not** mean a plain calendar month. Two different rules apply depending on transaction type:
+- **Expenses** — 10th-to-10th credit-card-style billing cycle (hardcoded `BILLING_CYCLE_DAY = 10` for all users; planned to become per-user later)
+- **Income** — separate rule: income dated anywhere in calendar month X always shows under cycle X+1, regardless of day
+
+**Single entry point:** `isInFinanceCycle(dateISO, type, monthLabel)` in `src/utils/date.ts` — always call this from components, never `isInBillingCycle`/`isInIncomeCycle` directly. Full rationale, formulas, and examples in `.claude/memory/project-billing-cycle.md`.
+
+The `month` label itself is unaffected — it's still a `YYYY-MM` string, and the HeroCard month-picker UI (arrows, grid) works exactly as before; only the meaning of "which transactions belong to this label" changed. `useRecurringAutoApply.ts` and the general calendar module (`CalendarPage.tsx`, `components/calendar/**`) are explicitly out of scope — they still use plain calendar months.
+
 ### Categories
 Categories are **per-household and dynamic** — stored at `households/{id}/categories/{catId}` → `{ name, nameEn, icon, order }`. `TransactionCategory` is now `string`. On first load, `useCategories` auto-seeds the 19 defaults (same IDs: rent, electricity, water, gas, internet, mobile, property_tax, food, entertainment, health, clothing, transport, education, baby, loan, salary, bills, pet, other) so existing transactions display correctly. Members can add/edit/delete categories from the Settings modal via `CategoryManager`. Icon selection via `EmojiPicker` (~70 curated emojis from `EMOJI_GROUPS` in `src/constants/categories.ts`). Helpers in `src/utils/categories.ts`: `getCatIcon(categories, id)`, `getCatName(categories, id, locale)`, `categoriesToOptions(cats, locale)`. `categories` + CRUD actions live in `HouseholdContextType` (loaded in `HouseholdLayout`), passed as prop to all consumers (TransactionView, RecurringSection, TxEntry, etc.).
 
 ### Recurring Charges
-`RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via `useRecurringAutoApply(householdId, recurringCharges, transactions, month)` hook (debounce 600ms, lives in `src/hooks/useRecurringAutoApply.ts`).
+`RecurringCharge` stores `startYearMonth` (YYYY-MM), `monthCount`, `dayOfMonth`. `applyRecurring` in `src/utils/recurring.ts` is called via `useRecurringAutoApply(householdId, recurringCharges, transactions, month)` hook (debounce 600ms, lives in `src/hooks/useRecurringAutoApply.ts`). Note: this uses plain calendar-month math on `month`, independent from the billing/income cycle rules above.
 
 ### Navigation (AppNav pills)
 Pills order: סיכום → הוצאות → [הכנסות if !expensesOnly] → [member pills with × to delete] → ＋ → חיובים קבועים. Logs and Settings are opened via modals from AppHeader (not pills). Member pills dynamically generated from `members[]`. Clicking × triggers `handleRemoveMember` (deletes member + all their transactions/recurring). Clicking ＋ opens `AddMemberModal`.
@@ -170,6 +179,7 @@ RecurringSection uses `.ap-input--error` (defined in `AddTransactionModal.css`) 
 - `SettingsView.module.css` uses CSS Modules (exception); all other files use plain CSS classes
 - Do NOT use Tailwind; avoid new CSS Modules unless in settings/ sub-components
 - Never hardcode `#1a1a2e` or `#9490CC` — use `var(--clr-dark)` / `var(--clr-purple)`
+- **HeroCard amounts are uniform white** (no green/red positive/negative split) as of 2026-07 — this is Hero-specific; SummaryView/TransactionView/MemberView/TxEntry still use `var(--green)`/`var(--red)` (`#86efac`/`#fca5a5` equivalents) for positive/negative amounts
 
 ### CSS Consistency Rule
 Before adding new CSS, check if a class already exists in AppPage.css or NotificationPanel.css. Never duplicate visual styles between Dashboard and App — use shared components.

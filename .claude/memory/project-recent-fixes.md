@@ -1,11 +1,23 @@
 ---
 name: project-recent-fixes
-description: Small fixes and enhancements done June 2026 — formatCurrency decimals, TransactionList members prop, color sync to member records
+description: Small fixes and enhancements — formatCurrency decimals, TransactionList members prop, color sync to member records (June 2026); HeroCard color revert (July 2026)
 metadata:
   type: project
 ---
 
-Three changes made 2026-06-14 (current session):
+## 2026-07 — HeroCard colors reverted to uniform white
+`src/components/app/finance/HeroCard.tsx` — removed the `balanceColor` helper and every inline `style={{ color: ... }}` that switched between green (`#86efac`) and red (`#fca5a5`) based on positive/negative. All 5 spots (מאזן חודשי, עו"ש עכשיו, עו"ש עתידי, and the הוצ׳/הכנ׳/מאזן lines in each member's box) now render in plain white, inherited from `.hero { color: #fff }`.
+- Minus sign (`−`) and ₪ sign are unaffected — those come from `<Money sign="...">`, not from color.
+- The checking-balance "no value yet" placeholder state (`rgba(255,255,255,0.4)`) is preserved.
+- The minus-toggle button (`hbal-sign-btn--active`, red highlight when active) is unaffected — that's a UI active-state indicator, not a positive/negative color, and was explicitly out of scope.
+- **Scope was Hero only** — SummaryView, TransactionView, MemberView, and TxEntry still use green/red for positive/negative amounts; user asked only about the Hero card.
+
+## 2026-07 — Billing cycle + income cycle for finance month filtering
+See dedicated file: [project-billing-cycle.md](project-billing-cycle.md) for full details. Short version: the finance `month` state stopped meaning a plain calendar month. Expenses now use a 10th-to-10th credit-card-style cycle; income uses a separate calendar-month+1 cycle, applied via a single `isInFinanceCycle()` entry point in `src/utils/date.ts` across HeroCard/TransactionView/SummaryView/MemberView.
+
+---
+
+## Three changes made 2026-06-14
 
 **`formatCurrency` decimal support** (`src/utils/format.ts`)
 - Integer amounts render without decimals: `1,000 ₪`
